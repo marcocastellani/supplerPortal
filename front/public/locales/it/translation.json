@@ -1,0 +1,19 @@
+{
+  "about": "Di",
+  "backHome": "Torna a casa",
+  "cookbookDescription": "Questa è un'applicazione di avvio (nota anche come UCP Microfrontend Cookbook) utile come avvio per qualsiasi applicazione che dovrebbe essere compatibile con la piattaforma di commercio unificato",
+  "darkMode": "Buio",
+  "dob": "Data di nascita",
+  "home": "Casa",
+  "lightMode": "Leggero",
+  "name": "Nome",
+  "notFound": "404 NON TROVATO",
+  "notFoundDescription": "Impossibile trovare la pagina che stavi cercando",
+  "settings": "Impostazioni",
+  "signIn": "Registrazione",
+  "signOut": "disconnessione",
+  "status": "Stato",
+  "tableExample": "Esempio di tabella",
+  "rbacExample": "Esempio RBAC",
+  "regionalSettingsExample": "Regional Settings"
+}

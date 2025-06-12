@@ -1,0 +1,19 @@
+{
+  "about": "Um",
+  "backHome": "Geh zurück nach Hause",
+  "cookbookDescription": "Dies ist eine Startup-Anwendung (auch bekannt als UCP Microfrontend Cookbook), die als Startup für jede Anwendung nützlich ist, die mit der Unified Commerce Platform kompatibel sein sollte",
+  "darkMode": "Dunkel",
+  "dob": "Geburtsdatum",
+  "home": "Heim",
+  "lightMode": "Licht",
+  "name": "Name",
+  "notFound": "404 NICHT GEFUNDEN",
+  "notFoundDescription": "Die von Ihnen gesuchte Seite konnte nicht gefunden werden",
+  "settings": "Einstellungen",
+  "signIn": "anmelden",
+  "signOut": "Abmelden",
+  "status": "Status",
+  "tableExample": "Tabellenbeispiel",
+  "rbacExample": "RBAC -Beispiel",
+  "regionalSettingsExample": "Regional Settings"
+}

@@ -1,0 +1,19 @@
+{
+  "name": "Name",
+  "dob": "Date of birth",
+  "status": "Status",
+  "home": "Home",
+  "tableExample": "Table example",
+  "about": "About",
+  "settings": "Settings",
+  "signOut": "Sign out",
+  "lightMode": "Light",
+  "darkMode": "Dark",
+  "cookbookDescription": "This is a startup application (a.k.a. UCP Microfrontend Cookbook) that is useful as a startup for any application that should be compatible with the Unified Commerce Platform",
+  "signIn": "Sign in",
+  "notFound": "404 NOT FOUND",
+  "notFoundDescription": "The page you were looking for could not be found",
+  "backHome": "Go back home",
+  "rbacExample": "RBAC example",
+  "regionalSettingsExample": "Regional Settings"
+}
