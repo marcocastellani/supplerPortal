@@ -26,6 +26,7 @@ Questo documento descrive lo scopo e l’utilizzo dei file principali nel proget
 | `src/services/dashboardService.ts`   | Servizio API per chiamate dashboard con axios                              |
 | `src/components/Dashboard/DashboardQuestionnaires.tsx` | Componente React per visualizzazione questionari in scadenza |
 | `src/pages/Dashboard.tsx`            | Pagina dashboard principale con layout e widget                            |
+| `src/pages/Home.tsx`                 | **MENU PRINCIPALE**: Contiene array `tabs` per la navigazione              |
 | `public/locales/*/translation.json`  | Traduzioni complete IT/EN/DE per interfaccia dashboard                     |
 
 ## ⚙️ Utility / Infrastruttura
@@ -35,6 +36,27 @@ Questo documento descrive lo scopo e l’utilizzo dei file principali nel proget
 | `.copilot/project-context.md`          | Contesto architetturale usato da GitHub Copilot                            |
 | `.github/prompt/new-feature.md`        | Prompt guidato per ChatGPT per la creazione di nuove feature               |
 | `docs/user-stories-dashboard-scadenze.md` | User stories complete per implementare dashboard scadenze questionari e remediation |
+
+---
+
+## 📋 **IMPORTANTE: Struttura Navigazione Frontend**
+
+⚠️ **NAVIGAZIONE MENU**: Il menu principale dell'applicazione è gestito nella variabile `tabs` del file `src/pages/Home.tsx`. 
+
+**NON utilizzare** `src/components/LayoutComponents/Topbar/Topbar.tsx` per il menu principale.
+
+### Come aggiungere una nuova pagina al menu:
+1. Creare il componente pagina in `src/pages/`
+2. Importare il componente in `src/pages/Home.tsx`
+3. Aggiungere la voce menu nell'array `tabs` con:
+   ```typescript
+   {
+     title: t("nomeChiave"),
+     value: numeroIndice,
+     content: <NuovoComponente />
+   }
+   ```
+4. Aggiungere la traduzione `"nomeChiave"` nei file `public/locales/*/translation.json`
 
 ---
 
