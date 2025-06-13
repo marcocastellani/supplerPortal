@@ -8,6 +8,6 @@ public class TestTypeConfiguration : IEntityTypeConfiguration<Test>
 {
     public void Configure(EntityTypeBuilder<Test> builder)
     {
-        throw new NotImplementedException();
+        builder.HasKey(t => t.Id);
     }
 }

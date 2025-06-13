@@ -1,0 +1,262 @@
+# 📋 User Stories - Dashboard Scadenze
+
+## 🎯 Obiettivo
+Creare una dashboard iniziale che mostri agli utenti le loro scadenze. Queste scadenze sono dei questionari che devono essere compilati dall'utente o da un agente incaricato dall'utente. Devono esserci i questionari in scadenza nelle prossime 4 settimane e le remediation uscite da ogni singolo questionario.
+
+## 👥 Ruoli Utente
+- **Utenti**: possono vedere solo i fornitori assegnati a loro
+- **Agenti**: lavorano su fornitori assegnati ad utenti per certificare i questionari e pianificare visite ispettive
+- **Fornitori**: possono vedere solo i loro questionari
+- **Supervisori**: vedono tutto
+- **Amministratori**: vedono tutto e configurano l'applicazione
+
+## 🔧 Vincoli Tecnici
+- Dashboard responsive e mobile-friendly
+- Utilizzare Storybook Remira: https://storybook.remira.com
+- Librerie: `@remira/ucpaccelerator_unified_utils": "0.1.263"`, `@remira/unifiedui": "1.0.239"`
+- Autenticazione con Keycloak (già implementata)
+- Autorizzazione con RBAC (già implementata)
+- Applicazione è un micro frontend
+- Paginazione per performance
+- Sistema di alert personalizzabili
+
+---
+
+## 📖 User Stories
+
+### #1 - Visualizzazione questionari in scadenza (Utente)
+**Come** utente  
+**Voglio** visualizzare i questionari dei miei fornitori assegnati in scadenza nelle prossime 4 settimane  
+**Così da** non perdere deadline importanti e sollecitare i fornitori o bloccarli
+
+**Acceptance Criteria:**
+- ✅ Vedo solo questionari dei fornitori a me assegnati
+- ✅ Le scadenze sono filtrate per le prossime 4 settimane dalla data corrente
+- ✅ Per ogni questionario vedo: nome fornitore, tipo questionario, data scadenza, stato
+- ✅ I questionari sono ordinati per data scadenza (più urgenti primi)
+- ✅ La dashboard è responsive e mobile-friendly
+
+**Edge Cases:** 
+- Utente senza fornitori assegnati
+- Questionari già scaduti
+- Problemi di connessione
+
+**Implementazione Backend:**
+- **API:** `GET /api/dashboard/questionnaires`
+- **Handler MediatR:** `GetUpcomingQuestionnairesQuery` + `GetUpcomingQuestionnairesQueryHandler`
+- **DTO:** `UpcomingQuestionnaireDto`, `GetUpcomingQuestionnairesRequest`
+
+**Implementazione Frontend:**
+- **Componente:** `DashboardQuestionnaires` usando componenti UnifiedUI
+- **Pagina:** Integrazione in dashboard principale
+- **Test:** Unit test componente + integration test API
+
+---
+
+### #2 - Visualizzazione remediation attive (Utente)
+**Come** utente  
+**Voglio** visualizzare le remediation aperte associate ai questionari dei miei fornitori  
+**Così da** monitorare le azioni correttive in corso e le loro scadenze
+
+**Acceptance Criteria:**
+- ✅ Vedo solo remediation dei fornitori a me assegnati
+- ✅ Per ogni remediation vedo: fornitore, descrizione, data scadenza, responsabile
+- ✅ Le remediation sono ordinate per scadenza
+- ✅ Posso distinguere remediation scadute da quelle ancora valide
+
+**Edge Cases:**
+- Remediation senza scadenza
+- Remediation già chiuse ma mostrate per errore
+- Remediation senza responsabile assegnato
+
+**Implementazione Backend:**
+- **API:** `GET /api/dashboard/remediations`
+- **Handler MediatR:** `GetActiveRemediationsQuery` + `GetActiveRemediationsQueryHandler`
+- **DTO:** `ActiveRemediationDto`, `GetActiveRemediationsRequest`
+
+**Implementazione Frontend:**
+- **Componente:** `DashboardRemediations`
+- **Test:** Unit test + integration test
+
+---
+
+### #3 - Dashboard agente per pianificazione visite
+**Come** agente  
+**Voglio** visualizzare questionari e remediation dei fornitori assegnati agli utenti per cui lavoro  
+**Così da** pianificare le visite ispettive in base alle priorità e scadenze
+
+**Acceptance Criteria:**
+- ✅ Vedo questionari di tutti i fornitori degli utenti per cui sono incaricato
+- ✅ Posso filtrare per utente specifico
+- ✅ Vedo remediation che richiedono riverifica da parte mia
+- ✅ Posso marcare visite ispettive come pianificate
+
+**Edge Cases:**
+- Agente senza utenti assegnati
+- Conflitti di pianificazione visite
+- Utenti con molti fornitori
+
+**Implementazione Backend:**
+- **API:** `GET /api/dashboard/agent-overview`
+- **Handler MediatR:** `GetAgentDashboardQuery` + `GetAgentDashboardQueryHandler`
+- **DTO:** `AgentDashboardDto`, `GetAgentDashboardRequest`
+
+**Implementazione Frontend:**
+- **Componente:** `AgentDashboard`
+- **Funzionalità:** Filtri, pianificazione visite
+- **Test:** Unit test + integration test
+
+---
+
+### #4 - Dashboard fornitore (self-service)
+**Come** fornitore  
+**Voglio** visualizzare i miei questionari in scadenza e le remediation da gestire  
+**Così da** completare i questionari in tempo e risolvere le non conformità
+
+**Acceptance Criteria:**
+- ✅ Vedo solo i miei questionari e remediation
+- ✅ Posso accedere direttamente alla compilazione questionari
+- ✅ Vedo lo stato delle mie remediation (aperte/chiuse)
+- ✅ Posso caricare documenti per le remediation
+
+**Edge Cases:**
+- Fornitore senza questionari assegnati
+- Questionari in bozza vs pubblicati
+- Remediation senza documenti richiesti
+
+**Implementazione Backend:**
+- **API:** `GET /api/dashboard/supplier-overview`
+- **Handler MediatR:** `GetSupplierDashboardQuery` + `GetSupplierDashboardQueryHandler`
+- **DTO:** `SupplierDashboardDto`
+
+**Implementazione Frontend:**
+- **Componente:** `SupplierDashboard`
+- **Funzionalità:** Link diretti a questionari, upload documenti
+- **Test:** Unit test + integration test
+
+---
+
+### #5 - Vista supervisore/amministratore
+**Come** supervisore/amministratore  
+**Voglio** avere una vista globale di tutti i questionari e remediation  
+**Così da** monitorare lo stato generale di compliance
+
+**Acceptance Criteria:**
+- ✅ Vedo tutti i questionari in scadenza di tutti i fornitori
+- ✅ Posso filtrare per utente, agente, fornitore
+- ✅ Vedo statistiche aggregate (% completion, remediation aperte, ecc.)
+- ✅ Posso esportare report
+
+**Edge Cases:**
+- Grandi volumi di dati
+- Filtri multipli complessi
+- Performance con molti utenti
+
+**Implementazione Backend:**
+- **API:** `GET /api/dashboard/admin-overview`
+- **Handler MediatR:** `GetAdminDashboardQuery` + `GetAdminDashboardQueryHandler`
+- **DTO:** `AdminDashboardDto`, `DashboardStatsDto`
+
+**Implementazione Frontend:**
+- **Componente:** `AdminDashboard`
+- **Funzionalità:** Filtri avanzati, statistiche, export
+- **Test:** Unit test + integration test
+
+---
+
+### #6 - Paginazione e performance
+**Come** qualsiasi utente  
+**Voglio** che la dashboard carichi velocemente anche con molti dati  
+**Così da** avere un'esperienza fluida
+
+**Acceptance Criteria:**
+- ✅ Paginazione per liste con più di 20 elementi
+- ✅ Caricamento progressivo (lazy loading)
+- ✅ Indicatori di caricamento
+- ✅ Caching intelligente dei dati
+
+**Edge Cases:**
+- Connessione lenta
+- Grandi dataset
+- Refresh frequenti
+
+**Implementazione Backend:**
+- **Paginazione:** Implementare `PagedResult<T>` in tutti i query
+- **Caching:** Response caching per dati poco volatili
+- **Performance:** Indici database, query ottimizzate
+
+**Implementazione Frontend:**
+- **Componenti:** Integrazione con componenti paginazione UnifiedUI
+- **Loading:** Skeleton loading, progressive enhancement
+- **Caching:** React Query per client-side caching
+
+---
+
+### #7 - Sistema di alert personalizzabili
+**Come** utente/agente  
+**Voglio** impostare alert personalizzati per scadenze imminenti  
+**Così da** ricevere notifiche proattive
+
+**Acceptance Criteria:**
+- ✅ Posso impostare alert per scadenze (es. 1 settimana prima)
+- ✅ Posso configurare tipo di notifica (email, in-app, push)
+- ✅ Alert diversi per questionari vs remediation
+- ✅ Posso disabilitare/modificare alert esistenti
+
+**Edge Cases:**
+- Alert multipli per stesso evento
+- Utente senza email configurata
+- Fuso orario diverso
+
+**Implementazione Backend:**
+- **API:** `POST/PUT /api/user-preferences/alerts`, `GET /api/user-preferences/alerts`
+- **Handler MediatR:** `CreateUserAlertCommand`, `UpdateUserAlertCommand`, `GetUserAlertsQuery`
+- **DTO:** `UserAlertDto`, `CreateUserAlertRequest`, `UpdateUserAlertRequest`
+- **Background Service:** Job per invio notifiche
+
+**Implementazione Frontend:**
+- **Componente:** `AlertSettings`, `AlertNotification`
+- **Funzionalità:** CRUD alert, preferenze notifiche
+- **Test:** Unit test + integration test
+
+---
+
+## 🎯 Riepilogo Implementazione
+
+### Backend (.NET Core + MediatR)
+- **Nuovi endpoint:** 7 API principali
+- **Handlers:** 10+ Command/Query handlers
+- **DTO:** 15+ oggetti di trasferimento dati
+- **Background Services:** 1 per gestione alert
+- **Test:** Unit test per ogni handler + integration test
+
+### Frontend (React + TypeScript)
+- **Componenti principali:** 7 componenti dashboard
+- **Pagine:** 1 pagina dashboard principale con routing per ruoli
+- **Utilities:** Gestione stati, caching, notifiche
+- **Test:** Unit test per ogni componente + integration test
+
+### Database
+- **Nuove tabelle:** UserAlerts, DashboardPreferences (se necessarie)
+- **Indici:** Ottimizzazione query per performance
+- **Migrazioni:** Script di aggiornamento schema
+
+### Priorità Implementazione
+1. **#1** - Visualizzazione questionari utente (base)
+2. **#2** - Visualizzazione remediation utente
+3. **#6** - Paginazione e performance
+4. **#3** - Dashboard agente
+5. **#4** - Dashboard fornitore
+6. **#5** - Vista supervisore/admin
+7. **#7** - Sistema alert
+
+---
+
+## 📝 Note per l'implementazione
+- Utilizzare sempre MediatR per separazione logica
+- Componenti UnifiedUI per coerenza visiva
+- Test-Driven Development (TDD)
+- Responsive design mobile-first
+- Autorizzazione RBAC su ogni endpoint
+- Logging e monitoraggio per troubleshooting
+- Documentazione API con Swagger

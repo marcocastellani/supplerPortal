@@ -15,5 +15,42 @@
   "status": "Stato",
   "tableExample": "Esempio di tabella",
   "rbacExample": "Esempio RBAC",
-  "regionalSettingsExample": "Regional Settings"
+  "regionalSettingsExample": "Regional Settings",
+  "common": {
+    "loading": "Caricamento...",
+    "refresh": "Aggiorna",
+    "retry": "Riprova"
+  },
+  "dashboard": {
+    "questionnaires": {
+      "title": "Questionari in Scadenza",
+      "subtitle": "Questionari che scadono nelle prossime settimane",
+      "nextWeek": "Prossima settimana",
+      "next2Weeks": "Prossime 2 settimane",
+      "next4Weeks": "Prossime 4 settimane",
+      "next8Weeks": "Prossime 8 settimane",
+      "noData": "Nessun questionario in scadenza",
+      "noDataDescription": "Non ci sono questionari in scadenza nel periodo selezionato",
+      "errorTitle": "Errore nel caricamento dei questionari",
+      "errorMessage": "Impossibile caricare i dati dei questionari. Riprova.",
+      "assignedTo": "Assegnato a",
+      "totalCount": "Totale: {{count}} questionari",
+      "overdue": "{{days}} giorni in ritardo",
+      "dueToday": "Scade oggi",
+      "dueTomorrow": "Scade domani",
+      "dueInDays": "Scade in {{days}} giorni",
+      "priority": {
+        "low": "Bassa",
+        "medium": "Media",
+        "high": "Alta",
+        "critical": "Critica"
+      },
+      "status": {
+        "notstarted": "Non Iniziato",
+        "inprogress": "In Corso",
+        "completed": "Completato",
+        "overdue": "In Ritardo"
+      }
+    }
+  }
 }

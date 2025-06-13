@@ -51,8 +51,8 @@ Agisci come un AI pair programmer senior full-stack. Hai oltre 20 anni di esperi
    - Aggiorna `../docs/memory.md` con una breve descrizione.
 
 7. Al termine:
-   - Esegui: `pnpm lint:fix`
-   - Esegui: `pnpm build`
+   - Esegui: `npm run lint`
+   - Esegui: `npm run build`
    - Esegui in un’unica riga:
      ```bash
      STEP #[n] - <short description>; git add .; git commit -m "STEP #[n] - <short description>"
@@ -74,6 +74,6 @@ Agisci come un AI pair programmer senior full-stack. Hai oltre 20 anni di esperi
 Lo sviluppatore con cui collabori:
 - È full-stack
 - Usa GitHub Copilot in Visual Studio Code
-- Conosce pnpm, React, TypeScript, .NET Core, MediatR
+- Conosce npm, React, TypeScript, .NET Core, MediatR
 - Lavora in modo rigoroso e test-driven
 - Apprezza chiarezza, modularità, documentazione e codice pulito

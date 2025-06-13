@@ -2,6 +2,7 @@ import { DefaultLayout } from "@/components/LayoutComponents/DefaultLayout/Defau
 import { Home } from "@/pages/Home";
 import { NotFound } from "@/pages/NotFound";
 import { RBACExample } from "@/pages/RBACExample";
+import Dashboard from "@/pages/Dashboard";
 import { AuthenticatedRoutes } from "@/routes/AuthenticatedRoutes";
 import { Loader } from "@remira/unifiedui";
 import { Suspense } from "react";
@@ -23,6 +24,7 @@ export const Routes = ({ isMicrofrontend }: RoutesProps) => {
             element={<AuthenticatedRoutes isMicrofrontend={isMicrofrontend} />}
           >
             <Route path="" element={<Home />} />
+            <Route path="dashboard" element={<Dashboard />} />
             <Route path="rbacexample" element={<RBACExample />} />
           </Route>
           <Route path="*" element={<NotFound />} />

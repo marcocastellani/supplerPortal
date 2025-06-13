@@ -44,7 +44,8 @@ Il repository è organizzato in due cartelle principali:
   - Esempio: `STEP #2 - Add form validation for shipping address`
 - **Comandi obbligatori prima del commit**:
   ```bash
-  pnpm lint:fix
-  pnpm build
+  npm run lint
+  npm run build
+  npm run localisations
   git add .
   git commit -m "STEP #[n] - <short description>"

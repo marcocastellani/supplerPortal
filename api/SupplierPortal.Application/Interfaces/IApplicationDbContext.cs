@@ -6,8 +6,14 @@ namespace Remira.UCP.SupplierPortal.Application.Interfaces;
 
 public interface IApplicationDbContext
 {
-
     DbSet<Test> Test { get; }
+    DbSet<User> Users { get; }
+    DbSet<Supplier> Suppliers { get; }
+    DbSet<UserSupplier> UserSuppliers { get; }
+    DbSet<AgentAssignment> AgentAssignments { get; }
+    DbSet<Questionnaire> Questionnaires { get; }
+    DbSet<Remediation> Remediations { get; }
+    
     DatabaseFacade Database { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

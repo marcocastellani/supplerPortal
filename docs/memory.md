@@ -16,10 +16,11 @@ Questo documento descrive lo scopo e l’utilizzo dei file principali nel proget
 
 ## ⚙️ Utility / Infrastruttura
 
-| File/Cartella                      | Descrizione                                                                 |
-|-----------------------------------|-----------------------------------------------------------------------------|
-| `.copilot/project-context.md`     | Contesto architetturale usato da GitHub Copilot                            |
-| `.github/prompt/new-feature.md`   | Prompt guidato per ChatGPT per la creazione di nuove feature               |
+| File/Cartella                           | Descrizione                                                                 |
+|----------------------------------------|-----------------------------------------------------------------------------|
+| `.copilot/project-context.md`          | Contesto architetturale usato da GitHub Copilot                            |
+| `.github/prompt/new-feature.md`        | Prompt guidato per ChatGPT per la creazione di nuove feature               |
+| `docs/user-stories-dashboard-scadenze.md` | User stories complete per implementare dashboard scadenze questionari e remediation |
 
 ---
 

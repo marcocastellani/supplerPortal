@@ -15,5 +15,42 @@
   "notFoundDescription": "The page you were looking for could not be found",
   "backHome": "Go back home",
   "rbacExample": "RBAC example",
-  "regionalSettingsExample": "Regional Settings"
+  "regionalSettingsExample": "Regional Settings",
+  "common": {
+    "loading": "Loading...",
+    "refresh": "Refresh",
+    "retry": "Retry"
+  },
+  "dashboard": {
+    "questionnaires": {
+      "title": "Upcoming Questionnaires",
+      "subtitle": "Questionnaires expiring in the next few weeks",
+      "nextWeek": "Next week",
+      "next2Weeks": "Next 2 weeks",
+      "next4Weeks": "Next 4 weeks",
+      "next8Weeks": "Next 8 weeks",
+      "noData": "No upcoming questionnaires",
+      "noDataDescription": "There are no questionnaires expiring in the selected time period",
+      "errorTitle": "Error loading questionnaires",
+      "errorMessage": "Unable to load questionnaire data. Please try again.",
+      "assignedTo": "Assigned to",
+      "totalCount": "Total: {{count}} questionnaires",
+      "overdue": "{{days}} days overdue",
+      "dueToday": "Due today",
+      "dueTomorrow": "Due tomorrow",
+      "dueInDays": "Due in {{days}} days",
+      "priority": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "critical": "Critical"
+      },
+      "status": {
+        "notstarted": "Not Started",
+        "inprogress": "In Progress",
+        "completed": "Completed",
+        "overdue": "Overdue"
+      }
+    }
+  }
 }

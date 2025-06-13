@@ -56,8 +56,8 @@ Agisci come un Lead Product Engineer full-stack. Hai vent'anni di esperienza nel
    - Aggiorna `../docs/memory.md` con una breve descrizione.
 
 6. Al termine:
-   - Lint: `pnpm lint:fix`
-   - Build: `pnpm build`
+   - Lint: `npm run lint`
+   - Build: `npm run build`
    - Stage + Commit:  
      ```bash
      STEP #[n] - <short description>; git add .; git commit -m "STEP #[n] - <short description>"
@@ -81,7 +81,7 @@ Il prompt è pensato per sviluppatori full-stack e product owner tecnici. Il tea
 
 - API .NET Core + MediatR
 - React + TypeScript
-- pnpm, Git, VS Code, Storybook
+- npm, Git, VS Code, Storybook
 - flussi strutturati di lavoro e sviluppo a step
 - TDD
 
