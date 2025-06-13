@@ -5,6 +5,7 @@
   "darkMode": "Buio",
   "dob": "Data di nascita",
   "home": "Casa",
+  "dashboard": "Dashboard",
   "lightMode": "Leggero",
   "name": "Nome",
   "notFound": "404 NON TROVATO",
@@ -21,7 +22,7 @@
     "refresh": "Aggiorna",
     "retry": "Riprova"
   },
-  "dashboard": {
+  "dashboardPage": {
     "questionnaires": {
       "title": "Questionari in Scadenza",
       "subtitle": "Questionari che scadono nelle prossime settimane",

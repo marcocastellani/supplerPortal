@@ -2,6 +2,7 @@ import { Container, Grid, RoutingTabs, Table, Text } from "@remira/unifiedui";
 import { TFunction } from "i18next";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import Dashboard from "./Dashboard";
 import { RBACExample } from "./RBACExample";
 import { RegionalSettingsExample } from "./RegionalSettingsExample";
 
@@ -41,8 +42,13 @@ export const Home = () => {
 
   const tabs = [
     {
-      title: t("tableExample"),
+      title: t("dashboard"),
       value: 0,
+      content: <Dashboard />,
+    },
+    {
+      title: t("tableExample"),
+      value: 1,
       content: (
         <Container type="page">
           <Grid container rowSpacing={3} sx={{ paddingTop: 5 }}>
@@ -62,12 +68,12 @@ export const Home = () => {
     },
     {
       title: t("rbacExample"),
-      value: 1,
+      value: 2,
       content: <RBACExample />,
     },
     {
       title: t("regionalSettingsExample"),
-      value: 2,
+      value: 3,
       content: <RegionalSettingsExample />,
     },
   ];

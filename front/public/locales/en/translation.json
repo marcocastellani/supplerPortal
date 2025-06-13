@@ -3,6 +3,7 @@
   "dob": "Date of birth",
   "status": "Status",
   "home": "Home",
+  "dashboard": "Dashboard",
   "tableExample": "Table example",
   "about": "About",
   "settings": "Settings",
@@ -21,7 +22,7 @@
     "refresh": "Refresh",
     "retry": "Retry"
   },
-  "dashboard": {
+  "dashboardPage": {
     "questionnaires": {
       "title": "Upcoming Questionnaires",
       "subtitle": "Questionnaires expiring in the next few weeks",

@@ -54,10 +54,10 @@ const DashboardQuestionnaires: React.FC<DashboardQuestionnairesProps> = ({ class
   };
 
   const getDaysToDeadlineText = (days: number) => {
-    if (days < 0) return t('dashboard.questionnaires.overdue', { days: Math.abs(days) });
-    if (days === 0) return t('dashboard.questionnaires.dueToday');
-    if (days === 1) return t('dashboard.questionnaires.dueTomorrow');
-    return t('dashboard.questionnaires.dueInDays', { days });
+    if (days < 0) return t('dashboardPage.questionnaires.overdue', { days: Math.abs(days) });
+    if (days === 0) return t('dashboardPage.questionnaires.dueToday');
+    if (days === 1) return t('dashboardPage.questionnaires.dueTomorrow');
+    return t('dashboardPage.questionnaires.dueInDays', { days });
   };
 
   if (error) {
@@ -71,10 +71,10 @@ const DashboardQuestionnaires: React.FC<DashboardQuestionnairesProps> = ({ class
           </div>
           <div className="ml-3">
             <h3 className="text-sm font-medium text-red-800">
-              {t('dashboard.questionnaires.errorTitle')}
+              {t('dashboardPage.questionnaires.errorTitle')}
             </h3>
             <p className="mt-1 text-sm text-red-700">
-              {t('dashboard.questionnaires.errorMessage')}
+              {t('dashboardPage.questionnaires.errorMessage')}
             </p>
           </div>
           <div className="ml-auto">
@@ -96,10 +96,10 @@ const DashboardQuestionnaires: React.FC<DashboardQuestionnairesProps> = ({ class
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-semibold text-gray-900">
-              {t('dashboard.questionnaires.title')}
+              {t('dashboardPage.questionnaires.title')}
             </h2>
             <p className="text-sm text-gray-600">
-              {t('dashboard.questionnaires.subtitle')}
+              {t('dashboardPage.questionnaires.subtitle')}
             </p>
           </div>
           <div className="flex items-center space-x-3">
@@ -108,10 +108,10 @@ const DashboardQuestionnaires: React.FC<DashboardQuestionnairesProps> = ({ class
               onChange={(e) => setFilters({ ...filters, weeksAhead: parseInt(e.target.value) })}
               className="text-sm border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              <option value={1}>{t('dashboard.questionnaires.nextWeek')}</option>
-              <option value={2}>{t('dashboard.questionnaires.next2Weeks')}</option>
-              <option value={4}>{t('dashboard.questionnaires.next4Weeks')}</option>
-              <option value={8}>{t('dashboard.questionnaires.next8Weeks')}</option>
+              <option value={1}>{t('dashboardPage.questionnaires.nextWeek')}</option>
+              <option value={2}>{t('dashboardPage.questionnaires.next2Weeks')}</option>
+              <option value={4}>{t('dashboardPage.questionnaires.next4Weeks')}</option>
+              <option value={8}>{t('dashboardPage.questionnaires.next8Weeks')}</option>
             </select>
             <button
               onClick={() => refetch()}
@@ -136,10 +136,10 @@ const DashboardQuestionnaires: React.FC<DashboardQuestionnairesProps> = ({ class
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             <h3 className="mt-2 text-sm font-medium text-gray-900">
-              {t('dashboard.questionnaires.noData')}
+              {t('dashboardPage.questionnaires.noData')}
             </h3>
             <p className="mt-1 text-sm text-gray-500">
-              {t('dashboard.questionnaires.noDataDescription')}
+              {t('dashboardPage.questionnaires.noDataDescription')}
             </p>
           </div>
         ) : (
@@ -156,10 +156,10 @@ const DashboardQuestionnaires: React.FC<DashboardQuestionnairesProps> = ({ class
                         {questionnaire.title}
                       </h3>
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPriorityColor(questionnaire.priority)}`}>
-                        {t(`dashboard.questionnaires.priority.${questionnaire.priority.toLowerCase()}`)}
+                        {t(`dashboardPage.questionnaires.priority.${questionnaire.priority.toLowerCase()}`)}
                       </span>
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(questionnaire.status)}`}>
-                        {t(`dashboard.questionnaires.status.${questionnaire.status.toLowerCase()}`)}
+                        {t(`dashboardPage.questionnaires.status.${questionnaire.status.toLowerCase()}`)}
                       </span>
                     </div>
                     
@@ -169,7 +169,7 @@ const DashboardQuestionnaires: React.FC<DashboardQuestionnairesProps> = ({ class
                       </span>
                       {questionnaire.assignedUserName && (
                         <span>
-                          {t('dashboard.questionnaires.assignedTo')}: {questionnaire.assignedUserName}
+                          {t('dashboardPage.questionnaires.assignedTo')}: {questionnaire.assignedUserName}
                         </span>
                       )}
                     </div>
@@ -199,7 +199,7 @@ const DashboardQuestionnaires: React.FC<DashboardQuestionnairesProps> = ({ class
       {data?.totalCount && data.totalCount > 0 && (
         <div className="px-6 py-3 border-t border-gray-200 bg-gray-50">
           <p className="text-sm text-gray-600">
-            {t('dashboard.questionnaires.totalCount', { count: data.totalCount })}
+            {t('dashboardPage.questionnaires.totalCount', { count: data.totalCount })}
           </p>
         </div>
       )}
