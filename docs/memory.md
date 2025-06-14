@@ -573,3 +573,155 @@ front/src/pages/
 - ✅ Build completato senza errori
 - ✅ Interfaccia funzionante con feedback migliorato
 - ✅ Gestione corretta campi opzionali vs obbligatori
+
+## 🔧 **BACKEND PATTERNS - PROBLEMI RISOLTI**
+
+### ⚠️ **AUTOMAPPER - MAPPINGPROFILE CONSTRUCTOR**
+
+**PROBLEMA RISOLTO**: AutoMapper falliva con errore:
+```
+"Cannot dynamically create an instance of type 'MappingProfile'. 
+Reason: No parameterless constructor defined."
+```
+
+**SOLUZIONE DEFINITIVA** in `SupplierPortal.Application/Common/Mappings/MappingProfile.cs`:
+```csharp
+public class MappingProfile : Profile
+{
+    // OBBLIGATORIO: Costruttore senza parametri per AutoMapper
+    public MappingProfile()
+    {
+        ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
+    }
+    
+    // Opzionale: Costruttore con assembly custom
+    public MappingProfile(Assembly assembly)
+    {
+        ApplyMappingsFromAssembly(assembly);
+    }
+}
+```
+
+**REGOLA**: AutoMapper richiede SEMPRE un costruttore senza parametri nei Profile!
+
+### 🔄 **MEDIATR COMMAND/QUERY PATTERN**
+
+**STRUTTURA STANDARD**:
+```
+SupplyNetworkEntities/
+├── Commands/
+│   ├── CreateSupplyNetworkEntityCommand.cs
+│   ├── CreateSupplyNetworkEntityCommandHandler.cs
+│   └── CreateSupplyNetworkEntityCommandValidator.cs (FluentValidation)
+├── Queries/
+│   ├── GetSupplyNetworkEntitiesQuery.cs
+│   ├── GetSupplyNetworkEntitiesQueryHandler.cs
+│   ├── SearchSupplyNetworkEntitiesQuery.cs
+│   └── SearchSupplyNetworkEntitiesQueryHandler.cs
+└── DTOs/
+    ├── SupplyNetworkEntityDto.cs
+    └── SupplyNetworkEntitySearchResultDto.cs
+```
+
+**CONTROLLER PATTERN**:
+```csharp
+[ApiController]
+[Route("api/[controller]")]
+public class SupplyNetworkEntitiesController : MediatrBaseController
+{
+    [HttpPost]
+    public async Task<ActionResult<SupplyNetworkEntityDto>> Create(
+        [FromBody] CreateSupplyNetworkEntityCommand command,
+        [FromQuery] string apiVersion = "2025-06-01")
+    {
+        var result = await Mediator.Send(command);
+        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+    }
+}
+```
+
+### 🔍 **VALIDATION PATTERNS**
+
+**ASYNC FIELD VALIDATION**:
+```csharp
+// Query per validazione unicità
+public class ValidateExternalCodeQuery : IRequest<ValidateFieldResponse>
+{
+    public string ExternalCode { get; set; } = default!;
+}
+
+// Handler con logica async
+public class ValidateExternalCodeQueryHandler : IRequestHandler<ValidateExternalCodeQuery, ValidateFieldResponse>
+{
+    public async Task<ValidateFieldResponse> Handle(ValidateExternalCodeQuery request, CancellationToken cancellationToken)
+    {
+        var exists = await _context.SupplyNetworkEntities
+            .AnyAsync(x => x.ExternalCode == request.ExternalCode, cancellationToken);
+            
+        return new ValidateFieldResponse { IsUnique = !exists };
+    }
+}
+```
+
+**FLUENT VALIDATION PATTERN**:
+```csharp
+public class CreateSupplyNetworkEntityCommandValidator : AbstractValidator<CreateSupplyNetworkEntityCommand>
+{
+    public CreateSupplyNetworkEntityCommandValidator()
+    {
+        RuleFor(x => x.LegalName)
+            .NotEmpty().WithMessage("Legal Name is required")
+            .MaximumLength(200).WithMessage("Legal Name must not exceed 200 characters");
+            
+        RuleFor(x => x.Email)
+            .EmailAddress().WithMessage("Email must be a valid email address")
+            .When(x => !string.IsNullOrEmpty(x.Email));
+    }
+}
+```
+
+## 📋 **MANUAL SUPPLIER ENTRY WIZARD - IMPLEMENTAZIONE FINALE**
+
+### 🎯 **Epic A #4 - COMPLETATO ✅**
+
+**File principale**: `front/src/pages/NewSupplyNetworkEntity.tsx`
+
+**Wizard Steps**:
+1. **Entity Type & Role** - Configurazione base entità
+2. **General Information** - Dati anagrafici + indirizzo (con VAT/Tax Code)
+3. **Status & Contact** - Stato accreditamento + contatti
+4. **Review & Submit** - Riepilogo + salvataggio (con error handling)
+
+**Caratteristiche implementate**:
+- ✅ **4-step wizard** con validazione per step
+- ✅ **Async field validation** (legal name, external code, email)
+- ✅ **External Code opzionale** (senza asterisco, no validazione blocking)
+- ✅ **Country ISO select** (dropdown con codici ISO 3166-1 alpha-2)
+- ✅ **VAT Code e Tax Code** integrati nello Step 2
+- ✅ **Advanced error handling** con categorizzazione e retry/dismiss
+- ✅ **Real-time UX** con indicatori loading e styling errori
+- ✅ **End-to-end testing** (happy path + error scenarios)
+
+### 🔧 **File Utilities Creati** (RIUTILIZZARE!):
+- `front/src/utils/countries.ts` - Lista completa ISO countries per select
+- `front/src/components/SupplyNetworkEntities/EntitySelector.tsx` - Typeahead component
+- `front/src/services/supplyNetworkEntitiesService.ts` - Service layer con validation API
+
+### 🚨 **Problemi Risolti**:
+1. **AutoMapper MappingProfile** - Aggiunto costruttore senza parametri
+2. **Error display positioning** - Spostato componente errore nello step corretto
+3. **Field validation logic** - Separata validazione required vs optional
+4. **Country validation** - Sostituito input libero con ISO select
+5. **External Code** - Reso completamente opzionale senza bloccare wizard
+
+### 📊 **Testing Status**:
+- ✅ **Happy path**: Entity creation con 201 Created
+- ✅ **Validation errors**: 400 errors con field details
+- ✅ **Server errors**: 500 errors con graceful handling  
+- ✅ **Network errors**: Connection issues con retry mechanism
+- ✅ **Field validation**: Real-time uniqueness checking
+- ✅ **Build verification**: Frontend + Backend successful
+
+**Commit finale**: `3a998be` - "STEP #7 - Complete manual supplier entry wizard with advanced error handling"
+
+**Status**: 🚀 **PRODUCTION READY** - Wizard completamente funzionale end-to-end
