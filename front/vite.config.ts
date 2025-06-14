@@ -3,11 +3,17 @@ import react from "@vitejs/plugin-react";
 import { cpus } from "os";
 import * as path from "path";
 import copy from "rollup-plugin-copy";
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
+/// <reference types="vitest" />
 import topLevelAwait from "vite-plugin-top-level-await";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
+  },
   server: {
     port: 4280,
   },
