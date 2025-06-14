@@ -2,6 +2,13 @@
 
 Questo documento descrive lo scopo e l'utilizzo dei file principali nel progetto. Ogni volta che viene creato un nuovo file o modulo, aggiorna questa tabella con una breve descrizione.
 
+## 🚀 Debug & Development Tools (`/root`)
+
+| File                  | Descrizione                                                                 |
+|-----------------------|-----------------------------------------------------------------------------|
+| `debug-start.sh`      | ⭐ Script per avviare simultaneamente API e Frontend in debug con log colorati |
+| `DEBUG_README.md`     | Documentazione completa per l'utilizzo dello script di debug              |
+
 ## 📦 API – .NET Core (`/api`)
 
 | File/Cartella                                                       | Descrizione                                                                 |
