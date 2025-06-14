@@ -7,7 +7,7 @@ export const dashboardApi = {
     const params = new URLSearchParams();
     
     // Aggiungo la versione API richiesta
-    params.append('api-version', '2024-10-01');
+    params.append('api-version', '2025-06-01');
     
     // Parametri per autorizzazione utente
     if (filters.userId) {

@@ -49,8 +49,8 @@ public class GetUpcomingQuestionnairesQueryHandler : IRequestHandler<GetUpcoming
                 Status = q.Status.ToString(),
                 Priority = q.Priority.ToString(),
                 DueDate = q.DueDate,
-                SupplierName = q.Supplier.Name,
-                SupplierCode = q.Supplier.Code,
+                SupplierName = q.Supplier.LegalName,
+                SupplierCode = q.Supplier.ExternalCode ?? q.Supplier.Id.ToString(),
                 DaysToDeadline = (int)(q.DueDate.Date - today).TotalDays,
                 IsOverdue = q.DueDate.Date < today
             })

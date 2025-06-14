@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Container, Grid, Text, Input, Select } from "@remira/unifiedui";
+import {
+  Container,
+  Grid,
+  Text,
+  Input,
+  Select,
+  Checkbox,
+} from "@remira/unifiedui";
 import {
   FormWizard,
   WizardStep,
@@ -16,8 +23,8 @@ import {
 
 export const NewSupplyNetworkEntity = () => {
   const [formData, setFormData] = useState<SupplyNetworkEntityFormData>({
-    entityType: "" as EntityType, // Start with empty string to avoid controlled/uncontrolled issues
-    roleInSupplyChain: "" as RoleInSupplyChain, // Start with empty string
+    entityType: EntityType.Supplier,
+    roleInSupplyChain: RoleInSupplyChain.Manufacturer,
     isSubEntity: false,
     legalName: "",
     shortName: "",
@@ -29,7 +36,7 @@ export const NewSupplyNetworkEntity = () => {
     zipCode: "",
     email: "",
     phoneNumber: "",
-    accreditationStatus: "" as AccreditationStatus, // Start with empty string
+    accreditationStatus: AccreditationStatus.Approved,
     tags: [],
     contactPersonName: "",
     vatCode: "",
@@ -44,16 +51,14 @@ export const NewSupplyNetworkEntity = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const [tagsInputValue, setTagsInputValue] = useState<string>(""); // Local state for tags input
 
   // Step validation functions
   const validateStep1 = () => {
-    const isValid = !!(
+    return !!(
       formData.entityType &&
       formData.roleInSupplyChain &&
       (!formData.isSubEntity || formData.parentId)
     );
-    return isValid;
   };
 
   const validateStep2 = () => {
@@ -68,34 +73,9 @@ export const NewSupplyNetworkEntity = () => {
     const loadEnumValues = async () => {
       try {
         const enums = await SupplyNetworkEntitiesService.getEnumValues();
-        console.log("Loaded enum values:", enums);
         setEnumValues(enums);
-
-        // Set default values after loading enums
-        if (
-          enums.entityTypes.length > 0 &&
-          enums.rolesInSupplyChain.length > 0 &&
-          enums.accreditationStatuses.length > 0
-        ) {
-          setFormData((prev) => ({
-            ...prev,
-            entityType: enums.entityTypes[0].value as EntityType,
-            roleInSupplyChain: enums.rolesInSupplyChain[0]
-              .value as RoleInSupplyChain,
-            accreditationStatus:
-              (enums.accreditationStatuses.find((s) => s.value === "Approved")
-                ?.value as AccreditationStatus) ||
-              (enums.accreditationStatuses[0].value as AccreditationStatus),
-          }));
-          // Initialize tags input value
-          setTagsInputValue("");
-        }
       } catch (err) {
-        console.error("Error loading enum values:", err);
-        setError(
-          "Failed to load form data: " +
-            (err instanceof Error ? err.message : String(err))
-        );
+        setError("Failed to load form data");
       }
     };
 
@@ -104,8 +84,8 @@ export const NewSupplyNetworkEntity = () => {
         const parents =
           await SupplyNetworkEntitiesService.getPotentialParents();
         setPotentialParents(parents);
-      } catch (error) {
-        console.error("Failed to load potential parents:", error);
+      } catch (err) {
+        console.warn("Failed to load potential parents:", err);
       }
     };
 
@@ -156,41 +136,27 @@ export const NewSupplyNetworkEntity = () => {
       // Reset form after successful creation
       setTimeout(() => {
         setSuccess(false);
-        if (enumValues) {
-          setFormData({
-            entityType:
-              (enumValues.entityTypes[0]?.value as EntityType) ||
-              ("" as EntityType),
-            roleInSupplyChain:
-              (enumValues.rolesInSupplyChain[0]?.value as RoleInSupplyChain) ||
-              ("" as RoleInSupplyChain),
-            isSubEntity: false,
-            legalName: "",
-            shortName: "",
-            externalCode: "",
-            country: "",
-            region: "",
-            city: "",
-            address: "",
-            zipCode: "",
-            email: "",
-            phoneNumber: "",
-            accreditationStatus:
-              (enumValues.accreditationStatuses.find(
-                (s) => s.value === "Approved"
-              )?.value as AccreditationStatus) ||
-              (enumValues.accreditationStatuses[0]
-                ?.value as AccreditationStatus) ||
-              ("" as AccreditationStatus),
-            tags: [],
-            contactPersonName: "",
-            vatCode: "",
-            taxCode: "",
-            active: true,
-          });
-          // Reset tags input value
-          setTagsInputValue("");
-        }
+        setFormData({
+          entityType: EntityType.Supplier,
+          roleInSupplyChain: RoleInSupplyChain.Manufacturer,
+          isSubEntity: false,
+          legalName: "",
+          shortName: "",
+          externalCode: "",
+          country: "",
+          region: "",
+          city: "",
+          address: "",
+          zipCode: "",
+          email: "",
+          phoneNumber: "",
+          accreditationStatus: AccreditationStatus.Approved,
+          tags: [],
+          contactPersonName: "",
+          vatCode: "",
+          taxCode: "",
+          active: true,
+        });
       }, 3000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create entity");
@@ -204,22 +170,7 @@ export const NewSupplyNetworkEntity = () => {
       <Container type="page">
         <Grid container rowSpacing={3} sx={{ paddingTop: 5 }}>
           <Grid item xs={12}>
-            {error ? (
-              <div
-                style={{
-                  padding: "16px",
-                  backgroundColor: "#f8d7da",
-                  border: "1px solid #f5c6cb",
-                  borderRadius: "8px",
-                  color: "#721c24",
-                }}
-              >
-                <Text variant="h6">Error loading form</Text>
-                <Text variant="body2">{error}</Text>
-              </div>
-            ) : (
-              <Text variant="h3">Loading...</Text>
-            )}
+            <Text variant="h3">Loading...</Text>
           </Grid>
         </Grid>
       </Container>
@@ -262,19 +213,10 @@ export const NewSupplyNetworkEntity = () => {
           <Grid item xs={12} md={6}>
             <Select
               label="Entity Type"
-              value={formData.entityType || ""}
-              onChange={(event, option: any) => {
-                console.log(
-                  "EntityType onChange - event:",
-                  event,
-                  "option:",
-                  option
-                );
-                console.log("event.target.value:", event?.target?.value);
-                const newValue = option?.value || event?.target?.value;
-                console.log("Using value:", newValue);
-                handleInputChange("entityType", newValue as EntityType);
-              }}
+              value={formData.entityType}
+              onChange={(event, option: any) =>
+                handleInputChange("entityType", option?.value as EntityType)
+              }
               options={enumValues.entityTypes.map((et) => ({
                 value: et.value,
                 label: et.display,
@@ -286,22 +228,13 @@ export const NewSupplyNetworkEntity = () => {
           <Grid item xs={12} md={6}>
             <Select
               label="Role in Supply Chain"
-              value={formData.roleInSupplyChain || ""}
-              onChange={(event, option: any) => {
-                console.log(
-                  "RoleInSupplyChain onChange - event:",
-                  event,
-                  "option:",
-                  option
-                );
-                console.log("event.target.value:", event?.target?.value);
-                const newValue = option?.value || event?.target?.value;
-                console.log("Using value:", newValue);
+              value={formData.roleInSupplyChain}
+              onChange={(event, option: any) =>
                 handleInputChange(
                   "roleInSupplyChain",
-                  newValue as RoleInSupplyChain
-                );
-              }}
+                  option?.value as RoleInSupplyChain
+                )
+              }
               options={enumValues.rolesInSupplyChain.map((role) => ({
                 value: role.value,
                 label: role.display,
@@ -311,26 +244,13 @@ export const NewSupplyNetworkEntity = () => {
           </Grid>
 
           <Grid item xs={12}>
-            <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                cursor: "pointer",
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={formData.isSubEntity}
-                onChange={(e) =>
-                  handleInputChange("isSubEntity", e.target.checked)
-                }
-                style={{ marginRight: "8px" }}
-              />
-              <Text variant="body1">
-                This is a sub-entity (linked to a parent)
-              </Text>
-            </label>
+            <Checkbox
+              label="This is a sub-entity (linked to a parent)"
+              checked={formData.isSubEntity}
+              onCheck={(checked: boolean) =>
+                handleInputChange("isSubEntity", checked)
+              }
+            />
           </Grid>
 
           {formData.isSubEntity && (
@@ -338,10 +258,9 @@ export const NewSupplyNetworkEntity = () => {
               <Select
                 label="Parent Entity"
                 value={formData.parentId || ""}
-                onChange={(event, option: any) => {
-                  const newValue = option?.value || event?.target?.value;
-                  handleInputChange("parentId", newValue);
-                }}
+                onChange={(event, option: any) =>
+                  handleInputChange("parentId", option?.value)
+                }
                 options={potentialParents.map((parent) => ({
                   value: parent.id,
                   label: parent.legalName,
@@ -486,14 +405,13 @@ export const NewSupplyNetworkEntity = () => {
           <Grid item xs={12} md={6}>
             <Select
               label="Accreditation Status"
-              value={formData.accreditationStatus || ""}
-              onChange={(event, option: any) => {
-                const newValue = option?.value || event?.target?.value;
+              value={formData.accreditationStatus}
+              onChange={(event, option: any) =>
                 handleInputChange(
                   "accreditationStatus",
-                  newValue as AccreditationStatus
-                );
-              }}
+                  option?.value as AccreditationStatus
+                )
+              }
               options={enumValues.accreditationStatuses.map((status) => ({
                 value: status.value,
                 label: status.display,
@@ -505,16 +423,16 @@ export const NewSupplyNetworkEntity = () => {
           <Grid item xs={12} md={6}>
             <Input
               label="Tags"
-              value={tagsInputValue}
-              onChange={(value: string) => setTagsInputValue(value)}
-              onBlur={() => {
-                // Process tags when user finishes typing
-                const processedTags = tagsInputValue
-                  .split(",")
-                  .map((tag: string) => tag.trim())
-                  .filter((tag: string) => tag);
-                handleInputChange("tags", processedTags);
-              }}
+              value={formData.tags.join(", ")}
+              onChange={(value: string) =>
+                handleInputChange(
+                  "tags",
+                  value
+                    .split(",")
+                    .map((tag: string) => tag.trim())
+                    .filter((tag: string) => tag)
+                )
+              }
               fullWidth
               helperText="Comma-separated tags (e.g., leather, Asia, highRisk)"
             />

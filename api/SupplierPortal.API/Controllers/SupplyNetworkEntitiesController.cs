@@ -4,11 +4,10 @@ using Remira.UCP.SupplierPortal.Application.SupplyNetworkEntities.Commands;
 using Remira.UCP.SupplierPortal.Application.SupplyNetworkEntities.Queries;
 using Remira.UCP.SupplierPortal.Application.SupplyNetworkEntities.DTOs;
 using Remira.UCP.SupplierPortal.Domain.Enums;
+using Asp.Versioning;
 
 namespace Remira.UCP.SupplierPortal.API.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
+[ApiVersion("2025-06-01")]
 public class SupplyNetworkEntitiesController : MediatrBaseController
 {
     /// <summary>

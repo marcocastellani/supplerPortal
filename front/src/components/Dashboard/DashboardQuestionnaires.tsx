@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
-import { Container, Grid, Text, Loader, Card } from "@remira/unifiedui";
+import { Container, Text, Loader, Card } from "@remira/unifiedui";
 import { DashboardFilters } from "./DashboardFilters";
 import { QuestionnaireGrid } from "./QuestionnaireGrid";
 import { getDashboardQuestionnaires } from "../../services/dashboardService";

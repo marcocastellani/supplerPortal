@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { 
   SupplyNetworkEntityDto, 
   CreateSupplyNetworkEntityCommand, 
@@ -7,8 +8,6 @@ import {
   EntityType,
   AccreditationStatus
 } from '../types/supplyNetworkEntities';
-
-const API_BASE_URL = '/api/supplynetworkentities';
 
 export class SupplyNetworkEntitiesService {
   
@@ -29,116 +28,90 @@ export class SupplyNetworkEntitiesService {
   } = {}): Promise<GetSupplyNetworkEntitiesQueryResult> {
     const queryParams = new URLSearchParams();
     
+    // Aggiungi la versione API richiesta
+    queryParams.append('api-version', '2025-06-01');
+    
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== '') {
         queryParams.append(key, value.toString());
       }
     });
 
-    const response = await fetch(`${API_BASE_URL}?${queryParams}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    const response = await axios.get('/api/supplynetworkentities', {
+      params: queryParams
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch supply network entities: ${response.statusText}`);
-    }
-
-    return response.json();
+    return response.data;
   }
 
   /**
    * Create a new supply network entity
    */
   static async createSupplyNetworkEntity(command: CreateSupplyNetworkEntityCommand): Promise<SupplyNetworkEntityDto> {
-    const response = await fetch(API_BASE_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(command),
+    const params = new URLSearchParams();
+    params.append('api-version', '2025-06-01');
+    
+    const response = await axios.post('/api/supplynetworkentities', command, {
+      params
     });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `Failed to create supply network entity: ${response.statusText}`);
-    }
-
-    return response.json();
+    return response.data;
   }
 
   /**
    * Get a single supply network entity by ID
    */
   static async getSupplyNetworkEntity(id: string): Promise<SupplyNetworkEntityDto> {
-    const response = await fetch(`${API_BASE_URL}/${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    const params = new URLSearchParams();
+    params.append('api-version', '2025-06-01');
+    
+    const response = await axios.get(`/api/supplynetworkentities/${id}`, {
+      params
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch supply network entity: ${response.statusText}`);
-    }
-
-    return response.json();
+    return response.data;
   }
 
   /**
    * Get enum values for dropdowns
    */
   static async getEnumValues(): Promise<EnumValues> {
-    const response = await fetch(`${API_BASE_URL}/enums`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    const params = new URLSearchParams();
+    params.append('api-version', '2025-06-01');
+    
+    const response = await axios.get('/api/supplynetworkentities/enums', {
+      params
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch enum values: ${response.statusText}`);
-    }
-
-    return response.json();
+    return response.data;
   }
 
   /**
    * Validate if external code is unique
    */
   static async validateExternalCode(externalCode: string): Promise<ValidateFieldResponse> {
-    const response = await fetch(`${API_BASE_URL}/validate/external-code/${encodeURIComponent(externalCode)}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    const params = new URLSearchParams();
+    params.append('api-version', '2025-06-01');
+    
+    const response = await axios.get(`/api/supplynetworkentities/validate/external-code/${encodeURIComponent(externalCode)}`, {
+      params
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to validate external code: ${response.statusText}`);
-    }
-
-    return response.json();
+    return response.data;
   }
 
   /**
    * Validate if VAT code is unique
    */
   static async validateVatCode(vatCode: string): Promise<ValidateFieldResponse> {
-    const response = await fetch(`${API_BASE_URL}/validate/vat-code/${encodeURIComponent(vatCode)}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    const params = new URLSearchParams();
+    params.append('api-version', '2025-06-01');
+    
+    const response = await axios.get(`/api/supplynetworkentities/validate/vat-code/${encodeURIComponent(vatCode)}`, {
+      params
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to validate VAT code: ${response.statusText}`);
-    }
-
-    return response.json();
+    return response.data;
   }
 
   /**

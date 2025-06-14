@@ -51,18 +51,18 @@ docker ps | grep azure-sql-edge
 
 ### 🌐 **API Versioning**
 
-⚠️ **VERSIONE API RICHIESTA**: `2024-10-01`
+⚠️ **VERSIONE API RICHIESTA**: `2025-06-01`
 
 **Esempi di chiamate corrette:**
 ```bash
 # Endpoint dashboard
-GET /api/dashboard/questionnaires?api-version=2024-10-01&weeksAhead=4
+GET /api/dashboard/questionnaires?api-version=2025-06-01&weeksAhead=4
 
 # Con parametri filtro
-GET /api/dashboard/questionnaires?api-version=2024-10-01&weeksAhead=4&status=Published&supplierId=guid
+GET /api/dashboard/questionnaires?api-version=2025-06-01&weeksAhead=4&status=Published&supplierId=guid
 ```
 
-**Frontend configurato correttamente** in `dashboardService.ts` con versione `2024-10-01`.
+**Frontend configurato correttamente** in `dashboardService.ts` con versione `2025-06-01`.
 
 ## 🎨 Frontend – React + TypeScript (`/front`)
 
@@ -129,7 +129,7 @@ GET /api/dashboard/questionnaires?api-version=2024-10-01&weeksAhead=4&status=Pub
 - ✅ Configurazioni EF Core con constraint ON DELETE NO ACTION (evita cicli)
 - ✅ Migration SQL Server + Azure SQL Edge setup via Docker
 - ✅ Query CQRS/MediatR con handler per GetUpcomingQuestionnaires
-- ✅ Controller API `/api/dashboard/questionnaires` con versioning 2024-10-01
+- ✅ Controller API `/api/dashboard/questionnaires` con versioning 2025-06-01
 - ✅ DatabaseSeeder con 8 questionari di test (scadenze diverse)
 - ✅ Configurazione CORS per sviluppo (localhost:4280,4281,3000)
 - ✅ 6 test di integrazione che passano (testcontainer)
@@ -143,7 +143,7 @@ GET /api/dashboard/questionnaires?api-version=2024-10-01&weeksAhead=4&status=Pub
 - ✅ Localizzazione completa IT/EN/DE
 - ✅ Gestione errori e stati di caricamento
 - ✅ Design responsive con Tailwind CSS
-- ✅ Integrazione con API versioning 2024-10-01
+- ✅ Integrazione con API versioning 2025-06-01
 
 ### ✅ Database & Infrastruttura
 - ✅ Azure SQL Edge container (docker-compose.yml)
@@ -164,7 +164,7 @@ GET /api/dashboard/questionnaires?api-version=2024-10-01&weeksAhead=4&status=Pub
 3. Avviare frontend: `cd front && npm run dev`
 4. Aprire browser: `http://localhost:4281` → Dashboard tab
 
-**Endpoint di test:** `GET http://localhost:5257/api/dashboard/questionnaires?api-version=2024-10-01&weeksAhead=4`
+**Endpoint di test:** `GET http://localhost:5257/api/dashboard/questionnaires?api-version=2025-06-01&weeksAhead=4`
 
 ---
 

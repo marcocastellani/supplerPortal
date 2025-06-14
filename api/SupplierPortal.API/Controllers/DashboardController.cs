@@ -6,7 +6,7 @@ using Remira.UCP.SupplierPortal.Application.Dashboard.Queries.GetUpcomingQuestio
 
 namespace Remira.UCP.SupplierPortal.API.Controllers;
 
-[ApiVersion("2024-10-01")]
+[ApiVersion("2025-06-01")]
 public class DashboardController : MediatrBaseController
 {
     [HttpGet("questionnaires")]
