@@ -117,6 +117,18 @@ public partial class Testing
         await context.SaveChangesAsync();
     }
 
+    internal static async Task AddRangeAsync<TEntity>(IEnumerable<TEntity> entities)
+        where TEntity : class
+    {
+        using var scope = _scopeFactory.CreateScope();
+
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        context.AddRange(entities);
+
+        await context.SaveChangesAsync();
+    }
+
     internal static async Task UpdateAsync<TEntity>(TEntity entity)
         where TEntity : class
     {
