@@ -32,6 +32,14 @@ Questo documento descrive lo scopo e l'utilizzo dei file principali nel progetto
 - **Testing**: Testare endpoint con curl prima dell'integrazione frontend
 - **Build Verification**: Sempre verificare `dotnet build` e `npm run build` prima del commit
 
+### 🧪 **Testing Patterns**
+- **Unit Testing**: Vitest + @testing-library/react per test di componenti e hook
+- **Custom Hooks Testing**: `renderHook` con `act` per testare comportamenti asincroni
+- **Mocking Strategy**: Mock API services con implementazioni sintetiche per isolamento
+- **Test Structure**: Arrange-Act-Assert pattern con setup/teardown appropriati
+- **Error Testing**: Test specifici per gestione errori con console.error capture
+- **Async Testing**: `waitFor` per operazioni asincrone, timeout configurabili
+
 ---
 
 ## 🚀 Debug & Development Tools (`/root`)
@@ -104,8 +112,18 @@ Questo documento descrive lo scopo e l'utilizzo dei file principali nel progetto
 | `src/pages/Home.tsx`                                          | ⭐ Componente principale che genera tabs dinamicamente da menu.ts con navigazione |
 | `src/pages/Dashboard.tsx`                                     | ⭐ Dashboard principale con KPI e questionari in scadenza                     |
 | `src/pages/SupplyNetwork.tsx`                                 | ⭐ Gestione entità supply network con lista e paginazione                     |
-| `src/pages/NewSupplyNetworkEntity.tsx`                        | ⭐ **FormWizard multi-step** per creazione entità con validazione avanzata e gestione errori migliorata            |
+| `src/pages/NewSupplyNetworkEntity.tsx`                        | ⭐ **FormWizard multi-step REFACTORED** - ridotto da 1067 a 348 linee (~67%), modulare e maintainable            |
 | `src/components/SupplyNetworkEntities/FormWizard.tsx`         | ⭐ **Wizard generico** con step validation e navigation                      |
+| `src/components/SupplyNetworkEntities/FormSteps/EntityTypeRoleStep.tsx` | ⭐ **NEW** Step 1 del wizard - selezione tipologia entità e ruolo supply chain |
+| `src/components/SupplyNetworkEntities/FormSteps/GeneralInfoStep.tsx` | ⭐ **NEW** Step 2 del wizard - informazioni generali (nome, codici, indirizzo) |
+| `src/components/SupplyNetworkEntities/FormSteps/StatusContactStep.tsx` | ⭐ **NEW** Step 3 del wizard - stato accreditamento e contatti              |
+| `src/components/SupplyNetworkEntities/FormSteps/ReviewSubmitStep.tsx` | ⭐ **NEW** Step 4 del wizard - review finale e submit                       |
+| `src/components/Forms/RequiredFieldsLegend.tsx`               | ⭐ **NEW** Componente riutilizzabile per legenda campi obbligatori          |
+| `src/components/Forms/ErrorMessage.tsx`                       | ⭐ **NEW** Componente riutilizzabile per messaggi di errore                 |
+| `src/components/Forms/ValidationProgress.tsx`                 | ⭐ **NEW** Componente per indicatori di validazione in corso                |
+| `src/components/Forms/FormLabel.tsx`                          | ⭐ **NEW** Componente per etichette form con indicatore obbligatorietà      |
+| `src/hooks/useErrorHandling.ts`                               | ⭐ **NEW** Hook per gestione errori avanzata con categorizzazione           |
+| `src/hooks/useFormValidation.ts`                              | ⭐ **NEW** Hook per validazione form con debounce e API integration         |
 | `src/components/SupplyNetworkEntities/EntitySelector.tsx`     | ⭐ **NEW** Typeahead selector con debounce per parent entity                 |
 | `src/services/supplyNetworkEntitiesService.ts`                | ⭐ **Service layer** con axios e API versioning (2025-06-01)                |
 | `src/types/supplyNetworkEntities.ts`                          | ⭐ **TypeScript types** per entità, enum, DTO, form data                    |
@@ -722,6 +740,82 @@ public class CreateSupplyNetworkEntityCommandValidator : AbstractValidator<Creat
 - ✅ **Field validation**: Real-time uniqueness checking
 - ✅ **Build verification**: Frontend + Backend successful
 
-**Commit finale**: `3a998be` - "STEP #7 - Complete manual supplier entry wizard with advanced error handling"
+---
 
-**Status**: 🚀 **PRODUCTION READY** - Wizard completamente funzionale end-to-end
+## 🏗️ **SUPPLIER WIZARD REFACTORING - MODULARITY & MAINTAINABILITY** ✅
+
+**Obiettivo**: Trasformare il wizard monolitico in un'architettura modulare e maintainable
+
+### 📊 **Metriche di Successo**:
+- **Riduzione codice**: Da 1,067 a 348 linee (~67% riduzione) nel file principale
+- **Componenti modulari**: 4 step + 4 UI helpers + 2 custom hooks
+- **Test coverage**: 24 test passati (hooks + componenti)
+- **Build success**: Lint + Build senza errori
+
+### 🧩 **Componenti Creati**:
+
+#### **Form Steps (Modular Step Components)**:
+- `EntityTypeRoleStep.tsx` - Step 1: Selezione tipologia entità e ruolo
+- `GeneralInfoStep.tsx` - Step 2: Informazioni generali (nome, codici, indirizzo)  
+- `StatusContactStep.tsx` - Step 3: Stato accreditamento e contatti
+- `ReviewSubmitStep.tsx` - Step 4: Review finale e submit
+
+#### **UI Helpers (Reusable Form Components)**:
+- `RequiredFieldsLegend.tsx` - Legenda campi obbligatori
+- `ErrorMessage.tsx` - Messaggi di errore consistenti
+- `ValidationProgress.tsx` - Indicatori di validazione in corso
+- `FormLabel.tsx` - Etichette form con indicatore obbligatorietà
+
+#### **Custom Hooks (Business Logic Extraction)**:
+- `useErrorHandling.ts` - Gestione errori avanzata con categorizzazione
+- `useFormValidation.ts` - Validazione form con debounce e API integration
+
+### 🧪 **Test Infrastructure**:
+- **Framework**: Vitest + @testing-library/react + jsdom
+- **Coverage**: 24 test passati per hooks e componenti UI
+- **Patterns**: Mocking, async testing, error handling, state management
+
+### 📁 **Struttura File Finale**:
+```
+front/src/
+├── components/
+│   ├── Forms/
+│   │   ├── RequiredFieldsLegend.tsx
+│   │   ├── ErrorMessage.tsx
+│   │   ├── ValidationProgress.tsx
+│   │   ├── FormLabel.tsx
+│   │   └── __tests__/ErrorMessage.test.tsx
+│   └── SupplyNetworkEntities/
+│       └── FormSteps/
+│           ├── EntityTypeRoleStep.tsx
+│           ├── GeneralInfoStep.tsx
+│           ├── StatusContactStep.tsx
+│           └── ReviewSubmitStep.tsx
+├── hooks/
+│   ├── useErrorHandling.ts
+│   ├── useFormValidation.ts
+│   └── __tests__/
+│       ├── useErrorHandling.test.ts
+│       └── useFormValidation.test.ts
+└── pages/
+    └── NewSupplyNetworkEntity.tsx (REFACTORED)
+```
+
+### 🎯 **Benefici Raggiunti**:
+- ✅ **Maintainability**: Codice organizzato in moduli single-responsibility
+- ✅ **Reusability**: Componenti UI riutilizzabili in altri form
+- ✅ **Testability**: Logica business isolata in hook testabili
+- ✅ **Readability**: File principale ridotto e focalizzato sull'orchestrazione
+- ✅ **Modularity**: Ogni step è indipendente e modificabile separatamente
+- ✅ **Consistency**: Pattern UI uniformi tramite componenti condivisi
+
+### 🔧 **Refactoring Techniques Applied**:
+1. **Extract Component**: Inline JSX → Componenti modulari per step
+2. **Extract Custom Hook**: Logica business → Hook riutilizzabili
+3. **Extract UI Helper**: Elementi UI ripetuti → Componenti condivisi
+4. **Separation of Concerns**: Presentazione vs logica business
+5. **Single Responsibility**: Un componente, una responsabilità
+
+**Commit**: `STEP #8 - Complete wizard refactoring with modular components and comprehensive testing`
+
+**Status**: 🚀 **ARCHITECTURE READY** - Wizard modulare, testato e maintainable
