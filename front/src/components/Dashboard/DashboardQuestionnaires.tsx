@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
-import { 
-  Container, 
-  Grid,
-  Text,
-  Loader,
-  Card
-} from "@remira/unifiedui";
+import { Container, Grid, Text, Loader, Card } from "@remira/unifiedui";
 import { DashboardFilters } from "./DashboardFilters";
 import { QuestionnaireGrid } from "./QuestionnaireGrid";
 import { getDashboardQuestionnaires } from "../../services/dashboardService";
@@ -44,7 +38,7 @@ export const DashboardQuestionnaires: React.FC<
         console.error("Error fetching questionnaires:", err);
         // Edge case: Connection problems
         if (axios.isAxiosError(err)) {
-          if (err.code === 'ECONNABORTED' || err.code === 'ERR_NETWORK') {
+          if (err.code === "ECONNABORTED" || err.code === "ERR_NETWORK") {
             setError(t("dashboardData.error.network"));
           } else if (err.response?.status === 401) {
             setError(t("dashboardData.error.unauthorized"));
@@ -114,7 +108,7 @@ export const DashboardQuestionnaires: React.FC<
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            minHeight: "200px"
+            minHeight: "200px",
           }}
         >
           <Loader />
@@ -126,7 +120,13 @@ export const DashboardQuestionnaires: React.FC<
   if (error) {
     return (
       <Container type="page" className={className}>
-        <Card style={{ marginTop: "16px", backgroundColor: "#ffebee", border: "1px solid #f44336" }}>
+        <Card
+          style={{
+            marginTop: "16px",
+            backgroundColor: "#ffebee",
+            border: "1px solid #f44336",
+          }}
+        >
           <Text style={{ color: "#d32f2f" }}>{error}</Text>
         </Card>
       </Container>
@@ -168,9 +168,7 @@ export const DashboardQuestionnaires: React.FC<
           <Text variant="h6" style={{ marginBottom: "8px" }}>
             {t("dashboardData.noSuppliers.title")}
           </Text>
-          <Text variant="body2">
-            {t("dashboardData.noSuppliers.subtitle")}
-          </Text>
+          <Text variant="body2">{t("dashboardData.noSuppliers.subtitle")}</Text>
         </div>
       ) : (
         // No results after filtering
@@ -184,9 +182,7 @@ export const DashboardQuestionnaires: React.FC<
           <Text variant="h6" style={{ marginBottom: "8px" }}>
             {t("dashboardData.noData.title")}
           </Text>
-          <Text variant="body2">
-            {t("dashboardData.noData.subtitle")}
-          </Text>
+          <Text variant="body2">{t("dashboardData.noData.subtitle")}</Text>
         </div>
       )}
     </div>
