@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import DashboardQuestionnaires from "../components/Dashboard/DashboardQuestionnaires";
+import { DashboardQuestionnaires } from "../components/Dashboard/DashboardQuestionnaires";
 
 const Dashboard: React.FC = () => {
   const { t } = useTranslation();

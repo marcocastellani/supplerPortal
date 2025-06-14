@@ -11,6 +11,13 @@ public enum QuestionnaireStatus
     Overdue
 }
 
+public enum QuestionnairePriority
+{
+    Low,
+    Medium,
+    High
+}
+
 public class Questionnaire : BaseAuditableEntity
 {
     public string Title { get; set; } = string.Empty;
@@ -18,6 +25,7 @@ public class Questionnaire : BaseAuditableEntity
     public string Type { get; set; } = string.Empty; // e.g. "Safety", "Quality", "Environmental"
     public DateTime DueDate { get; set; }
     public QuestionnaireStatus Status { get; set; } = QuestionnaireStatus.Draft;
+    public QuestionnairePriority Priority { get; set; } = QuestionnairePriority.Medium;
     public Guid SupplierId { get; set; }
     public Guid? AssignedUserId { get; set; }
     public Guid? AssignedAgentId { get; set; }

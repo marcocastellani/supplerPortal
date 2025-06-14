@@ -47,6 +47,7 @@ public class GetUpcomingQuestionnairesQueryHandler : IRequestHandler<GetUpcoming
                 Title = q.Title,
                 Type = q.Type,
                 Status = q.Status.ToString(),
+                Priority = q.Priority.ToString(),
                 DueDate = q.DueDate,
                 SupplierName = q.Supplier.Name,
                 SupplierCode = q.Supplier.Code,

@@ -1,15 +1,14 @@
 export interface UpcomingQuestionnaireDto {
   id: string;
   title: string;
-  description?: string;
+  type: string;
+  status: string;
+  priority: string;
+  dueDate: string;
   supplierName: string;
   supplierCode: string;
-  dueDate: string;
   daysToDeadline: number;
-  status: 'NotStarted' | 'InProgress' | 'Completed' | 'Overdue';
-  priority: 'Low' | 'Medium' | 'High' | 'Critical';
-  assignedUserName?: string;
-  assignedAgentName?: string;
+  isOverdue: boolean;
 }
 
 export interface GetUpcomingQuestionnairesResponse {

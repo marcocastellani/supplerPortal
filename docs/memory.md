@@ -1,6 +1,6 @@
 # 🧠 Memory – File Reference Map
 
-Questo documento descrive lo scopo e l’utilizzo dei file principali nel progetto. Ogni volta che viene creato un nuovo file o modulo, aggiorna questa tabella con una breve descrizione.
+Questo documento descrive lo scopo e l'utilizzo dei file principali nel progetto. Ogni volta che viene creato un nuovo file o modulo, aggiorna questa tabella con una breve descrizione.
 
 ## 📦 API – .NET Core (`/api`)
 
@@ -144,6 +144,29 @@ GET /api/dashboard/questionnaires?api-version=2024-10-01&weeksAhead=4&status=Pub
 4. Aprire browser: `http://localhost:4281` → Dashboard tab
 
 **Endpoint di test:** `GET http://localhost:5257/api/dashboard/questionnaires?api-version=2024-10-01&weeksAhead=4`
+
+---
+
+## 🎨 **UI Guidelines & Design System**
+
+⚠️ **REGOLA OBBLIGATORIA**: Tutte le UI devono utilizzare MUI/MUI-X con design system standardizzato.
+
+**File di riferimento:**
+- `docs/ui-guidelines.md` - ⭐ Linee guida complete per sviluppo UI
+- `front/src/components/Dashboard/theme.ts` - Tema MUI per dashboard
+- Componenti atomici Dashboard: `StatusChip`, `PriorityChip`, `QuestionnaireCard`
+
+**Architettura componenti completata:**
+```
+src/components/Dashboard/
+├── DashboardQuestionnaires.tsx  # ✅ Refactored con MUI
+├── DashboardFilters.tsx         # ✅ Nuovo componente MUI
+├── QuestionnaireGrid.tsx        # ✅ Griglia responsive
+├── QuestionnaireCard.tsx        # ✅ Card con Material Design
+├── StatusChip.tsx               # ✅ Chip per stati
+├── PriorityChip.tsx            # ✅ Chip per priorità
+└── theme.ts                    # ✅ Design system
+```
 
 ---
 

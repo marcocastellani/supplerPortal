@@ -6,6 +6,7 @@ public class UpcomingQuestionnaireDto
     public string Title { get; set; } = string.Empty;
     public string Type { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
+    public string Priority { get; set; } = string.Empty;
     public DateTime DueDate { get; set; }
     public string SupplierName { get; set; } = string.Empty;
     public string SupplierCode { get; set; } = string.Empty;

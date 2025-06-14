@@ -24,6 +24,9 @@ public class QuestionnaireConfiguration : IEntityTypeConfiguration<Questionnaire
         builder.Property(q => q.Status)
             .HasConversion<string>();
 
+        builder.Property(q => q.Priority)
+            .HasConversion<string>();
+
         // Relationships
         builder.HasOne(q => q.Supplier)
             .WithMany(s => s.Questionnaires)
