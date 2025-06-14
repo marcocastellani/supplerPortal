@@ -23,20 +23,31 @@ print_message() {
 cleanup() {
     print_message "🛑 Arresto dei servizi..." $RED
     
-    # Termina tutti i processi figli
-    if [[ -n $API_PID ]]; then
-        kill $API_PID 2>/dev/null || true
+    # Termina tutti i processi figli e i loro gruppi
+    if [[ -n $API_PID ]] && kill -0 $API_PID 2>/dev/null; then
+        kill -TERM $API_PID 2>/dev/null || true
+        sleep 1
+        kill -KILL $API_PID 2>/dev/null || true
         print_message "✅ API terminata" $YELLOW
     fi
     
-    if [[ -n $FRONTEND_PID ]]; then
-        kill $FRONTEND_PID 2>/dev/null || true
+    if [[ -n $FRONTEND_PID ]] && kill -0 $FRONTEND_PID 2>/dev/null; then
+        kill -TERM $FRONTEND_PID 2>/dev/null || true
+        sleep 1
+        kill -KILL $FRONTEND_PID 2>/dev/null || true
         print_message "✅ Frontend terminato" $YELLOW
     fi
     
-    # Termina eventuali processi rimasti
-    pkill -f "dotnet.*SupplierPortal.API" 2>/dev/null || true
-    pkill -f "vite.*dev" 2>/dev/null || true
+    # Termina i processi tail per i log
+    pkill -P $$ 2>/dev/null || true
+    
+    # Termina eventuali processi rimasti con più precisione
+    pkill -f "dotnet run.*SupplierPortal.API" 2>/dev/null || true
+    pkill -f "npm run dev" 2>/dev/null || true
+    pkill -f "vite.*--host" 2>/dev/null || true
+    
+    # Pulisci i file di log
+    rm -f api.log frontend.log 2>/dev/null || true
     
     print_message "🏁 Cleanup completato" $GREEN
     exit 0
@@ -97,25 +108,38 @@ print_message "📋 Premi Ctrl+C per fermare tutti i servizi" $YELLOW
 
 # Funzione per mostrare i log con prefisso colorato
 show_logs() {
-    tail -f api.log | while read line; do
+    # Salva i PID dei processi tail per poterli terminare
+    tail -f api.log 2>/dev/null | while read line; do
         echo -e "${PURPLE}[API]${NC} $line"
     done &
+    TAIL_API_PID=$!
     
-    tail -f frontend.log | while read line; do
+    tail -f frontend.log 2>/dev/null | while read line; do
         echo -e "${BLUE}[FRONTEND]${NC} $line"
     done &
+    TAIL_FRONTEND_PID=$!
     
-    wait
+    # Aspetta che uno dei processi tail termini (normalmente non succede)
+    wait $TAIL_API_PID $TAIL_FRONTEND_PID 2>/dev/null
 }
-
-# Aspetta che i file di log vengano creati
-sleep 2
 
 # Mostra i log in tempo reale
 print_message "📊 Visualizzazione log in tempo reale..." $GREEN
 echo -e "${YELLOW}=================== LOGS ===================${NC}"
 
+# Aspetta che entrambi i servizi siano completamente avviati
+print_message "⏳ Attendo che i servizi si avviino completamente..." $YELLOW
+sleep 5
+
+# Controlla che i file di log esistano
+if [[ ! -f api.log ]]; then
+    touch api.log
+fi
+if [[ ! -f frontend.log ]]; then
+    touch frontend.log
+fi
+
 show_logs
 
-# Mantieni lo script in esecuzione
-wait
+# Questo punto non dovrebbe mai essere raggiunto in condizioni normali
+print_message "🔚 Script terminato inaspettatamente" $RED
