@@ -64,16 +64,30 @@ GET /api/dashboard/questionnaires?api-version=2024-10-01&weeksAhead=4&status=Pub
 
 **Frontend configurato correttamente** in `dashboardService.ts` con versione `2024-10-01`.
 
-## 🎨 Frontend – React/TS (`/front`)
+## 🎨 Frontend – React + TypeScript (`/front`)
 
-| File/Cartella                         | Descrizione                                                                 |
-|--------------------------------------|-----------------------------------------------------------------------------|
-| `src/types/dashboard.ts`             | Tipi TypeScript per DTO dashboard e filtri                                 |
-| `src/services/dashboardService.ts`   | Servizio API per chiamate dashboard con axios                              |
-| `src/components/Dashboard/DashboardQuestionnaires.tsx` | Componente React per visualizzazione questionari in scadenza |
-| `src/pages/Dashboard.tsx`            | Pagina dashboard principale con layout e widget                            |
-| `src/pages/Home.tsx`                 | **MENU PRINCIPALE**: Contiene array `tabs` per la navigazione              |
-| `public/locales/*/translation.json`  | Traduzioni complete IT/EN/DE per interfaccia dashboard                     |
+| File/Cartella                                                   | Descrizione                                                                 |
+|----------------------------------------------------------------|-----------------------------------------------------------------------------|
+| `src/configs/menu.ts`                                         | ⭐ Configurazione menu applicazione con struttura gerarchica                |
+| `src/pages/Home.tsx`                                          | ⭐ Componente principale che genera tabs dinamicamente da menu.ts con navigazione |
+| `src/pages/Dashboard.tsx`                                     | Dashboard principale con KPI e questionari in scadenza                     |
+| `src/pages/SupplyNetwork.tsx`                                 | 📄 Placeholder - Gestione entità supply network                            |
+| `src/pages/NewSupplyNetworkEntity.tsx`                        | 📄 Placeholder - Creazione nuove entità supply network                     |
+| `src/pages/QuestionnaireTemplates.tsx`                        | 📄 Placeholder - Gestione template questionari                             |
+| `src/pages/QuestionnaireAssignments.tsx`                      | 📄 Placeholder - Gestione compilazioni questionari                         |
+| `src/pages/KPIDashboard.tsx`                                  | 📄 Placeholder - Cruscotto KPI                                             |
+| `src/pages/KPIThresholds.tsx`                                 | 📄 Placeholder - Gestione soglie KPI                                       |
+| `src/pages/Audits.tsx`                                        | 📄 Placeholder - Audit e ispezioni                                         |
+| `src/pages/Documents.tsx`                                     | 📄 Placeholder - Gestione documenti                                        |
+| `src/pages/Taxonomies.tsx`                                    | 📄 Placeholder - Tag e tassonomie                                          |
+| `src/pages/Roles.tsx`                                         | 📄 Placeholder - Ruoli e permessi                                          |
+
+### 🔧 **Architettura Frontend**
+
+- **Menu dinamico**: I tabs di navigazione vengono generati automaticamente dalla configurazione in `menu.ts`
+- **Componenti modulari**: Ogni sezione dell'applicazione ha il proprio componente React
+- **Navigazione integrata**: Utilizzo di `react-router-dom` per la navigazione tra sezioni
+- **Placeholder components**: Componenti di base pronti per lo sviluppo delle funzionalità specifiche
 
 ## ⚙️ Utility / Infrastruttura
 
