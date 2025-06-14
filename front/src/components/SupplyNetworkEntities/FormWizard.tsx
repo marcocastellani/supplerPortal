@@ -9,11 +9,13 @@ import {
 interface WizardStepProps {
   title: string;
   children: React.ReactNode;
+  isValid?: boolean; // Add validation prop
 }
 
 interface FormWizardProps {
   children: React.ReactElement<WizardStepProps>[];
   onComplete: () => void;
+  isLoading?: boolean; // Add loading state
 }
 
 export const WizardStep: React.FC<WizardStepProps> = ({ children }) => {
@@ -22,12 +24,14 @@ export const WizardStep: React.FC<WizardStepProps> = ({ children }) => {
 
 export const FormWizard: React.FC<FormWizardProps> = ({ 
   children,
-  onComplete
+  onComplete,
+  isLoading = false
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
   
   const steps = React.Children.map(children, (child, index) => ({
     label: child.props.title,
+    isValid: child.props.isValid !== false, // Default to true if not specified
     content: (
       <div key={index}>
         {child.props.children}
@@ -91,16 +95,20 @@ export const FormWizard: React.FC<FormWizardProps> = ({
                   marginTop: '32px'
                 }}>
                   <div>
-                    {currentStep > 0 && steps[currentStep].handleStepBack && (
+                    {currentStep > 0 && (
                       <button
                         type="button"
                         onClick={steps[currentStep].handleStepBack}
+                        disabled={isLoading}
                         style={{
-                          padding: '8px 16px',
+                          padding: '12px 24px',
                           backgroundColor: 'transparent',
                           border: '1px solid #ccc',
-                          borderRadius: '4px',
-                          cursor: 'pointer'
+                          borderRadius: '8px',
+                          cursor: isLoading ? 'not-allowed' : 'pointer',
+                          fontSize: '14px',
+                          fontWeight: '500',
+                          opacity: isLoading ? 0.6 : 1
                         }}
                       >
                         {steps[currentStep].buttonBackLabel || 'Back'}
@@ -108,22 +116,32 @@ export const FormWizard: React.FC<FormWizardProps> = ({
                     )}
                   </div>
                   <div>
-                    {steps[currentStep].handleStepForward && (
-                      <button
-                        type="button"
-                        onClick={steps[currentStep].handleStepForward}
-                        style={{
-                          padding: '8px 16px',
-                          backgroundColor: '#1976d2',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '4px',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        {steps[currentStep].buttonNextLabel || 'Next'}
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      onClick={steps[currentStep].handleStepForward}
+                      disabled={isLoading || !steps[currentStep].isValid}
+                      style={{
+                        padding: '12px 24px',
+                        backgroundColor: (isLoading || !steps[currentStep].isValid) ? '#ccc' : '#1976d2',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        cursor: (isLoading || !steps[currentStep].isValid) ? 'not-allowed' : 'pointer',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        opacity: (isLoading || !steps[currentStep].isValid) ? 0.6 : 1,
+                        position: 'relative'
+                      }}
+                    >
+                      {isLoading && currentStep === children.length - 1 ? (
+                        <span>
+                          <span style={{ marginRight: '8px' }}>⏳</span>
+                          Creating...
+                        </span>
+                      ) : (
+                        steps[currentStep].buttonNextLabel || 'Next'
+                      )}
+                    </button>
                   </div>
                 </div>
               </div>

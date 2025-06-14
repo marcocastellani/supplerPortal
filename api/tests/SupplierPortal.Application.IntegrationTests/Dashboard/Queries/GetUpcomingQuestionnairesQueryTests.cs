@@ -25,20 +25,48 @@ public class GetUpcomingQuestionnairesQueryTests : BaseTestFixture
             IsActive = true
         };
         
-        var supplier1 = new SupplyNetworkEntities
+        var supplier1 = new Domain.Entities.SupplyNetworkEntities
         {
-            Name = "Supplier 1",
-            Code = "SUP001",
+            LegalName = "Supplier 1",
+            ExternalCode = "SUP001",
             Email = "supplier1@example.com",
-            IsActive = true
+            Active = true,
+            EntityType = Domain.Enums.EntityType.Supplier,
+            RoleInSupplyChain = Domain.Enums.RoleInSupplyChain.Manufacturer,
+            AccreditationStatus = Domain.Enums.AccreditationStatus.Approved,
+            Country = "US",
+            ShortName = "Supplier 1",
+            VatCode = "",
+            TaxCode = "",
+            Region = "",
+            City = "",
+            Address = "",
+            ZipCode = "",
+            PhoneNumber = "",
+            ContactPersonName = "",
+            Tags = Array.Empty<string>()
         };
         
-        var supplier2 = new SupplyNetworkEntities
+        var supplier2 = new Domain.Entities.SupplyNetworkEntities
         {
-            Name = "Supplier 2", 
-            Code = "SUP002",
+            LegalName = "Supplier 2", 
+            ExternalCode = "SUP002",
             Email = "supplier2@example.com",
-            IsActive = true
+            Active = true,
+            EntityType = Domain.Enums.EntityType.Supplier,
+            RoleInSupplyChain = Domain.Enums.RoleInSupplyChain.Manufacturer,
+            AccreditationStatus = Domain.Enums.AccreditationStatus.Approved,
+            Country = "US",
+            ShortName = "Supplier 2",
+            VatCode = "",
+            TaxCode = "",
+            Region = "",
+            City = "",
+            Address = "",
+            ZipCode = "",
+            PhoneNumber = "",
+            ContactPersonName = "",
+            Tags = Array.Empty<string>()
         };
 
         await AddAsync(user);
@@ -107,12 +135,26 @@ public class GetUpcomingQuestionnairesQueryTests : BaseTestFixture
             IsActive = true
         };
         
-        var supplier = new SupplyNetworkEntities
+        var supplier = new Domain.Entities.SupplyNetworkEntities
         {
-            Name = "Test Supplier",
-            Code = "TEST001",
+            LegalName = "Test Supplier",
+            ExternalCode = "TEST001",
             Email = "test@supplier.com",
-            IsActive = true
+            Active = true,
+            EntityType = Domain.Enums.EntityType.Supplier,
+            RoleInSupplyChain = Domain.Enums.RoleInSupplyChain.Manufacturer,
+            AccreditationStatus = Domain.Enums.AccreditationStatus.Approved,
+            Country = "US",
+            ShortName = "Test Supplier",
+            VatCode = "",
+            TaxCode = "",
+            Region = "",
+            City = "",
+            Address = "",
+            ZipCode = "",
+            PhoneNumber = "",
+            ContactPersonName = "",
+            Tags = Array.Empty<string>()
         };
 
         await AddAsync(user);
@@ -180,12 +222,26 @@ public class GetUpcomingQuestionnairesQueryTests : BaseTestFixture
             IsActive = true
         };
         
-        var supplier = new SupplyNetworkEntities
+        var supplier = new Domain.Entities.SupplyNetworkEntities
         {
-            Name = "Test Supplier",
-            Code = "TEST002",
+            LegalName = "Test Supplier",
+            ExternalCode = "TEST002",
             Email = "test2@supplier.com",
-            IsActive = true
+            Active = true,
+            EntityType = Domain.Enums.EntityType.Supplier,
+            RoleInSupplyChain = Domain.Enums.RoleInSupplyChain.Manufacturer,
+            AccreditationStatus = Domain.Enums.AccreditationStatus.Approved,
+            Country = "US",
+            ShortName = "Test Supplier",
+            VatCode = "",
+            TaxCode = "",
+            Region = "",
+            City = "",
+            Address = "",
+            ZipCode = "",
+            PhoneNumber = "",
+            ContactPersonName = "",
+            Tags = Array.Empty<string>()
         };
 
         await AddAsync(user);
@@ -253,12 +309,26 @@ public class GetUpcomingQuestionnairesQueryTests : BaseTestFixture
             IsActive = true
         };
         
-        var supplier = new SupplyNetworkEntities
+        var supplier = new Domain.Entities.SupplyNetworkEntities
         {
-            Name = "Test Supplier",
-            Code = "TEST003",
+            LegalName = "Test Supplier",
+            ExternalCode = "TEST003",
             Email = "test3@supplier.com",
-            IsActive = true
+            Active = true,
+            EntityType = Domain.Enums.EntityType.Supplier,
+            RoleInSupplyChain = Domain.Enums.RoleInSupplyChain.Manufacturer,
+            AccreditationStatus = Domain.Enums.AccreditationStatus.Approved,
+            Country = "US",
+            ShortName = "Test Supplier",
+            VatCode = "",
+            TaxCode = "",
+            Region = "",
+            City = "",
+            Address = "",
+            ZipCode = "",
+            PhoneNumber = "",
+            ContactPersonName = "",
+            Tags = Array.Empty<string>()
         };
 
         await AddAsync(user);

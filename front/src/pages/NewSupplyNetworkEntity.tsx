@@ -4,10 +4,7 @@ import {
   Grid, 
   Text, 
   Input, 
-  Select, 
-  Checkbox, 
-  Button,
-  Alert
+  Select
 } from '@remira/unifiedui';
 import { FormWizard, WizardStep } from '../components/SupplyNetworkEntities/FormWizard';
 import { SupplyNetworkEntitiesService } from '../services/supplyNetworkEntitiesService';
@@ -49,6 +46,20 @@ export const NewSupplyNetworkEntity = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
+  // Step validation functions
+  const validateStep1 = () => {
+    return !!(formData.entityType && formData.roleInSupplyChain && 
+      (!formData.isSubEntity || formData.parentId));
+  };
+
+  const validateStep2 = () => {
+    return !!(formData.legalName && formData.country);
+  };
+
+  const validateStep3 = () => {
+    return !!(formData.accreditationStatus);
+  };
+
   useEffect(() => {
     const loadEnumValues = async () => {
       try {
@@ -63,8 +74,8 @@ export const NewSupplyNetworkEntity = () => {
       try {
         const parents = await SupplyNetworkEntitiesService.getPotentialParents();
         setPotentialParents(parents);
-      } catch (err) {
-        console.warn('Failed to load potential parents:', err);
+      } catch (error) {
+        console.warn('Failed to load potential parents:', error);
       }
     };
 
@@ -77,6 +88,7 @@ export const NewSupplyNetworkEntity = () => {
       ...prev,
       [field]: value
     }));
+    setError(null); // Clear errors when user starts typing
   };
 
   const handleSubmit = async () => {
@@ -158,9 +170,15 @@ export const NewSupplyNetworkEntity = () => {
       <Container type="page">
         <Grid container rowSpacing={3} sx={{ paddingTop: 5 }}>
           <Grid item xs={12}>
-            <Alert severity="success">
+            <div style={{ 
+              padding: '16px', 
+              backgroundColor: '#d4edda', 
+              border: '1px solid #c3e6cb', 
+              borderRadius: '8px',
+              color: '#155724'
+            }}>
               Supply Network Entity created successfully!
-            </Alert>
+            </div>
           </Grid>
         </Grid>
       </Container>
@@ -168,9 +186,9 @@ export const NewSupplyNetworkEntity = () => {
   }
 
   return (
-    <FormWizard onComplete={handleSubmit}>
+    <FormWizard onComplete={handleSubmit} isLoading={isLoading}>
       {/* Step 1: Entity Type & Role */}
-      <WizardStep title="Entity Type & Role">
+      <WizardStep title="Entity Type & Role" isValid={validateStep1()}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Text variant="h6" sx={{ mb: 2 }}>Entity Configuration</Text>
@@ -180,13 +198,12 @@ export const NewSupplyNetworkEntity = () => {
             <Select
               label="Entity Type"
               value={formData.entityType}
-              onChange={(e) => handleInputChange('entityType', e.target.value as EntityType)}
+              onChange={(event, option: any) => handleInputChange('entityType', option?.value as EntityType)}
               options={enumValues.entityTypes.map(et => ({ 
                 value: et.value, 
                 label: et.display 
               }))}
               fullWidth
-              required
             />
           </Grid>
 
@@ -194,22 +211,25 @@ export const NewSupplyNetworkEntity = () => {
             <Select
               label="Role in Supply Chain"
               value={formData.roleInSupplyChain}
-              onChange={(e) => handleInputChange('roleInSupplyChain', e.target.value as RoleInSupplyChain)}
+              onChange={(event, option: any) => handleInputChange('roleInSupplyChain', option?.value as RoleInSupplyChain)}
               options={enumValues.rolesInSupplyChain.map(role => ({ 
                 value: role.value, 
                 label: role.display 
               }))}
               fullWidth
-              required
             />
           </Grid>
 
           <Grid item xs={12}>
-            <Checkbox
-              label="This is a sub-entity (linked to a parent)"
-              checked={formData.isSubEntity}
-              onChange={(e) => handleInputChange('isSubEntity', e.target.checked)}
-            />
+            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={formData.isSubEntity}
+                onChange={(e) => handleInputChange('isSubEntity', e.target.checked)}
+                style={{ marginRight: '8px' }}
+              />
+              <Text variant="body1">This is a sub-entity (linked to a parent)</Text>
+            </label>
           </Grid>
 
           {formData.isSubEntity && (
@@ -217,13 +237,12 @@ export const NewSupplyNetworkEntity = () => {
               <Select
                 label="Parent Entity"
                 value={formData.parentId || ''}
-                onChange={(e) => handleInputChange('parentId', e.target.value)}
+                onChange={(event, option: any) => handleInputChange('parentId', option?.value)}
                 options={potentialParents.map(parent => ({ 
                   value: parent.id, 
                   label: parent.legalName 
                 }))}
                 fullWidth
-                required
               />
             </Grid>
           )}
@@ -231,7 +250,7 @@ export const NewSupplyNetworkEntity = () => {
       </WizardStep>
 
       {/* Step 2: General Information */}
-      <WizardStep title="General Information">
+      <WizardStep title="General Information" isValid={validateStep2()}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Text variant="h6" sx={{ mb: 2 }}>Basic Information</Text>
@@ -241,9 +260,8 @@ export const NewSupplyNetworkEntity = () => {
             <Input
               label="Legal Name"
               value={formData.legalName}
-              onChange={(e) => handleInputChange('legalName', e.target.value)}
+              onChange={(value: string) => handleInputChange('legalName', value)}
               fullWidth
-              required
               helperText="Official registered name"
             />
           </Grid>
@@ -252,7 +270,7 @@ export const NewSupplyNetworkEntity = () => {
             <Input
               label="Short Name"
               value={formData.shortName}
-              onChange={(e) => handleInputChange('shortName', e.target.value)}
+              onChange={(value: string) => handleInputChange('shortName', value)}
               fullWidth
               helperText="Display name"
             />
@@ -262,7 +280,7 @@ export const NewSupplyNetworkEntity = () => {
             <Input
               label="External Code"
               value={formData.externalCode}
-              onChange={(e) => handleInputChange('externalCode', e.target.value)}
+              onChange={(value: string) => handleInputChange('externalCode', value)}
               fullWidth
               helperText="ERP, PLM reference code"
             />
@@ -271,9 +289,8 @@ export const NewSupplyNetworkEntity = () => {
           <Grid item xs={12} md={6}>
             <Input
               label="Email"
-              type="email"
               value={formData.email}
-              onChange={(e) => handleInputChange('email', e.target.value)}
+              onChange={(value: string) => handleInputChange('email', value)}
               fullWidth
             />
           </Grid>
@@ -286,7 +303,7 @@ export const NewSupplyNetworkEntity = () => {
             <Input
               label="Country"
               value={formData.country}
-              onChange={(e) => handleInputChange('country', e.target.value)}
+              onChange={(value: string) => handleInputChange('country', value)}
               fullWidth
               helperText="ISO code"
             />
@@ -296,7 +313,7 @@ export const NewSupplyNetworkEntity = () => {
             <Input
               label="Region"
               value={formData.region}
-              onChange={(e) => handleInputChange('region', e.target.value)}
+              onChange={(value: string) => handleInputChange('region', value)}
               fullWidth
             />
           </Grid>
@@ -305,7 +322,7 @@ export const NewSupplyNetworkEntity = () => {
             <Input
               label="City"
               value={formData.city}
-              onChange={(e) => handleInputChange('city', e.target.value)}
+              onChange={(value: string) => handleInputChange('city', value)}
               fullWidth
             />
           </Grid>
@@ -314,7 +331,7 @@ export const NewSupplyNetworkEntity = () => {
             <Input
               label="ZIP Code"
               value={formData.zipCode}
-              onChange={(e) => handleInputChange('zipCode', e.target.value)}
+              onChange={(value: string) => handleInputChange('zipCode', value)}
               fullWidth
             />
           </Grid>
@@ -323,7 +340,7 @@ export const NewSupplyNetworkEntity = () => {
             <Input
               label="Address"
               value={formData.address}
-              onChange={(e) => handleInputChange('address', e.target.value)}
+              onChange={(value: string) => handleInputChange('address', value)}
               fullWidth
               multiline
               rows={2}
@@ -334,7 +351,7 @@ export const NewSupplyNetworkEntity = () => {
             <Input
               label="Phone Number"
               value={formData.phoneNumber}
-              onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
+              onChange={(value: string) => handleInputChange('phoneNumber', value)}
               fullWidth
             />
           </Grid>
@@ -342,7 +359,7 @@ export const NewSupplyNetworkEntity = () => {
       </WizardStep>
 
       {/* Step 3: Status & Contact */}
-      <WizardStep title="Status & Contact">
+      <WizardStep title="Status & Contact" isValid={validateStep3()}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Text variant="h6" sx={{ mb: 2 }}>Status Information</Text>
@@ -352,7 +369,7 @@ export const NewSupplyNetworkEntity = () => {
             <Select
               label="Accreditation Status"
               value={formData.accreditationStatus}
-              onChange={(e) => handleInputChange('accreditationStatus', e.target.value as AccreditationStatus)}
+              onChange={(event, option: any) => handleInputChange('accreditationStatus', option?.value as AccreditationStatus)}
               options={enumValues.accreditationStatuses.map(status => ({ 
                 value: status.value, 
                 label: status.display 
@@ -365,7 +382,7 @@ export const NewSupplyNetworkEntity = () => {
             <Input
               label="Tags"
               value={formData.tags.join(', ')}
-              onChange={(e) => handleInputChange('tags', e.target.value.split(',').map(tag => tag.trim()).filter(tag => tag))}
+              onChange={(value: string) => handleInputChange('tags', value.split(',').map((tag: string) => tag.trim()).filter((tag: string) => tag))}
               fullWidth
               helperText="Comma-separated tags (e.g., leather, Asia, highRisk)"
             />
@@ -376,25 +393,30 @@ export const NewSupplyNetworkEntity = () => {
               <Input
                 label="Contact Person Name"
                 value={formData.contactPersonName}
-                onChange={(e) => handleInputChange('contactPersonName', e.target.value)}
+                onChange={(value: string) => handleInputChange('contactPersonName', value)}
                 fullWidth
-                required
               />
             </Grid>
           )}
 
           {error && (
             <Grid item xs={12}>
-              <Alert severity="error">
+              <div style={{ 
+                padding: '16px', 
+                backgroundColor: '#f8d7da', 
+                border: '1px solid #f5c6cb', 
+                borderRadius: '8px',
+                color: '#721c24'
+              }}>
                 {error}
-              </Alert>
+              </div>
             </Grid>
           )}
         </Grid>
       </WizardStep>
 
       {/* Step 4: Review & Submit */}
-      <WizardStep title="Review & Submit">
+      <WizardStep title="Review & Submit" isValid={true}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Text variant="h6" sx={{ mb: 2 }}>Review Information</Text>
@@ -471,9 +493,15 @@ export const NewSupplyNetworkEntity = () => {
 
           {isLoading && (
             <Grid item xs={12}>
-              <Alert severity="info">
+              <div style={{ 
+                padding: '16px', 
+                backgroundColor: '#d1ecf1', 
+                border: '1px solid #bee5eb', 
+                borderRadius: '8px',
+                color: '#0c5460'
+              }}>
                 Creating entity...
-              </Alert>
+              </div>
             </Grid>
           )}
         </Grid>
