@@ -659,7 +659,7 @@ interface WidgetContainerProps {
 
 const WidgetContainer = ({ oidcConfig, qclient, children, title, row, col, colSpan } : WidgetContainerProps) => {
   useEffect(() => {
-    setAxiosDefaultBaseUrl('https://test-api.remira.com');
+    setAxiosDefaultBaseUrl('hhttp://localhost:5257');
   }, [])
 
   return (

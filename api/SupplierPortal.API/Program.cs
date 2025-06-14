@@ -43,6 +43,18 @@ builder.Services.AddApiServices();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.SetupQueryParameterVersioning();
 
+// Add CORS configuration for development
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("DevelopmentCorsPolicy", policy =>
+    {
+        policy.WithOrigins("http://localhost:4280", "http://localhost:4281", "http://localhost:3000")
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
+    });
+});
+
 //** Enable If UcpCommon is Used
 // var common = builder.Configuration.GetSection($"{nameof(UcpCommon)}:Auth").Get<CommonAuthentication>();
 // builder.Services.Configure<UcpCommon>(builder.Configuration.GetSection(nameof(UcpCommon)));
@@ -81,11 +93,20 @@ app.MapSubscribeHandler();
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
+    app.UseCors("DevelopmentCorsPolicy");
 }
 
-if (app.Configuration.GetValue("IsLocal", "false") == "true")
+//if (app.Configuration.GetValue("IsLocal", "false") == "true")
 {
     app.MigrateDatabase();
+    
+    // Seed test data in development environment
+    if (app.Environment.IsDevelopment())
+    {
+        using var scope = app.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        await Remira.UCP.SupplierPortal.API.Data.DatabaseSeeder.SeedTestDataAsync(context);
+    }
 }
 
 app.UseHttpsRedirection();

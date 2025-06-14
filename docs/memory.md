@@ -10,13 +10,52 @@ Questo documento descrive lo scopo e l’utilizzo dei file principali nel proget
 | `SupplierPortal.Domain/Entities/Supplier.cs`                      | Entità dominio Supplier con questionari e utenti assegnati                 |
 | `SupplierPortal.Domain/Entities/UserSupplier.cs`                  | Tabella di relazione User-Supplier con ruolo                               |
 | `SupplierPortal.Domain/Entities/AgentAssignment.cs`               | Assegnazione di agent a fornitori per specifici utenti                     |
-| `SupplierPortal.Domain/Entities/Questionnaire.cs`                 | Entità questionario con scadenze e assegnazioni                            |
-| `SupplierPortal.Domain/Entities/Remediation.cs`                   | Entità remediation collegata ai questionari                                |
-| `SupplierPortal.Infrastructure/Configurations/*Configuration.cs`   | Configurazioni EF Core per tutte le entità con constraint ottimizzati     |
+| `SupplierPortal.Domain/Entities/Questionnaire.cs`                 | Entità questionario con scadenze e assegnazioni + enum QuestionnaireStatus |
+| `SupplierPortal.Domain/Entities/Remediation.cs`                   | Entità remediation collegata ai questionari + enum RemediationStatus       |
+| `SupplierPortal.Infrastructure/Configurations/*Configuration.cs`   | Configurazioni EF Core per tutte le entità con constraint ON DELETE NO ACTION |
+| `SupplierPortal.Infrastructure/Migrations/20250613225731_InitialCreate.cs` | Migrazione EF Core applicata al database Azure SQL Edge        |
 | `SupplierPortal.Application/Dashboard/Queries/GetUpcomingQuestionnaires/*` | Query CQRS/MediatR per recuperare questionari in scadenza    |
 | `SupplierPortal.Application/Common/Extensions/DateTimeExtensions.cs` | Extension methods per calcoli date e scadenze                           |
-| `SupplierPortal.API/Controllers/DashboardController.cs`           | Controller API per esporre endpoint dashboard                               |
-| `tests/SupplierPortal.Application.IntegrationTests/Dashboard/*`    | Test di integrazione completi con testcontainer SQL Server                |
+| `SupplierPortal.API/Controllers/DashboardController.cs`           | Controller API per esporre endpoint dashboard con versioning                |
+| `SupplierPortal.API/Data/DatabaseSeeder.cs`                       | ⭐ Seeder per dati di test (8 questionari, 4 users, 3 suppliers)          |
+| `SupplierPortal.API/Program.cs`                                   | ⭐ Configurazione CORS per sviluppo + chiamata al DatabaseSeeder            |
+| `tests/SupplierPortal.Application.IntegrationTests/Dashboard/*`    | Test di integrazione completi con testcontainer SQL Server                 |
+
+### 🗄️ **Database Setup - Azure SQL Edge via Docker**
+
+| File                              | Descrizione                                                                 |
+|-----------------------------------|-----------------------------------------------------------------------------|
+| `SupplierPortal.API/docker-compose.yml` | ⭐ Container Azure SQL Edge (localhost:1433, password: SupplierPortal123!) |
+| `SupplierPortal.API/start-db.sh`        | ⭐ Script per avviare database container                                    |
+| `SupplierPortal.API/seed-data.sql`      | Script SQL per dati di test (alternativa al DatabaseSeeder C#)            |
+| `appsettings.Development.json`          | ⭐ Connection string per Azure SQL Edge configurata                        |
+
+**Comandi utili:**
+```bash
+# Avvio database
+cd api/SupplierPortal.API && ./start-db.sh
+
+# Applicazione migrazioni
+cd api && dotnet ef database update --project SupplierPortal.Infrastructure --startup-project SupplierPortal.API
+
+# Verifica container
+docker ps | grep azure-sql-edge
+```
+
+### 🌐 **API Versioning**
+
+⚠️ **VERSIONE API RICHIESTA**: `2024-10-01`
+
+**Esempi di chiamate corrette:**
+```bash
+# Endpoint dashboard
+GET /api/dashboard/questionnaires?api-version=2024-10-01&weeksAhead=4
+
+# Con parametri filtro
+GET /api/dashboard/questionnaires?api-version=2024-10-01&weeksAhead=4&status=Published&supplierId=guid
+```
+
+**Frontend configurato correttamente** in `dashboardService.ts` con versione `2024-10-01`.
 
 ## 🎨 Frontend – React/TS (`/front`)
 
@@ -66,10 +105,12 @@ Questo documento descrive lo scopo e l’utilizzo dei file principali nel proget
 
 ### ✅ Backend Implementato
 - ✅ Entità dominio complete con Guid come PK
-- ✅ Configurazioni EF Core con constraint ottimizzati (NoAction per evitare cicli)
-- ✅ Migration SQL Server funzionante
+- ✅ Configurazioni EF Core con constraint ON DELETE NO ACTION (evita cicli)
+- ✅ Migration SQL Server + Azure SQL Edge setup via Docker
 - ✅ Query CQRS/MediatR con handler per GetUpcomingQuestionnaires
-- ✅ Controller API `/api/dashboard/questionnaires` con filtri
+- ✅ Controller API `/api/dashboard/questionnaires` con versioning 2024-10-01
+- ✅ DatabaseSeeder con 8 questionari di test (scadenze diverse)
+- ✅ Configurazione CORS per sviluppo (localhost:4280,4281,3000)
 - ✅ 6 test di integrazione che passano (testcontainer)
 
 ### ✅ Frontend Implementato
@@ -81,11 +122,28 @@ Questo documento descrive lo scopo e l’utilizzo dei file principali nel proget
 - ✅ Localizzazione completa IT/EN/DE
 - ✅ Gestione errori e stati di caricamento
 - ✅ Design responsive con Tailwind CSS
+- ✅ Integrazione con API versioning 2024-10-01
+
+### ✅ Database & Infrastruttura
+- ✅ Azure SQL Edge container (docker-compose.yml)
+- ✅ Script di avvio database (start-db.sh)
+- ✅ Migrazioni EF Core applicate
+- ✅ Dati di test inseriti automaticamente al primo avvio
+- ✅ Connection string configurata per sviluppo locale
 
 ### 🔧 Stack Tecnologico Validato
-- **Backend**: .NET Core 8, EF Core, MediatR, SQL Server, NUnit, Testcontainers
+- **Backend**: .NET Core 8, EF Core, MediatR, Azure SQL Edge, NUnit, Testcontainers
 - **Frontend**: React 18, TypeScript, Vite, TanStack Query, i18next, Tailwind CSS
-- **Integrazione**: Axios con autenticazione OIDC, routing configurato
+- **Database**: Azure SQL Edge via Docker Compose (porta 1433)
+- **Integrazione**: Axios con CORS, API versioning, autenticazione OIDC
+
+### 🚀 **Come testare end-to-end**
+1. Avviare database: `cd api/SupplierPortal.API && ./start-db.sh`
+2. Avviare backend: `cd api && dotnet run --project SupplierPortal.API`
+3. Avviare frontend: `cd front && npm run dev`
+4. Aprire browser: `http://localhost:4281` → Dashboard tab
+
+**Endpoint di test:** `GET http://localhost:5257/api/dashboard/questionnaires?api-version=2024-10-01&weeksAhead=4`
 
 ---
 

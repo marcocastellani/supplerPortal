@@ -1,20 +1,14 @@
+using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Remira.UCP.SupplierPortal.API.Controllers.Base;
 using Remira.UCP.SupplierPortal.Application.Dashboard.Queries.GetUpcomingQuestionnaires;
 
 namespace Remira.UCP.SupplierPortal.API.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class DashboardController : ControllerBase
+[ApiVersion("2024-10-01")]
+public class DashboardController : MediatrBaseController
 {
-    private readonly ISender _mediator;
-
-    public DashboardController(ISender mediator)
-    {
-        _mediator = mediator;
-    }
-
     [HttpGet("questionnaires")]
     public async Task<ActionResult<List<UpcomingQuestionnaireDto>>> GetUpcomingQuestionnaires(
         [FromQuery] Guid? userId = null,
@@ -28,7 +22,7 @@ public class DashboardController : ControllerBase
             WeeksAhead = weeksAhead
         };
 
-        var result = await _mediator.Send(query);
+        var result = await Mediator.Send(query);
         return Ok(result);
     }
 }

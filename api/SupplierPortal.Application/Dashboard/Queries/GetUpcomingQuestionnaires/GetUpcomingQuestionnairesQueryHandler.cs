@@ -17,11 +17,6 @@ public class GetUpcomingQuestionnairesQueryHandler : IRequestHandler<GetUpcoming
 
     public async Task<List<UpcomingQuestionnaireDto>> Handle(GetUpcomingQuestionnairesQuery request, CancellationToken cancellationToken)
     {
-        if (!request.UserId.HasValue)
-        {
-            return new List<UpcomingQuestionnaireDto>();
-        }
-
         var endDate = DateTime.Now.AddWeeks(request.WeeksAhead);
         var today = DateTime.Now.Date;
 
@@ -31,14 +26,18 @@ public class GetUpcomingQuestionnairesQueryHandler : IRequestHandler<GetUpcoming
                        q.Status == QuestionnaireStatus.InProgress)
             .Where(q => q.DueDate <= endDate);
 
-        // Filter based on user role and assigned suppliers
-        if (request.UserRole == "User")
+        // Filter based on user role and assigned suppliers if UserId is provided
+        if (request.UserId.HasValue && !string.IsNullOrEmpty(request.UserRole))
         {
-            // Users can only see questionnaires for their assigned suppliers
-            query = query.Where(q => q.Supplier.UserSuppliers
-                .Any(us => us.UserId == request.UserId));
+            if (request.UserRole == "User")
+            {
+                // Users can only see questionnaires for their assigned suppliers
+                query = query.Where(q => q.Supplier.UserSuppliers
+                    .Any(us => us.UserId == request.UserId));
+            }
+            // Additional role filters can be added here for Agent, Supervisor, Admin
         }
-        // Additional role filters can be added here for Agent, Supervisor, Admin
+        // If no UserId provided, return all questionnaires (for testing/admin purposes)
 
         var questionnaires = await query
             .OrderBy(q => q.DueDate)

@@ -6,6 +6,9 @@ export const dashboardApi = {
   getUpcomingQuestionnaires: async (filters: DashboardFilters = {}): Promise<GetUpcomingQuestionnairesResponse> => {
     const params = new URLSearchParams();
     
+    // Aggiungo la versione API richiesta
+    params.append('api-version', '2024-10-01');
+    
     if (filters.supplierId) {
       params.append('supplierId', filters.supplierId);
     }

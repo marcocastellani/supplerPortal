@@ -11,7 +11,7 @@ import bgLight from "@remira/unifiedui/dist/assets/shared/REMIRA_bg_light.png";
 import { useAuthentication } from "./hooks/useAuthentication";
 
 function App() {
-  setAxiosDefaultBaseUrl("https://test-api.remira.com");
+  setAxiosDefaultBaseUrl("http://localhost:5257");
   const isAuthenticated = useAuthentication();
   const { mode: theme } = useThemeContext();
 
