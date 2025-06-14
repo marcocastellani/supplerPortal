@@ -54,6 +54,92 @@
       }
     }
   },
+  "supplyNetworkEntity": {
+    "form": {
+      "title": "New Supply Network Entity",
+      "steps": {
+        "entityTypeRole": "Entity Type & Role",
+        "generalInfo": "General Information",
+        "statusContact": "Status & Contact",
+        "reviewSubmit": "Review & Submit"
+      },
+      "legend": {
+        "requiredFields": "Required fields are marked with an asterisk (*)",
+        "fieldsWithErrors": "Fields with errors are highlighted in red with warning messages."
+      },
+      "labels": {
+        "entityType": "Entity Type",
+        "roleInSupplyChain": "Role in Supply Chain",
+        "isSubEntity": "Is this a sub-entity of another entity?",
+        "parentEntity": "Parent Entity",
+        "legalName": "Legal Name",
+        "shortName": "Short Name",
+        "externalCode": "External Code",
+        "email": "Email", 
+        "vatCode": "VAT Code",
+        "taxCode": "Tax Code",
+        "country": "Country",
+        "region": "Region",
+        "city": "City",
+        "zipCode": "ZIP Code",
+        "address": "Address",
+        "phoneNumber": "Phone Number",
+        "accreditationStatus": "Accreditation Status",
+        "tags": "Tags",
+        "contactPersonName": "Contact Person Name"
+      },
+      "helperText": {
+        "legalName": "Official registered name",
+        "shortName": "Display name",
+        "externalCode": "ERP, PLM reference code (optional)",
+        "email": "Contact email address",
+        "vatCode": "Value Added Tax identification number",
+        "taxCode": "National tax identification code",
+        "country": "Select country (ISO 3166-1 alpha-2)",
+        "tags": "Comma-separated tags (e.g., leather, Asia, highRisk)",
+        "parentEntity": "Search by name, code, VAT number, city, or contact person"
+      },
+      "placeholders": {
+        "parentEntity": "Type at least 3 characters to search for parent entity..."
+      },
+      "sections": {
+        "entityConfiguration": "Entity Configuration",
+        "basicInformation": "Basic Information",
+        "addressInformation": "Address Information",
+        "statusInformation": "Status Information"
+      },
+      "validation": {
+        "checkingAvailability": "Checking availability...",
+        "legalNameExists": "An entity with this legal name already exists.",
+        "externalCodeExists": "External code already exists. Please choose a different code.",
+        "invalidEmail": "Email must contain @ and at least one dot after @",
+        "validationError": "Error validating {{field}}. Please try again."
+      },
+      "review": {
+        "title": "Review Information",
+        "subtitle": "Please review all the information before submitting.",
+        "entitySummary": "Entity Summary:",
+        "legalName": "Legal Name:",
+        "entityType": "Entity Type:",
+        "country": "Country:",
+        "accreditationStatus": "Accreditation Status:"
+      },
+      "states": {
+        "loading": "Loading form data...",
+        "creating": "Creating entity... Please wait.",
+        "success": "Supply Network Entity created successfully!",
+        "errorLoading": "Error loading form: {{error}}"
+      },
+      "errors": {
+        "network": "🌐 Network Error",
+        "validation": "⚠️ Validation Error", 
+        "server": "🔧 Server Error",
+        "unknown": "❌ Error",
+        "dismiss": "Dismiss",
+        "retry": "Retry"
+      }
+    }
+  },
   "dashboardData": {
     "results": "Showing {{count}} of {{total}} questionnaires",
     "noData": {

@@ -53,5 +53,91 @@
         "overdue": "In Ritardo"
       }
     }
+  },
+  "supplyNetworkEntity": {
+    "form": {
+      "title": "Nuova Entità della Rete di Fornitura",
+      "steps": {
+        "entityTypeRole": "Tipo di Entità e Ruolo",
+        "generalInfo": "Informazioni Generali",
+        "statusContact": "Stato e Contatto",
+        "reviewSubmit": "Revisione e Invio"
+      },
+      "legend": {
+        "requiredFields": "I campi obbligatori sono contrassegnati con un asterisco (*)",
+        "fieldsWithErrors": "I campi con errori sono evidenziati in rosso con messaggi di avviso."
+      },
+      "labels": {
+        "entityType": "Tipo di Entità",
+        "roleInSupplyChain": "Ruolo nella Catena di Fornitura",
+        "isSubEntity": "È una sotto-entità di un'altra entità?",
+        "parentEntity": "Entità Padre",
+        "legalName": "Ragione Sociale",
+        "shortName": "Nome Breve",
+        "externalCode": "Codice Esterno",
+        "email": "Email",
+        "vatCode": "Codice IVA",
+        "taxCode": "Codice Fiscale",
+        "country": "Paese",
+        "region": "Regione",
+        "city": "Città",
+        "zipCode": "CAP",
+        "address": "Indirizzo",
+        "phoneNumber": "Numero di Telefono",
+        "accreditationStatus": "Stato di Accreditamento",
+        "tags": "Tag",
+        "contactPersonName": "Nome Persona di Contatto"
+      },
+      "helperText": {
+        "legalName": "Nome registrato ufficiale",
+        "shortName": "Nome visualizzato",
+        "externalCode": "Codice di riferimento ERP, PLM (opzionale)",
+        "email": "Indirizzo email di contatto",
+        "vatCode": "Numero di identificazione IVA",
+        "taxCode": "Codice di identificazione fiscale nazionale",
+        "country": "Seleziona paese (ISO 3166-1 alpha-2)",
+        "tags": "Tag separati da virgola (es. pelle, Asia, altoRischio)",
+        "parentEntity": "Cerca per nome, codice, partita IVA, città o persona di contatto"
+      },
+      "placeholders": {
+        "parentEntity": "Digita almeno 3 caratteri per cercare l'entità padre..."
+      },
+      "sections": {
+        "entityConfiguration": "Configurazione Entità",
+        "basicInformation": "Informazioni di Base",
+        "addressInformation": "Informazioni Indirizzo",
+        "statusInformation": "Informazioni Stato"
+      },
+      "validation": {
+        "checkingAvailability": "Controllo disponibilità...",
+        "legalNameExists": "Esiste già un'entità con questa ragione sociale.",
+        "externalCodeExists": "Il codice esterno esiste già. Scegli un codice diverso.",
+        "invalidEmail": "L'email deve contenere @ e almeno un punto dopo @",
+        "validationError": "Errore nella validazione {{field}}. Riprova."
+      },
+      "review": {
+        "title": "Revisione Informazioni",
+        "subtitle": "Controlla tutte le informazioni prima di inviare.",
+        "entitySummary": "Riepilogo Entità:",
+        "legalName": "Ragione Sociale:",
+        "entityType": "Tipo di Entità:",
+        "country": "Paese:",
+        "accreditationStatus": "Stato di Accreditamento:"
+      },
+      "states": {
+        "loading": "Caricamento dati form...",
+        "creating": "Creazione entità... Attendere.",
+        "success": "Entità della Rete di Fornitura creata con successo!",
+        "errorLoading": "Errore nel caricamento del form: {{error}}"
+      },
+      "errors": {
+        "network": "🌐 Errore di Rete",
+        "validation": "⚠️ Errore di Validazione",
+        "server": "🔧 Errore del Server",
+        "unknown": "❌ Errore",
+        "dismiss": "Chiudi",
+        "retry": "Riprova"
+      }
+    }
   }
 }

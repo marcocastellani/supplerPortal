@@ -15,5 +15,91 @@
   "status": "Status",
   "tableExample": "Tabellenbeispiel",
   "rbacExample": "RBAC -Beispiel",
-  "regionalSettingsExample": "Regional Settings"
+  "regionalSettingsExample": "Regional Settings",
+  "supplyNetworkEntity": {
+    "form": {
+      "title": "Neue Liefernetzwerk-Entität",
+      "steps": {
+        "entityTypeRole": "Entitätstyp & Rolle",
+        "generalInfo": "Allgemeine Informationen",
+        "statusContact": "Status & Kontakt",
+        "reviewSubmit": "Überprüfen & Senden"
+      },
+      "legend": {
+        "requiredFields": "Pflichtfelder sind mit einem Sternchen (*) gekennzeichnet",
+        "fieldsWithErrors": "Felder mit Fehlern sind rot hervorgehoben mit Warnmeldungen."
+      },
+      "labels": {
+        "entityType": "Entitätstyp",
+        "roleInSupplyChain": "Rolle in der Lieferkette",
+        "isSubEntity": "Ist dies eine Unterentität einer anderen Entität?",
+        "parentEntity": "Übergeordnete Entität",
+        "legalName": "Firmenname",
+        "shortName": "Kurzname",
+        "externalCode": "Externer Code",
+        "email": "E-Mail",
+        "vatCode": "USt-IdNr.",
+        "taxCode": "Steuernummer",
+        "country": "Land",
+        "region": "Region",
+        "city": "Stadt",
+        "zipCode": "PLZ",
+        "address": "Adresse",
+        "phoneNumber": "Telefonnummer",
+        "accreditationStatus": "Akkreditierungsstatus",
+        "tags": "Tags",
+        "contactPersonName": "Name der Kontaktperson"
+      },
+      "helperText": {
+        "legalName": "Offiziell registrierter Name",
+        "shortName": "Anzeigename",
+        "externalCode": "ERP-, PLM-Referenzcode (optional)",
+        "email": "Kontakt-E-Mail-Adresse",
+        "vatCode": "Umsatzsteuer-Identifikationsnummer",
+        "taxCode": "Nationale Steuer-Identifikationsnummer",
+        "country": "Land auswählen (ISO 3166-1 alpha-2)",
+        "tags": "Kommagetrennte Tags (z.B. Leder, Asien, hohesRisiko)",
+        "parentEntity": "Suche nach Name, Code, USt-IdNr., Stadt oder Kontaktperson"
+      },
+      "placeholders": {
+        "parentEntity": "Geben Sie mindestens 3 Zeichen ein, um nach der übergeordneten Entität zu suchen..."
+      },
+      "sections": {
+        "entityConfiguration": "Entitätskonfiguration",
+        "basicInformation": "Grundinformationen",
+        "addressInformation": "Adressinformationen",
+        "statusInformation": "Statusinformationen"
+      },
+      "validation": {
+        "checkingAvailability": "Verfügbarkeit prüfen...",
+        "legalNameExists": "Eine Entität mit diesem Firmennamen existiert bereits.",
+        "externalCodeExists": "Externer Code existiert bereits. Bitte wählen Sie einen anderen Code.",
+        "invalidEmail": "E-Mail muss @ und mindestens einen Punkt nach @ enthalten",
+        "validationError": "Fehler bei der Validierung von {{field}}. Bitte versuchen Sie es erneut."
+      },
+      "review": {
+        "title": "Informationen überprüfen",
+        "subtitle": "Bitte überprüfen Sie alle Informationen vor dem Senden.",
+        "entitySummary": "Entitätszusammenfassung:",
+        "legalName": "Firmenname:",
+        "entityType": "Entitätstyp:",
+        "country": "Land:",
+        "accreditationStatus": "Akkreditierungsstatus:"
+      },
+      "states": {
+        "loading": "Formulardaten werden geladen...",
+        "creating": "Entität wird erstellt... Bitte warten.",
+        "success": "Liefernetzwerk-Entität erfolgreich erstellt!",
+        "errorLoading": "Fehler beim Laden des Formulars: {{error}}"
+      },
+      "errors": {
+        "network": "🌐 Netzwerkfehler",
+        "validation": "⚠️ Validierungsfehler",
+        "server": "🔧 Serverfehler",
+        "unknown": "❌ Fehler",
+        "dismiss": "Verwerfen",
+        "retry": "Wiederholen"
+      }
+    }
+  }
 }

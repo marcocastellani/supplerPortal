@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Container, Grid, Text, Input, Select } from "@remira/unifiedui";
+import { Container, Grid, Text } from "@remira/unifiedui";
 import {
   FormWizard,
   WizardStep,
 } from "../components/SupplyNetworkEntities/FormWizard";
-import { EntitySelector } from "../components/SupplyNetworkEntities/EntitySelector";
+import { EntityTypeRoleStep } from "../components/SupplyNetworkEntities/FormSteps/EntityTypeRoleStep";
+import { GeneralInfoStep } from "../components/SupplyNetworkEntities/FormSteps/GeneralInfoStep";
+import { StatusContactStep } from "../components/SupplyNetworkEntities/FormSteps/StatusContactStep";
+import { ReviewSubmitStep } from "../components/SupplyNetworkEntities/FormSteps/ReviewSubmitStep";
 import { SupplyNetworkEntitiesService } from "../services/supplyNetworkEntitiesService";
 import {
   EntityType,
@@ -14,7 +17,6 @@ import {
   EnumValues,
   SupplyNetworkEntitySearchResultDto,
 } from "../types/supplyNetworkEntities";
-import { ISO_COUNTRIES } from "../utils/countries";
 
 export const NewSupplyNetworkEntity = () => {
   const [formData, setFormData] = useState<SupplyNetworkEntityFormData>({
@@ -64,29 +66,9 @@ export const NewSupplyNetworkEntity = () => {
     externalCode?: boolean;
   }>({});
 
-  // Helper function to create labels with required indicator and error styling
-  const createLabel = (
-    baseLabel: string,
-    isRequired: boolean = false,
-    fieldName?: keyof typeof fieldErrors
-  ) => {
-    const requiredLabel = isRequired ? `${baseLabel} *` : baseLabel;
-
-    // Se c'è un errore per questo campo, restituire un elemento JSX con styling
-    if (fieldName && fieldErrors[fieldName]) {
-      return (
-        <span style={{ color: "#d32f2f", fontWeight: "bold" }}>
-          {requiredLabel}
-        </span>
-      );
-    }
-
-    return requiredLabel;
-  };
-
   // Helper function to get input style based on error state
-  const getInputStyle = (fieldName: keyof typeof fieldErrors) => {
-    const hasError = fieldErrors[fieldName];
+  const getInputStyle = (fieldName: string) => {
+    const hasError = fieldErrors[fieldName as keyof typeof fieldErrors];
     return {
       // Solo il colore del testo, NO bordi rossi
       color: hasError ? "#d32f2f" : undefined,
@@ -95,90 +77,11 @@ export const NewSupplyNetworkEntity = () => {
   };
 
   // Helper function to get helper text (NO ERROR MESSAGES HERE - only default text)
-  const getHelperText = (
-    fieldName: keyof typeof fieldErrors,
-    defaultText: string
-  ) => {
+  const getHelperText = (fieldName: string, defaultText: string) => {
     // Non mostrare errori qui - solo testo di aiuto predefinito
     // Gli errori sono gestiti dal componente ErrorMessage separato
     return defaultText;
   };
-
-  // Helper function to create error message component
-  const ErrorMessage = ({
-    fieldName,
-  }: {
-    fieldName: keyof typeof fieldErrors;
-  }) => {
-    const error = fieldErrors[fieldName];
-    if (!error) return null;
-
-    return (
-      <Text
-        variant="body2"
-        sx={{
-          color: "#d32f2f",
-          mt: 0.5,
-          fontSize: "0.75rem",
-          fontWeight: 500,
-          display: "flex",
-          alignItems: "center",
-          gap: 0.5,
-        }}
-      >
-        ⚠️ {error}
-      </Text>
-    );
-  };
-
-  // Helper function to create validation progress indicator
-  const ValidationProgress = ({
-    fieldName,
-  }: {
-    fieldName: "legalName" | "externalCode";
-  }) => {
-    const isValidating = validationInProgress[fieldName];
-    if (!isValidating) return null;
-
-    return (
-      <Text
-        variant="body2"
-        sx={{
-          color: "#1976d2",
-          mt: 0.5,
-          fontSize: "0.75rem",
-          display: "flex",
-          alignItems: "center",
-          gap: 0.5,
-        }}
-      >
-        🔄 Checking availability...
-      </Text>
-    );
-  };
-
-  // Component to show required fields legend
-  const RequiredFieldsLegend = () => (
-    <div
-      style={{
-        backgroundColor: "#f5f5f5",
-        border: "1px solid #e0e0e0",
-        borderRadius: "8px",
-        padding: "12px 16px",
-        marginBottom: "16px",
-      }}
-    >
-      <Text variant="body2" sx={{ color: "#666", fontSize: "0.875rem" }}>
-        📋 <strong>Required fields are marked with an asterisk (*)</strong>
-      </Text>
-      <Text
-        variant="body2"
-        sx={{ color: "#666", fontSize: "0.75rem", mt: 0.5 }}
-      >
-        Fields with errors are highlighted in red with warning messages.
-      </Text>
-    </div>
-  );
 
   // Email validation
   const validateEmail = (email: string): string | null => {
@@ -598,523 +501,53 @@ export const NewSupplyNetworkEntity = () => {
     <FormWizard onComplete={handleSubmit} isLoading={isLoading}>
       {/* Step 1: Entity Type & Role */}
       <WizardStep title="Entity Type & Role" isValid={validateStep1()}>
-        <RequiredFieldsLegend />
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Text variant="h6" sx={{ mb: 2 }}>
-              Entity Configuration
-            </Text>
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <Select
-              label={createLabel("Entity Type", true)}
-              value={formData.entityType || ""}
-              onChange={(event, option: any) => {
-                console.log(
-                  "EntityType onChange - event:",
-                  event,
-                  "option:",
-                  option
-                );
-                console.log("event.target.value:", event?.target?.value);
-                const newValue = option?.value || event?.target?.value;
-                console.log("Using value:", newValue);
-                handleInputChange("entityType", newValue as EntityType);
-              }}
-              options={enumValues.entityTypes.map((et) => ({
-                value: et.value,
-                label: et.display,
-              }))}
-              fullWidth
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <Select
-              label={createLabel("Role in Supply Chain", true)}
-              value={formData.roleInSupplyChain || ""}
-              onChange={(event, option: any) => {
-                console.log(
-                  "RoleInSupplyChain onChange - event:",
-                  event,
-                  "option:",
-                  option
-                );
-                console.log("event.target.value:", event?.target?.value);
-                const newValue = option?.value || event?.target?.value;
-                console.log("Using value:", newValue);
-                handleInputChange(
-                  "roleInSupplyChain",
-                  newValue as RoleInSupplyChain
-                );
-              }}
-              options={enumValues.rolesInSupplyChain.map((role) => ({
-                value: role.value,
-                label: role.display,
-              }))}
-              fullWidth
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                cursor: "pointer",
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={formData.isSubEntity}
-                onChange={(e) =>
-                  handleInputChange("isSubEntity", e.target.checked)
-                }
-                style={{ marginRight: "8px" }}
-              />
-              <Text variant="body1">
-                This is a sub-entity (linked to a parent)
-              </Text>
-            </label>
-          </Grid>
-
-          {formData.isSubEntity && (
-            <Grid item xs={12}>
-              <EntitySelector
-                label="Parent Entity"
-                value={selectedParent}
-                onChange={(entity) => {
-                  setSelectedParent(entity);
-                  handleInputChange("parentId", entity?.id || "");
-                }}
-                entityType={EntityType.Supplier}
-                placeholder="Type at least 3 characters to search for parent entity..."
-                helperText="Search by name, code, VAT number, city, or contact person"
-              />
-            </Grid>
-          )}
-        </Grid>
+        <EntityTypeRoleStep
+          formData={formData}
+          enumValues={enumValues}
+          onInputChange={handleInputChange}
+          selectedParent={selectedParent}
+          onParentChange={(entity) => {
+            setSelectedParent(entity);
+            handleInputChange("parentId", entity?.id || "");
+          }}
+        />
       </WizardStep>
 
       {/* Step 2: General Information */}
       <WizardStep title="General Information" isValid={validateStep2()}>
-        <RequiredFieldsLegend />
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Text variant="h6" sx={{ mb: 2 }}>
-              Basic Information
-            </Text>
-          </Grid>
-
-          <Grid item xs={12} md={8}>
-            <Input
-              label={createLabel("Legal Name", true, "legalName")}
-              value={formData.legalName}
-              onChange={(value: string) =>
-                handleInputChange("legalName", value)
-              }
-              fullWidth
-              helperText={getHelperText(
-                "legalName",
-                "Official registered name"
-              )}
-              onBlur={() => handleFieldBlur("legalName", formData.legalName)}
-              style={getInputStyle("legalName")}
-            />
-            <ErrorMessage fieldName="legalName" />
-            <ValidationProgress fieldName="legalName" />
-          </Grid>
-
-          <Grid item xs={12} md={4}>
-            <Input
-              label="Short Name"
-              value={formData.shortName}
-              onChange={(value: string) =>
-                handleInputChange("shortName", value)
-              }
-              fullWidth
-              helperText="Display name"
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <Input
-              label={createLabel("External Code", false, "externalCode")}
-              value={formData.externalCode}
-              onChange={(value: string) =>
-                handleInputChange("externalCode", value)
-              }
-              fullWidth
-              helperText={getHelperText(
-                "externalCode",
-                "ERP, PLM reference code (optional)"
-              )}
-              style={getInputStyle("externalCode")}
-            />
-            <ErrorMessage fieldName="externalCode" />
-            <ValidationProgress fieldName="externalCode" />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <Input
-              label={createLabel("Email", false, "email")}
-              value={formData.email}
-              onChange={(value: string) => handleInputChange("email", value)}
-              fullWidth
-              helperText={getHelperText("email", "Contact email address")}
-              onBlur={() => handleFieldBlur("email", formData.email)}
-              style={getInputStyle("email")}
-            />
-            <ErrorMessage fieldName="email" />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <Input
-              label="VAT Code"
-              value={formData.vatCode}
-              onChange={(value: string) => handleInputChange("vatCode", value)}
-              fullWidth
-              helperText="Value Added Tax identification number"
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <Input
-              label="Tax Code"
-              value={formData.taxCode}
-              onChange={(value: string) => handleInputChange("taxCode", value)}
-              fullWidth
-              helperText="National tax identification code"
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <Text variant="h6" sx={{ mb: 2, mt: 2 }}>
-              Address Information
-            </Text>
-          </Grid>
-
-          <Grid item xs={12} md={3}>
-            <Select
-              label={createLabel("Country", true, "country")}
-              value={formData.country || ""}
-              onChange={(event, option: any) => {
-                const newValue = option?.value || event?.target?.value;
-                handleInputChange("country", newValue);
-                // Clear country error when selecting
-                if (fieldErrors.country) {
-                  setFieldErrors((prev) => ({ ...prev, country: "" }));
-                }
-              }}
-              options={ISO_COUNTRIES}
-              fullWidth
-              helperText={getHelperText(
-                "country",
-                "Select country (ISO 3166-1 alpha-2)"
-              )}
-            />
-            <ErrorMessage fieldName="country" />
-          </Grid>
-
-          <Grid item xs={12} md={3}>
-            <Input
-              label="Region"
-              value={formData.region}
-              onChange={(value: string) => handleInputChange("region", value)}
-              fullWidth
-            />
-          </Grid>
-
-          <Grid item xs={12} md={3}>
-            <Input
-              label="City"
-              value={formData.city}
-              onChange={(value: string) => handleInputChange("city", value)}
-              fullWidth
-            />
-          </Grid>
-
-          <Grid item xs={12} md={3}>
-            <Input
-              label="ZIP Code"
-              value={formData.zipCode}
-              onChange={(value: string) => handleInputChange("zipCode", value)}
-              fullWidth
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <Input
-              label="Address"
-              value={formData.address}
-              onChange={(value: string) => handleInputChange("address", value)}
-              fullWidth
-              multiline
-              rows={2}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <Input
-              label="Phone Number"
-              value={formData.phoneNumber}
-              onChange={(value: string) =>
-                handleInputChange("phoneNumber", value)
-              }
-              fullWidth
-            />
-          </Grid>
-        </Grid>
+        <GeneralInfoStep
+          formData={formData}
+          fieldErrors={fieldErrors}
+          validationInProgress={validationInProgress}
+          onInputChange={handleInputChange}
+          onFieldBlur={handleFieldBlur}
+          getHelperText={getHelperText}
+          getInputStyle={getInputStyle}
+          setFieldErrors={setFieldErrors}
+        />
       </WizardStep>
 
       {/* Step 3: Status & Contact */}
       <WizardStep title="Status & Contact" isValid={validateStep3()}>
-        <RequiredFieldsLegend />
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Text variant="h6" sx={{ mb: 2 }}>
-              Status Information
-            </Text>
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <Select
-              label={createLabel("Accreditation Status", true)}
-              value={formData.accreditationStatus || ""}
-              onChange={(event, option: any) => {
-                const newValue = option?.value || event?.target?.value;
-                handleInputChange(
-                  "accreditationStatus",
-                  newValue as AccreditationStatus
-                );
-              }}
-              options={enumValues.accreditationStatuses.map((status) => ({
-                value: status.value,
-                label: status.display,
-              }))}
-              fullWidth
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <Input
-              label="Tags"
-              value={tagsInputValue}
-              onChange={(value: string) => setTagsInputValue(value)}
-              onBlur={() => {
-                // Process tags when user finishes typing
-                const processedTags = tagsInputValue
-                  .split(",")
-                  .map((tag: string) => tag.trim())
-                  .filter((tag: string) => tag);
-                handleInputChange("tags", processedTags);
-              }}
-              fullWidth
-              helperText="Comma-separated tags (e.g., leather, Asia, highRisk)"
-            />
-          </Grid>
-
-          {(formData.entityType === EntityType.Person ||
-            formData.roleInSupplyChain === RoleInSupplyChain.ContactPerson) && (
-            <Grid item xs={12}>
-              <Input
-                label="Contact Person Name"
-                value={formData.contactPersonName}
-                onChange={(value: string) =>
-                  handleInputChange("contactPersonName", value)
-                }
-                fullWidth
-              />
-            </Grid>
-          )}
-        </Grid>
+        <StatusContactStep
+          formData={formData}
+          enumValues={enumValues}
+          tagsInputValue={tagsInputValue}
+          setTagsInputValue={setTagsInputValue}
+          onInputChange={handleInputChange}
+        />
       </WizardStep>
 
       {/* Step 4: Review & Submit */}
       <WizardStep title="Review & Submit" isValid={true}>
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Text variant="h6" sx={{ mb: 2 }}>
-              Review Information
-            </Text>
-            <Text variant="body2" sx={{ color: "text.secondary", mb: 3 }}>
-              Please review all the information before submitting.
-            </Text>
-          </Grid>
-
-          <Grid item xs={12}>
-            <div
-              style={{
-                border: "1px solid #e0e0e0",
-                borderRadius: "8px",
-                padding: "16px",
-                backgroundColor: "#fafafa",
-              }}
-            >
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
-                  <Text variant="subtitle2">Entity Type:</Text>
-                  <Text variant="body2">{formData.entityType}</Text>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Text variant="subtitle2">Role:</Text>
-                  <Text variant="body2">{formData.roleInSupplyChain}</Text>
-                </Grid>
-                <Grid item xs={12}>
-                  <Text variant="subtitle2">Legal Name:</Text>
-                  <Text variant="body2">{formData.legalName}</Text>
-                </Grid>
-                {formData.shortName && (
-                  <Grid item xs={12} md={6}>
-                    <Text variant="subtitle2">Short Name:</Text>
-                    <Text variant="body2">{formData.shortName}</Text>
-                  </Grid>
-                )}
-                {formData.externalCode && (
-                  <Grid item xs={12} md={6}>
-                    <Text variant="subtitle2">External Code:</Text>
-                    <Text variant="body2">{formData.externalCode}</Text>
-                  </Grid>
-                )}
-                {formData.email && (
-                  <Grid item xs={12} md={6}>
-                    <Text variant="subtitle2">Email:</Text>
-                    <Text variant="body2">{formData.email}</Text>
-                  </Grid>
-                )}
-                {formData.phoneNumber && (
-                  <Grid item xs={12} md={6}>
-                    <Text variant="subtitle2">Phone:</Text>
-                    <Text variant="body2">{formData.phoneNumber}</Text>
-                  </Grid>
-                )}
-                {(formData.country || formData.city) && (
-                  <Grid item xs={12}>
-                    <Text variant="subtitle2">Location:</Text>
-                    <Text variant="body2">
-                      {[formData.city, formData.region, formData.country]
-                        .filter(Boolean)
-                        .join(", ")}
-                    </Text>
-                  </Grid>
-                )}
-                <Grid item xs={12} md={6}>
-                  <Text variant="subtitle2">Accreditation Status:</Text>
-                  <Text variant="body2">{formData.accreditationStatus}</Text>
-                </Grid>
-                {formData.tags.length > 0 && (
-                  <Grid item xs={12}>
-                    <Text variant="subtitle2">Tags:</Text>
-                    <Text variant="body2">{formData.tags.join(", ")}</Text>
-                  </Grid>
-                )}
-              </Grid>
-            </div>
-          </Grid>
-
-          {isLoading && (
-            <Grid item xs={12}>
-              <div
-                style={{
-                  padding: "16px",
-                  backgroundColor: "#d1ecf1",
-                  border: "1px solid #bee5eb",
-                  borderRadius: "8px",
-                  color: "#0c5460",
-                }}
-              >
-                Creating entity...
-              </div>
-            </Grid>
-          )}
-
-          {/* Error display component for Step 4 */}
-          {error && (
-            <Grid item xs={12}>
-              <div
-                style={{
-                  padding: "16px",
-                  backgroundColor: "#f8d7da",
-                  border: "1px solid #f5c6cb",
-                  borderRadius: "8px",
-                  color: "#721c24",
-                  position: "relative",
-                  display: "flex",
-                  alignItems: "flex-start",
-                  gap: "12px",
-                }}
-              >
-                {/* Error icon based on error type */}
-                <span style={{ fontSize: "20px", flexShrink: 0 }}>
-                  {errorType === "network"
-                    ? "🌐"
-                    : errorType === "validation"
-                    ? "⚠️"
-                    : errorType === "server"
-                    ? "🔧"
-                    : "❌"}
-                </span>
-
-                {/* Error content */}
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: "bold", marginBottom: "4px" }}>
-                    {errorType === "network"
-                      ? "Connection Error"
-                      : errorType === "validation"
-                      ? "Validation Error"
-                      : errorType === "server"
-                      ? "Server Error"
-                      : "Error"}
-                  </div>
-                  <div style={{ fontSize: "14px", whiteSpace: "pre-line" }}>
-                    {error}
-                  </div>
-                </div>
-
-                {/* Action buttons */}
-                <div style={{ display: "flex", gap: "8px", flexShrink: 0 }}>
-                  {/* Retry button for network errors */}
-                  {errorType === "network" && (
-                    <button
-                      onClick={handleSubmit}
-                      disabled={isLoading}
-                      style={{
-                        padding: "6px 12px",
-                        backgroundColor: "#dc3545",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "4px",
-                        fontSize: "12px",
-                        cursor: isLoading ? "not-allowed" : "pointer",
-                        opacity: isLoading ? 0.7 : 1,
-                      }}
-                    >
-                      {isLoading ? "⏳" : "🔄 Retry"}
-                    </button>
-                  )}
-
-                  {/* Dismiss button */}
-                  <button
-                    onClick={clearError}
-                    style={{
-                      padding: "6px 8px",
-                      backgroundColor: "transparent",
-                      color: "#721c24",
-                      border: "1px solid #721c24",
-                      borderRadius: "4px",
-                      fontSize: "12px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    ✕ Dismiss
-                  </button>
-                </div>
-              </div>
-            </Grid>
-          )}
-        </Grid>
+        <ReviewSubmitStep
+          formData={formData}
+          isLoading={isLoading}
+          error={error}
+          errorType={errorType}
+          onSubmit={handleSubmit}
+          onClearError={clearError}
+        />
       </WizardStep>
     </FormWizard>
   );
