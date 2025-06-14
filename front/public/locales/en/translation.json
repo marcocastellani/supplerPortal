@@ -53,5 +53,23 @@
         "overdue": "Overdue"
       }
     }
+  },
+  "dashboardData": {
+    "results": "Showing {{count}} of {{total}} questionnaires",
+    "noData": {
+      "title": "No Questionnaires Found",
+      "subtitle": "No questionnaires match the selected criteria."
+    },
+    "noSuppliers": {
+      "title": "No Assigned Suppliers",
+      "subtitle": "You don't have any suppliers assigned to you. Contact your administrator."
+    },
+    "error": {
+      "fetch": "Error loading questionnaires. Please try again.",
+      "network": "Network connection error. Please check your internet connection.",
+      "unauthorized": "You are not authorized to view this data.",
+      "forbidden": "Access denied. Contact your administrator.",
+      "generic": "An unexpected error occurred. Please try again."
+    }
   }
 }

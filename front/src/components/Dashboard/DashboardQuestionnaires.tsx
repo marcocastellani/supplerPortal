@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Typography,
-  Alert,
-  CircularProgress,
-  Container,
-} from "@mui/material";
 import { useTranslation } from "react-i18next";
+import axios from "axios";
+import { 
+  Container, 
+  Grid,
+  Text,
+  Loader,
+  Card
+} from "@remira/unifiedui";
 import { DashboardFilters } from "./DashboardFilters";
 import { QuestionnaireGrid } from "./QuestionnaireGrid";
 import { getDashboardQuestionnaires } from "../../services/dashboardService";
@@ -41,7 +42,20 @@ export const DashboardQuestionnaires: React.FC<
         setFilteredQuestionnaires(data);
       } catch (err) {
         console.error("Error fetching questionnaires:", err);
-        setError(t("dashboard.error.fetch"));
+        // Edge case: Connection problems
+        if (axios.isAxiosError(err)) {
+          if (err.code === 'ECONNABORTED' || err.code === 'ERR_NETWORK') {
+            setError(t("dashboardData.error.network"));
+          } else if (err.response?.status === 401) {
+            setError(t("dashboardData.error.unauthorized"));
+          } else if (err.response?.status === 403) {
+            setError(t("dashboardData.error.forbidden"));
+          } else {
+            setError(t("dashboardData.error.fetch"));
+          }
+        } else {
+          setError(t("dashboardData.error.generic"));
+        }
       } finally {
         setLoading(false);
       }
@@ -94,69 +108,88 @@ export const DashboardQuestionnaires: React.FC<
 
   if (loading) {
     return (
-      <Container className={className}>
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          minHeight="200px"
+      <Container type="page" className={className}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "200px"
+          }}
         >
-          <CircularProgress />
-        </Box>
+          <Loader />
+        </div>
       </Container>
     );
   }
 
   if (error) {
     return (
-      <Container className={className}>
-        <Alert severity="error" sx={{ mt: 2 }}>
-          {error}
-        </Alert>
+      <Container type="page" className={className}>
+        <Card style={{ marginTop: "16px", backgroundColor: "#ffebee", border: "1px solid #f44336" }}>
+          <Text style={{ color: "#d32f2f" }}>{error}</Text>
+        </Card>
       </Container>
     );
   }
 
   return (
-    <Box sx={{ py: 3 }}>
+    <div style={{ padding: "24px 0" }}>
       {/* Filters */}
-      <Box sx={{ mb: 3 }}>
+      <div style={{ marginBottom: "24px" }}>
         <DashboardFilters
           suppliers={uniqueSuppliers}
           onFiltersChange={handleFiltersChange}
         />
-      </Box>
+      </div>
 
       {/* Results count */}
-      <Box sx={{ mb: 2 }}>
-        <Typography variant="body2" color="text.secondary">
-          {t("dashboard.results", {
+      <div style={{ marginBottom: "16px" }}>
+        <Text variant="body2" color="secondary">
+          {t("dashboardData.results", {
             count: filteredQuestionnaires.length,
             total: questionnaires.length,
           })}
-        </Typography>
-      </Box>
+        </Text>
+      </div>
 
       {/* Questionnaires Grid */}
       {filteredQuestionnaires.length > 0 ? (
         <QuestionnaireGrid questionnaires={filteredQuestionnaires} />
-      ) : (
-        <Box
-          sx={{
+      ) : questionnaires.length === 0 ? (
+        // Edge case: User with no assigned suppliers
+        <div
+          style={{
             textAlign: "center",
-            py: 8,
-            color: "text.secondary",
+            padding: "64px 0",
+            color: "#666",
           }}
         >
-          <Typography variant="h6" gutterBottom>
-            {t("dashboard.noData.title")}
-          </Typography>
-          <Typography variant="body2">
-            {t("dashboard.noData.subtitle")}
-          </Typography>
-        </Box>
+          <Text variant="h6" style={{ marginBottom: "8px" }}>
+            {t("dashboardData.noSuppliers.title")}
+          </Text>
+          <Text variant="body2">
+            {t("dashboardData.noSuppliers.subtitle")}
+          </Text>
+        </div>
+      ) : (
+        // No results after filtering
+        <div
+          style={{
+            textAlign: "center",
+            padding: "64px 0",
+            color: "#666",
+          }}
+        >
+          <Text variant="h6" style={{ marginBottom: "8px" }}>
+            {t("dashboardData.noData.title")}
+          </Text>
+          <Text variant="body2">
+            {t("dashboardData.noData.subtitle")}
+          </Text>
+        </div>
       )}
-    </Box>
+    </div>
   );
 };
 

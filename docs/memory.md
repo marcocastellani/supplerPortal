@@ -174,3 +174,45 @@ src/components/Dashboard/
 - Usa frasi corte e chiare
 - Quando crei un nuovo file, aggiungilo subito a questa lista
 - Se modifichi un file in modo importante, aggiorna anche la descrizione
+
+## 🎯 User Stories Implementation Status
+
+### ✅ #1 - Visualizzazione questionari in scadenza (Utente)
+**Status**: **COMPLETATO CON CORREZIONI STEP 1-3**
+
+#### Correzioni Implementate:
+
+**STEP #1 - Service Layer Frontend Corretto:**
+- Aggiunto userId e userRole nei parametri API
+- Gestione edge cases: utenti senza fornitori, errori di rete
+- Error handling specifico per 401/403/network errors
+- Aggiornato DashboardFilters interface
+
+**STEP #2 - Sostituito MUI con UnifiedUI:**  
+- Migrato da @mui/material a @remira/unifiedui
+- Utilizzati componenti: Container, Text, Loader, Card
+- Mantenuta compatibilità con styling responsive
+
+**STEP #3 - Test Backend Implementati:**
+- Corretti test unitari per Query/DTO validation
+- Aggiunti test per edge cases (overdue, no suppliers)
+- 4/4 test passano correttamente
+
+#### Acceptance Criteria Verificati:
+- ✅ Filtro per fornitori assegnati (userId nel service)
+- ✅ Scadenze nelle prossime 4 settimane
+- ✅ Dati completi: fornitore, tipo, scadenza, stato
+- ✅ Ordinamento per scadenza
+- ✅ Dashboard responsive con UnifiedUI
+
+#### Edge Cases Gestiti:
+- ✅ Utenti senza fornitori assegnati
+- ✅ Questionari già scaduti (inclusi)
+- ✅ Problemi di connessione (network/auth errors)
+
+#### File Modificati:
+- `front/src/services/dashboardService.ts` - Service layer migliorato
+- `front/src/types/dashboard.ts` - Aggiunta userId/userRole  
+- `front/src/components/Dashboard/DashboardQuestionnaires.tsx` - UnifiedUI + edge cases
+- `front/public/locales/en/translation.json` - Traduzioni errori
+- `api/tests/SupplierPortal.Application.UnitTests/Dashboard/` - Test corretti

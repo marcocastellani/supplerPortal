@@ -17,6 +17,8 @@ export interface GetUpcomingQuestionnairesResponse {
 }
 
 export interface DashboardFilters {
+  userId?: string;
+  userRole?: string;
   supplierId?: string;
   status?: string;
   weeksAhead?: number;
