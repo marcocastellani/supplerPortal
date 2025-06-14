@@ -7,7 +7,7 @@ interface ReviewSubmitStepProps {
   isLoading: boolean;
   error: string | null;
   errorType: "network" | "validation" | "server" | "unknown";
-  onSubmit: () => void;
+  onSubmit: () => Promise<void>;
   onClearError: () => void;
 }
 

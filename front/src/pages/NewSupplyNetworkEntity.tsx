@@ -8,6 +8,7 @@ import { EntityTypeRoleStep } from "../components/SupplyNetworkEntities/FormStep
 import { GeneralInfoStep } from "../components/SupplyNetworkEntities/FormSteps/GeneralInfoStep";
 import { StatusContactStep } from "../components/SupplyNetworkEntities/FormSteps/StatusContactStep";
 import { ReviewSubmitStep } from "../components/SupplyNetworkEntities/FormSteps/ReviewSubmitStep";
+import { useErrorHandling } from "../hooks/useErrorHandling";
 import { SupplyNetworkEntitiesService } from "../services/supplyNetworkEntitiesService";
 import {
   EntityType,
@@ -45,12 +46,11 @@ export const NewSupplyNetworkEntity = () => {
   const [selectedParent, setSelectedParent] =
     useState<SupplyNetworkEntitySearchResultDto | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [errorType, setErrorType] = useState<
-    "network" | "validation" | "server" | "unknown"
-  >("unknown");
   const [success, setSuccess] = useState(false);
   const [tagsInputValue, setTagsInputValue] = useState<string>(""); // Local state for tags input
+
+  // Use custom hook for error handling
+  const { error, errorType, handleError: hookHandleError, clearError } = useErrorHandling();
 
   // Field validation errors
   const [fieldErrors, setFieldErrors] = useState<{
@@ -215,10 +215,7 @@ export const NewSupplyNetworkEntity = () => {
         }
       } catch (err) {
         console.error("Error loading enum values:", err);
-        setError(
-          "Failed to load form data: " +
-            (err instanceof Error ? err.message : String(err))
-        );
+        hookHandleError(err); // Use hook error handling
       }
     };
 
@@ -236,111 +233,10 @@ export const NewSupplyNetworkEntity = () => {
     clearError(); // Clear errors when user starts typing
   };
 
-  // Helper function to categorize and format errors
-  const handleError = (err: unknown) => {
-    let errorMessage = "";
-    let errorCategory: "network" | "validation" | "server" | "unknown" =
-      "unknown";
-
-    console.error("Error caught in handleError:", err);
-
-    // Handle axios errors specifically
-    if (err && typeof err === "object" && "response" in err) {
-      const axiosError = err as any;
-      const status = axiosError.response?.status;
-      const responseData = axiosError.response?.data;
-
-      console.log("Axios error details:", { status, responseData });
-
-      if (status === 400) {
-        // Validation errors from server
-        errorCategory = "validation";
-
-        if (
-          responseData?.error?.details &&
-          Array.isArray(responseData.error.details)
-        ) {
-          // Format detailed validation errors
-          const fieldErrors = responseData.error.details
-            .map((detail: any) => `${detail.code}: ${detail.message}`)
-            .join("\n• ");
-          errorMessage = `Validation errors:\n• ${fieldErrors}`;
-        } else if (responseData?.error?.message) {
-          errorMessage = `Validation error: ${responseData.error.message}`;
-        } else {
-          errorMessage = "Please check your input data and try again.";
-        }
-      } else if (status >= 500) {
-        // Server errors
-        errorCategory = "server";
-        errorMessage =
-          "Server error occurred. Please try again later or contact support.";
-      } else if (status === 401) {
-        errorCategory = "validation";
-        errorMessage = "Authentication required. Please log in again.";
-      } else if (status === 403) {
-        errorCategory = "validation";
-        errorMessage = "You do not have permission to perform this action.";
-      } else {
-        errorCategory = "server";
-        errorMessage = `HTTP ${status}: ${
-          responseData?.error?.message || axiosError.message
-        }`;
-      }
-    }
-    // Handle network errors (no response)
-    else if (err && typeof err === "object" && "code" in err) {
-      const networkError = err as any;
-      if (
-        networkError.code === "NETWORK_ERROR" ||
-        networkError.code === "ERR_NETWORK"
-      ) {
-        errorCategory = "network";
-        errorMessage =
-          "Network connection error. Please check your internet connection and try again.";
-      }
-    }
-    // Handle Error instances
-    else if (err instanceof Error) {
-      const message = err.message.toLowerCase();
-
-      // Network errors
-      if (
-        message.includes("network") ||
-        message.includes("fetch") ||
-        message.includes("connection")
-      ) {
-        errorCategory = "network";
-        errorMessage =
-          "Network connection error. Please check your internet connection and try again.";
-      }
-      // Generic errors
-      else {
-        errorCategory = "unknown";
-        errorMessage = `Error: ${err.message}`;
-      }
-    }
-    // Fallback for unknown error types
-    else {
-      errorCategory = "unknown";
-      errorMessage = "An unexpected error occurred. Please try again.";
-    }
-
-    console.log("Final error categorization:", { errorCategory, errorMessage });
-    setError(errorMessage);
-    setErrorType(errorCategory);
-  };
-
-  // Helper function to clear error
-  const clearError = () => {
-    setError(null);
-    setErrorType("unknown");
-  };
-
   const handleSubmit = async () => {
     console.log("🚀 handleSubmit started");
     setIsLoading(true);
-    clearError(); // Use the new clear error function
+    clearError(); // Use the hook clear error function
 
     try {
       console.log("📤 Sending request with data:", {
@@ -441,7 +337,7 @@ export const NewSupplyNetworkEntity = () => {
         data: (err as any)?.response?.data,
         config: (err as any)?.config,
       });
-      handleError(err); // Use the new error handling function
+      hookHandleError(err); // Use the hook error handling function
     } finally {
       console.log("🏁 handleSubmit finished");
       setIsLoading(false);
