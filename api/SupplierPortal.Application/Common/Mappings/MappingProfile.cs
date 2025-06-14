@@ -6,6 +6,11 @@ namespace Remira.UCP.SupplierPortal.Application.Common.Mappings;
 
 public class MappingProfile : Profile
 {
+    public MappingProfile()
+    {
+        ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
+    }
+
     public MappingProfile(
         Assembly assembly)
     {

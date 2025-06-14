@@ -39,6 +39,7 @@ Integrabile con sistemi documentali, di qualità e MES, il software diventa il c
 2. Come fornitore, voglio compilare i dati richiesti per l’accreditamento in un’interfaccia chiara così da completare velocemente l’onboarding.
 3. Come amministratore, voglio poter approvare o respingere le richieste in base a soglie e documenti ricevuti, così da garantire la compliance.
 4. come amministratiore, voglio poter inserire manualmente i miei fornitori in modo da non costringere i fornitori giá accreditati a riaccreditarsi.
+5. come utente, voglio poter inserire massivamente i miei supply entities mediante excel per evitare di reinserirli tutti manualmente. É importante poter scaricare un template ed avere una validazione prima dell'inserimento
 
 ### Epic B: Gestione questionari
 

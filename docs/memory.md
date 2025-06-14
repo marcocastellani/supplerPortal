@@ -17,6 +17,7 @@ Questo documento descrive lo scopo e l'utilizzo dei file principali nel progetto
 - **State Management**: Calcolare `isSubEntity` automaticamente da `entityType` quando necessario
 - **UX**: Usare Material-UI Autocomplete con rendering personalizzato per typeahead
 - **Validation**: Validazione per step nei wizard, non globale
+- **Error Handling**: Sistema avanzato con categorizzazione errori (network/validation/server), feedback UX migliorato con pulsanti dismiss/retry
 
 ### 🏗️ **Architettura**
 - **Clean Architecture**: Domain → Application → Infrastructure → API
@@ -103,7 +104,7 @@ Questo documento descrive lo scopo e l'utilizzo dei file principali nel progetto
 | `src/pages/Home.tsx`                                          | ⭐ Componente principale che genera tabs dinamicamente da menu.ts con navigazione |
 | `src/pages/Dashboard.tsx`                                     | ⭐ Dashboard principale con KPI e questionari in scadenza                     |
 | `src/pages/SupplyNetwork.tsx`                                 | ⭐ Gestione entità supply network con lista e paginazione                     |
-| `src/pages/NewSupplyNetworkEntity.tsx`                        | ⭐ **FormWizard multi-step** per creazione entità con validazione            |
+| `src/pages/NewSupplyNetworkEntity.tsx`                        | ⭐ **FormWizard multi-step** per creazione entità con validazione avanzata e gestione errori migliorata            |
 | `src/components/SupplyNetworkEntities/FormWizard.tsx`         | ⭐ **Wizard generico** con step validation e navigation                      |
 | `src/components/SupplyNetworkEntities/EntitySelector.tsx`     | ⭐ **NEW** Typeahead selector con debounce per parent entity                 |
 | `src/services/supplyNetworkEntitiesService.ts`                | ⭐ **Service layer** con axios e API versioning (2025-06-01)                |
@@ -540,3 +541,35 @@ front/src/pages/
 - ✅ Endpoint `/search` risponde correttamente
 - ✅ Frontend si avvia senza errori
 - ✅ Integrazione completa funzionante
+
+## 🎯 Manual Supplier Entry Wizard - Advanced Error Handling ✅
+
+**Data completamento**: 14 giugno 2025
+
+### Miglioramenti implementati per il feedback errori
+- **Categorizzazione errori**: Network, Validation, Server, Unknown con icone specifiche
+- **User-friendly messages**: Messaggi comprensibili invece di errori tecnici
+- **Azioni contestuali**: 
+  - Pulsante "Retry" per errori di rete
+  - Pulsante "Dismiss" per nascondere l'errore
+- **Gestione automatica**: Clear errori quando l'utente inizia a digitare
+- **Styling migliorato**: Layout responsive con icone e colori appropriati
+
+### Caratteristiche tecniche
+- **Error categorization**: Analisi automatica del tipo di errore basata sul messaggio
+- **State management**: `errorType` state per tracking categoria errori
+- **Helper functions**: `handleError()` e `clearError()` per gestione centralizzata
+- **UX feedback**: Icone contestuali (🌐 network, ⚠️ validation, 🔧 server, ❌ generic)
+- **Retry mechanism**: Possibilità di rilanciare submit per errori di rete
+- **Progressive enhancement**: Mantiene backward compatibility con gestione errori esistente
+
+### Status External Code Field
+- **Campo opzionale**: Rimosso asterisco (*) e validazione obbligatoria
+- **Validazione condizionale**: Controllo unicità solo se campo compilato
+- **UX**: Helper text aggiornato con "(optional)"
+- **Step validation**: Non blocca più avanzamento se External Code ha errori
+
+### Testing
+- ✅ Build completato senza errori
+- ✅ Interfaccia funzionante con feedback migliorato
+- ✅ Gestione corretta campi opzionali vs obbligatori
