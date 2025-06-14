@@ -6,14 +6,14 @@
 ```mermaid
 flowchart LR
     A[Buyer avvia richiesta] --> B[Seleziona template]
-    B --> C[Invio al fornitore]
-    C --> D[Fornitore compila dati e carica documenti]
+    B --> C[Invio all'attore della rete]
+    C --> D[Attore della rete compila dati e carica documenti]
     D --> E[Sistema verifica completezza]
     E --> F{Campi mancanti?}
     F -- No --> G[Buyer approva / respinge]
-    F -- Sì --> H[Alert al fornitore]
+    F -- Sì --> H[Alert all'attore della rete]
     H --> D
-    G --> I[Notifica fornitore]
+    G --> I[Notifica attore della rete]
     I --> J[Stato accreditamento aggiornato]
 ```
 
@@ -21,8 +21,8 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    A[Sistema assegna questionario] --> B[Fornitore riceve notifica]
-    B --> C[Fornitore accede e compila]
+    A[Sistema assegna questionario] --> B[Attore della rete riceve notifica]
+    B --> C[Attore della rete accede e compila]
     C --> D[Sistema valuta automaticamente]
     D --> E{Controllo manuale previsto?}
     E -- No --> G[Salva stato e score]

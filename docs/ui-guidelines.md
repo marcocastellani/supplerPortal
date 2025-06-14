@@ -1,8 +1,8 @@
-# UI Guidelines - Supplier Portal
+# UI Guidelines - Supply Network Portal
 
 ## Panoramica
 
-Questo documento stabilisce le linee guida obbligatorie per l'implementazione delle interfacce utente nel Supplier Portal. Tutti i componenti UI devono seguire queste regole per garantire coerenza, riutilizzabilità e qualità del codice.
+Questo documento stabilisce le linee guida obbligatorie per l'implementazione delle interfacce utente nel Supply Network Portal. Tutti i componenti UI devono seguire queste regole per garantire coerenza, riutilizzabilità e qualità del codice.
 
 ## Regole Fondamentali
 

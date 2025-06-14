@@ -9,7 +9,7 @@ Questo documento descrive lo scopo e l'utilizzo dei file principali nel progetto
 | `SupplierPortal.Domain/Entities/User.cs`                          | Entità dominio User con relazioni verso SupplyNetworkEntities e Agent                   |
 | `SupplierPortal.Domain/Entities/SupplyNetworkEntities.cs`         | Entità dominio rete di fornitura (ex-Supplier) con questionari e utenti assegnati      |
 | `SupplierPortal.Domain/Entities/UserSupplier.cs`                  | Tabella di relazione User-SupplyNetworkEntities con ruolo                               |
-| `SupplierPortal.Domain/Entities/AgentAssignment.cs`               | Assegnazione di agent a fornitori per specifici utenti                     |
+| `SupplierPortal.Domain/Entities/AgentAssignment.cs`               | Assegnazione di agent ad attori della rete per specifici utenti                     |
 | `SupplierPortal.Domain/Entities/Questionnaire.cs`                 | Entità questionario con scadenze e assegnazioni + enum QuestionnaireStatus |
 | `SupplierPortal.Domain/Entities/Remediation.cs`                   | Entità remediation collegata ai questionari + enum RemediationStatus       |
 | `SupplierPortal.Infrastructure/Configurations/*Configuration.cs`   | Configurazioni EF Core per tutte le entità con constraint ON DELETE NO ACTION, inclusa SupplyNetworkEntitiesConfiguration |
@@ -101,7 +101,7 @@ GET /api/dashboard/questionnaires?api-version=2024-10-01&weeksAhead=4&status=Pub
 
 ## 🎯 **User Story #1 - COMPLETATA** ✅
 
-**"Visualizzazione questionari in scadenza"** - Dashboard per monitorare questionari supplier in scadenza
+**"Visualizzazione questionari in scadenza"** - Dashboard per monitorare questionari della rete di fornitura in scadenza
 
 ### ✅ Backend Implementato
 - ✅ Entità dominio complete con Guid come PK
@@ -195,13 +195,13 @@ src/components/Dashboard/
 
 **STEP #3 - Test Backend Implementati:**
 - Corretti test unitari per Query/DTO validation
-- Aggiunti test per edge cases (overdue, no suppliers)
+- Aggiunti test per edge cases (overdue, no supply network entities)
 - 4/4 test passano correttamente
 
 #### Acceptance Criteria Verificati:
 - ✅ Filtro per fornitori assegnati (userId nel service)
 - ✅ Scadenze nelle prossime 4 settimane
-- ✅ Dati completi: fornitore, tipo, scadenza, stato
+- ✅ Dati completi: attore della rete, tipo, scadenza, stato
 - ✅ Ordinamento per scadenza
 - ✅ Dashboard responsive con UnifiedUI
 
@@ -219,8 +219,9 @@ src/components/Dashboard/
 
 ## 🔄 Refactoring Log
 
-### 14 giugno 2025 - Generalizzazione entità Supplier
-- **BREAKING CHANGE**: Rinominata entità `Supplier` in `SupplyNetworkEntities` per renderla più generica
+### 14 giugno 2025 - Generalizzazione entità Supplier → SupplyNetworkEntities
+- **BREAKING CHANGE**: Rinominata entità `Supplier` in `SupplyNetworkEntities` per renderla più generica e adatta alla gestione della rete di fornitura
+- **Motivazione**: Generalizzare il concetto da singolo fornitore a generico attore della rete di fornitura (fornitori, subfornitori, partner, etc.)
 - **File coinvolti**:
   - `SupplierPortal.Domain/Entities/Supplier.cs` → `SupplyNetworkEntities.cs`
   - `SupplierPortal.Infrastructure/Configurations/SupplierConfiguration.cs` → `SupplyNetworkEntitiesConfiguration.cs`
@@ -228,5 +229,7 @@ src/components/Dashboard/
   - Aggiornati DbContext e interfacce
   - Aggiornato DatabaseSeeder per utilizzare la nuova entità
 - **Stato database**: Serve migration per rinominare tabella da `Suppliers` a `SupplyNetworkEntities`
+- **Impatto API**: I DTO mantengono i nomi business-friendly (SupplierName, SupplierCode) per retrocompatibilità
+- **Documentazione**: Aggiornati tutti i riferimenti da "fornitore/supplier" a "attore della rete/supply network entity"
 - **Test**: ✅ Unit tests (6/6) e Integration tests (6/6) passano
 - **Build**: ✅ Compilazione riuscita senza errori
