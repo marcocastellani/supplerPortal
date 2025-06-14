@@ -39,7 +39,8 @@ export const NewSupplyNetworkEntity = () => {
   });
 
   const [enumValues, setEnumValues] = useState<EnumValues | null>(null);
-  const [selectedParent, setSelectedParent] = useState<SupplyNetworkEntitySearchResultDto | null>(null);
+  const [selectedParent, setSelectedParent] =
+    useState<SupplyNetworkEntitySearchResultDto | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -243,7 +244,7 @@ export const NewSupplyNetworkEntity = () => {
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Text variant="h6" sx={{ mb: 2 }}>
-              Entity Configuration
+              New Supply Network Entity
             </Text>
           </Grid>
 
