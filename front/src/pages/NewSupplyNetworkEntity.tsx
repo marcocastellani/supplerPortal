@@ -9,6 +9,7 @@ import { GeneralInfoStep } from "../components/SupplyNetworkEntities/FormSteps/G
 import { StatusContactStep } from "../components/SupplyNetworkEntities/FormSteps/StatusContactStep";
 import { ReviewSubmitStep } from "../components/SupplyNetworkEntities/FormSteps/ReviewSubmitStep";
 import { useErrorHandling } from "../hooks/useErrorHandling";
+import { useFormValidation } from "../hooks/useFormValidation";
 import { SupplyNetworkEntitiesService } from "../services/supplyNetworkEntitiesService";
 import {
   EntityType,
@@ -52,118 +53,15 @@ export const NewSupplyNetworkEntity = () => {
   // Use custom hook for error handling
   const { error, errorType, handleError: hookHandleError, clearError } = useErrorHandling();
 
-  // Field validation errors
-  const [fieldErrors, setFieldErrors] = useState<{
-    legalName?: string;
-    externalCode?: string;
-    email?: string;
-    country?: string;
-  }>({});
-
-  // Validation in progress flags
-  const [validationInProgress, setValidationInProgress] = useState<{
-    legalName?: boolean;
-    externalCode?: boolean;
-  }>({});
-
-  // Helper function to get input style based on error state
-  const getInputStyle = (fieldName: string) => {
-    const hasError = fieldErrors[fieldName as keyof typeof fieldErrors];
-    return {
-      // Solo il colore del testo, NO bordi rossi
-      color: hasError ? "#d32f2f" : undefined,
-      fontWeight: hasError ? "bold" : undefined,
-    };
-  };
-
-  // Helper function to get helper text (NO ERROR MESSAGES HERE - only default text)
-  const getHelperText = (fieldName: string, defaultText: string) => {
-    // Non mostrare errori qui - solo testo di aiuto predefinito
-    // Gli errori sono gestiti dal componente ErrorMessage separato
-    return defaultText;
-  };
-
-  // Email validation
-  const validateEmail = (email: string): string | null => {
-    if (!email) return null;
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return "Email must contain @ and at least one dot after @";
-    }
-    return null;
-  };
-
-  // Validate field uniqueness (external code, legal name)
-  const validateFieldUniqueness = async (
-    field: "externalCode" | "legalName",
-    value: string
-  ): Promise<string | null> => {
-    if (!value) return null;
-
-    try {
-      setValidationInProgress((prev) => ({ ...prev, [field]: true }));
-
-      if (field === "externalCode") {
-        const response =
-          await SupplyNetworkEntitiesService.validateExternalCode(value);
-        if (!response.isUnique) {
-          return "External code already exists. Please choose a different code.";
-        }
-      } else if (field === "legalName") {
-        // For legal name, we search to see if any entity with same name exists
-        const searchResults =
-          await SupplyNetworkEntitiesService.searchSupplyNetworkEntities({
-            searchTerm: value,
-            maxResults: 1,
-            activeOnly: false,
-          });
-
-        if (
-          searchResults.length > 0 &&
-          searchResults[0].legalName.toLowerCase() === value.toLowerCase()
-        ) {
-          return "An entity with this legal name already exists.";
-        }
-      }
-
-      return null;
-    } catch (error) {
-      console.error(`Error validating ${field}:`, error);
-      return `Error validating ${field}. Please try again.`;
-    } finally {
-      setValidationInProgress((prev) => ({ ...prev, [field]: false }));
-    }
-  };
-
-  // Handle field blur for validation
-  const handleFieldBlur = async (
-    field: keyof SupplyNetworkEntityFormData,
-    value: string
-  ) => {
-    let error: string | null = null;
-
-    switch (field) {
-      case "email":
-        error = validateEmail(value);
-        break;
-      case "externalCode":
-        // Only validate if value is provided (since it's optional)
-        if (value.trim()) {
-          error = await validateFieldUniqueness("externalCode", value);
-        }
-        break;
-      case "legalName":
-        error = await validateFieldUniqueness("legalName", value);
-        break;
-      // Country validation is handled by Select component with predefined values
-    }
-
-    setFieldErrors((prev) => ({
-      ...prev,
-      [field]: error || undefined,
-    }));
-  };
+  // Use custom hook for form validation
+  const {
+    fieldErrors,
+    validationInProgress,
+    handleFieldBlur: hookHandleFieldBlur,
+    getInputStyle,
+    getHelperText,
+    setFieldErrors,
+  } = useFormValidation();
 
   // Step validation functions
   const validateStep1 = () => {
@@ -416,7 +314,7 @@ export const NewSupplyNetworkEntity = () => {
           fieldErrors={fieldErrors}
           validationInProgress={validationInProgress}
           onInputChange={handleInputChange}
-          onFieldBlur={handleFieldBlur}
+          onFieldBlur={hookHandleFieldBlur}
           getHelperText={getHelperText}
           getInputStyle={getInputStyle}
           setFieldErrors={setFieldErrors}

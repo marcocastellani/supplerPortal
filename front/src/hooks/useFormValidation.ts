@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { SupplyNetworkEntitiesService } from '../services/supplyNetworkEntitiesService';
+import { SupplyNetworkEntityFormData } from '../types/supplyNetworkEntities';
 
 interface FieldErrors {
   legalName?: string;
@@ -72,9 +73,15 @@ export const useFormValidation = () => {
 
   // Handle field blur for validation
   const handleFieldBlur = async (
-    field: "legalName" | "externalCode" | "email",
+    field: keyof SupplyNetworkEntityFormData,
     value: string
-  ) => {
+  ): Promise<void> => {
+    // Only handle validation for supported fields
+    const supportedFields = ['email', 'legalName', 'externalCode'] as const;
+    if (!supportedFields.includes(field as any)) {
+      return;
+    }
+
     let error: string | null = null;
 
     switch (field) {
@@ -117,6 +124,23 @@ export const useFormValidation = () => {
     return !!validationInProgress[field];
   };
 
+  // Helper function to get input style based on error state
+  const getInputStyle = (fieldName: string) => {
+    const hasError = fieldErrors[fieldName as keyof FieldErrors];
+    return {
+      // Solo il colore del testo, NO bordi rossi
+      color: hasError ? "#d32f2f" : undefined,
+      fontWeight: hasError ? "bold" : undefined,
+    };
+  };
+
+  // Helper function to get helper text (NO ERROR MESSAGES HERE - only default text)
+  const getHelperText = (fieldName: string, defaultText: string) => {
+    // Non mostrare errori qui - solo testo di aiuto predefinito
+    // Gli errori sono gestiti dal componente ErrorMessage separato
+    return defaultText;
+  };
+
   return {
     fieldErrors,
     validationInProgress,
@@ -125,5 +149,8 @@ export const useFormValidation = () => {
     hasFieldError,
     getFieldError,
     isValidating,
+    getInputStyle,
+    getHelperText,
+    setFieldErrors,
   };
 };
