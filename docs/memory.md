@@ -240,6 +240,91 @@ src/components/Dashboard/
 
 ## 🔄 Refactoring Log
 
+### 14 giugno 2025 - Epic A #4: Inserimento manuale fornitori accreditati
+
+**IMPLEMENTAZIONE IN CORSO**: Sistema di inserimento manuale per fornitori già accreditati
+
+**STEP #1 ✅ COMPLETATO** - Aggiornamento Domain Entity e Command/Query
+- ✅ Creati enum: `EntityType`, `RoleInSupplyChain`, `AccreditationStatus`
+- ✅ Estesa entità `SupplyNetworkEntities` con 20+ nuovi campi obbligatori:
+  - Identificazione: `ExternalCode`, `EntityType`, `ParentId`
+  - Denominazione: `LegalName`, `ShortName`
+  - Dati fiscali: `VatCode`, `TaxCode`
+  - Indirizzo completo: `Country`, `Region`, `City`, `Address`, `ZipCode`
+  - Contatti: `Email`, `PhoneNumber`, `ContactPersonName`
+  - Supply Chain: `RoleInSupplyChain`, `Tags[]`
+  - Status: `Active`, `AccreditationStatus`, `AccreditationDate`, `DeactivationDate`
+- ✅ Mantenuta backward compatibility con proprietà obsolete
+- ✅ Aggiornata configurazione EF Core con indici e validazioni
+- ✅ Creato Command/Handler `CreateSupplyNetworkEntityCommand` con MediatR
+- ✅ Implementato Validator con validazioni async (P.IVA, Codice Esterno)
+- ✅ Creata Query `GetSupplyNetworkEntitiesQuery` con filtri e paginazione
+- ✅ Creato DTO `SupplyNetworkEntityDto` con AutoMapper
+- ✅ Implementato Controller `SupplyNetworkEntitiesController` con endpoint REST
+
+**STEP #2 🔄 IN CORSO** - Frontend Wizard Multi-Step
+- ✅ Creati tipi TypeScript completi in `types/supplyNetworkEntities.ts`
+- ✅ Implementato service `SupplyNetworkEntitiesService` per chiamate API
+- 🔄 Wizard multi-step con FormWizard component:
+  - Step 1: Entity Type & Role (con parent entity selection)
+  - Step 2: General Information (legal name, address, contacts)
+  - Step 3: Status & Contact (accreditation, tags)
+  - Step 4: Review & Submit (validazione finale)
+- ⚠️ Problema: Componenti @remira/unifiedui API diversa da MUI standard
+
+**STEP #3 ⏳ TODO** - Validazioni e Test
+- Migration EF Core per nuovi campi
+- Unit test per Command Handler
+- Integration test per Controller
+- Test frontend per wizard
+
+**File creati/modificati**:
+```
+api/SupplierPortal.Domain/Enums/
+├── EntityType.cs
+├── RoleInSupplyChain.cs
+└── AccreditationStatus.cs
+
+api/SupplierPortal.Domain/Entities/
+└── SupplyNetworkEntities.cs (esteso)
+
+api/SupplierPortal.Application/SupplyNetworkEntities/
+├── Commands/CreateSupplyNetworkEntityCommand.cs
+├── Commands/CreateSupplyNetworkEntityCommandHandler.cs
+├── Commands/CreateSupplyNetworkEntityCommandValidator.cs
+├── Queries/GetSupplyNetworkEntitiesQuery.cs
+├── Queries/GetSupplyNetworkEntitiesQueryHandler.cs
+└── DTOs/SupplyNetworkEntityDto.cs
+
+api/SupplierPortal.API/Controllers/
+└── SupplyNetworkEntitiesController.cs
+
+front/src/types/
+└── supplyNetworkEntities.ts
+
+front/src/services/
+└── supplyNetworkEntitiesService.ts
+
+front/src/components/SupplyNetworkEntities/
+└── FormWizard.tsx
+
+front/src/pages/
+└── NewSupplyNetworkEntity.tsx (wizard completo)
+```
+
+**Edge case gestiti**:
+- Validazione duplicati (ExternalCode, VatCode)
+- Validazione parent entity esistente
+- Campi condizionali basati su EntityType
+- Backward compatibility proprietà esistenti
+- Gestione errori API e UI
+
+**Prossimi step**:
+1. Risolvere API @remira/unifiedui per frontend
+2. Generare migration EF Core
+3. Test unitari e integrazione
+4. Deploy e validazione
+
 ### 14 giugno 2025 - Generalizzazione entità Supplier → SupplyNetworkEntities
 - **BREAKING CHANGE**: Rinominata entità `Supplier` in `SupplyNetworkEntities` per renderla più generica e adatta alla gestione della rete di fornitura
 - **Motivazione**: Generalizzare il concetto da singolo fornitore a generico attore della rete di fornitura (fornitori, subfornitori, partner, etc.)

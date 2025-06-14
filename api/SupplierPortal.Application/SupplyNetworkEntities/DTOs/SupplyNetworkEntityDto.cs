@@ -1,14 +1,19 @@
-using Remira.UCP.SupplierPortal.Domain.Common;
 using Remira.UCP.SupplierPortal.Domain.Enums;
+using Remira.UCP.SupplierPortal.Application.Interfaces;
+using Remira.UCP.SupplierPortal.Domain.Entities;
+using AutoMapper;
 
-namespace Remira.UCP.SupplierPortal.Domain.Entities;
+namespace Remira.UCP.SupplierPortal.Application.SupplyNetworkEntities.DTOs;
 
-public class SupplyNetworkEntities : BaseAuditableEntity
+public class SupplyNetworkEntityDto : IMapFrom<Domain.Entities.SupplyNetworkEntities>
 {
+    public Guid Id { get; set; }
+    
     // Identificazione
     public string ExternalCode { get; set; } = string.Empty;
     public EntityType EntityType { get; set; }
     public Guid? ParentId { get; set; }
+    public string? ParentName { get; set; }
     
     // Denominazione
     public string LegalName { get; set; } = string.Empty;
@@ -19,7 +24,7 @@ public class SupplyNetworkEntities : BaseAuditableEntity
     public string TaxCode { get; set; } = string.Empty;
     
     // Indirizzo
-    public string Country { get; set; } = string.Empty; // ISO 3166-1 alpha-2
+    public string Country { get; set; } = string.Empty;
     public string Region { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
@@ -35,24 +40,20 @@ public class SupplyNetworkEntities : BaseAuditableEntity
     public string[] Tags { get; set; } = Array.Empty<string>();
     
     // Stato
-    public bool Active { get; set; } = true;
-    public AccreditationStatus AccreditationStatus { get; set; } = AccreditationStatus.Draft;
+    public bool Active { get; set; }
+    public AccreditationStatus AccreditationStatus { get; set; }
     public DateTime? AccreditationDate { get; set; }
     public DateTime? DeactivationDate { get; set; }
     
-    // Backward compatibility properties (deprecati ma mantenuti per non rompere il DB)
-    [Obsolete("Use LegalName instead")]
-    public string Name => LegalName;
-    
-    [Obsolete("Use ExternalCode instead")]
-    public string Code => ExternalCode;
-    
-    [Obsolete("Use Active instead")]
-    public bool IsActive => Active;
-    
-    // Navigation properties
-    public SupplyNetworkEntities? Parent { get; set; }
-    public ICollection<SupplyNetworkEntities> Children { get; set; } = new List<SupplyNetworkEntities>();
-    public ICollection<Questionnaire> Questionnaires { get; set; } = new List<Questionnaire>();
-    public ICollection<UserSupplier> UserSuppliers { get; set; } = new List<UserSupplier>();
+    // Audit
+    public DateTime Created { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime? LastModified { get; set; }
+    public string? LastModifiedBy { get; set; }
+
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<Domain.Entities.SupplyNetworkEntities, SupplyNetworkEntityDto>()
+            .ForMember(d => d.ParentName, opt => opt.MapFrom(s => s.Parent != null ? s.Parent.LegalName : null));
+    }
 }

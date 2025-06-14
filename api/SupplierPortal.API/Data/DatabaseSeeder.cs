@@ -77,35 +77,44 @@ public static class DatabaseSeeder
         await context.Users.AddRangeAsync(users);
 
         // Suppliers di test
-        var suppliers = new List<SupplyNetworkEntities>
+        var suppliers = new List<Domain.Entities.SupplyNetworkEntities>
         {
-            new SupplyNetworkEntities
+            new Domain.Entities.SupplyNetworkEntities
             {
                 Id = Guid.NewGuid(),
-                Name = "Acme Corporation",
-                Code = "ACME001",
+                LegalName = "Acme Corporation",
+                ExternalCode = "ACME001",
                 Email = "contact@acme.com",
-                IsActive = true,
+                Active = true,
+                EntityType = Domain.Enums.EntityType.Supplier,
+                RoleInSupplyChain = Domain.Enums.RoleInSupplyChain.Manufacturer,
+                AccreditationStatus = Domain.Enums.AccreditationStatus.Approved,
                 Created = DateTime.UtcNow,
                 CreatedBy = "system"
             },
-            new SupplyNetworkEntities
+            new Domain.Entities.SupplyNetworkEntities
             {
                 Id = Guid.NewGuid(),
-                Name = "TechSolutions Ltd",
-                Code = "TECH002",
+                LegalName = "TechSolutions Ltd",
+                ExternalCode = "TECH002",
                 Email = "info@techsolutions.com",
-                IsActive = true,
+                Active = true,
+                EntityType = Domain.Enums.EntityType.Supplier,
+                RoleInSupplyChain = Domain.Enums.RoleInSupplyChain.Agent,
+                AccreditationStatus = Domain.Enums.AccreditationStatus.Approved,
                 Created = DateTime.UtcNow,
                 CreatedBy = "system"
             },
-            new SupplyNetworkEntities
+            new Domain.Entities.SupplyNetworkEntities
             {
                 Id = Guid.NewGuid(),
-                Name = "Global Manufacturing",
-                Code = "GLOB003",
+                LegalName = "Global Manufacturing",
+                ExternalCode = "GLOB003",
                 Email = "orders@globalmanuf.com",
-                IsActive = true,
+                Active = true,
+                EntityType = Domain.Enums.EntityType.Supplier,
+                RoleInSupplyChain = Domain.Enums.RoleInSupplyChain.Manufacturer,
+                AccreditationStatus = Domain.Enums.AccreditationStatus.Approved,
                 Created = DateTime.UtcNow,
                 CreatedBy = "system"
             }
@@ -120,9 +129,9 @@ public static class DatabaseSeeder
         var agent1 = users.First(u => u.Email == "luca.bianchi@remira.com");
         var agent2 = users.First(u => u.Email == "sara.neri@remira.com");
 
-        var supplier1 = suppliers.First(s => s.Code == "ACME001");
-        var supplier2 = suppliers.First(s => s.Code == "TECH002");
-        var supplier3 = suppliers.First(s => s.Code == "GLOB003");
+        var supplier1 = suppliers.First(s => s.ExternalCode == "ACME001");
+        var supplier2 = suppliers.First(s => s.ExternalCode == "TECH002");
+        var supplier3 = suppliers.First(s => s.ExternalCode == "GLOB003");
 
         // UserSuppliers (assegnazioni user-supplier)
         var userSuppliers = new List<UserSupplier>

@@ -8,7 +8,7 @@ public interface IApplicationDbContext
 {
     DbSet<Test> Test { get; }
     DbSet<User> Users { get; }
-    DbSet<SupplyNetworkEntities> Suppliers { get; }
+    DbSet<Domain.Entities.SupplyNetworkEntities> Suppliers { get; }
     DbSet<UserSupplier> UserSuppliers { get; }
     DbSet<AgentAssignment> AgentAssignments { get; }
     DbSet<Questionnaire> Questionnaires { get; }
