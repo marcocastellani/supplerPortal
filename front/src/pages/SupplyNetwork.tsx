@@ -1,7 +1,6 @@
 import { Container, Grid, Text } from "@remira/unifiedui";
 
 export const SupplyNetwork = () => {
-
   return (
     <Container type="page">
       <Grid container rowSpacing={3} sx={{ paddingTop: 5 }}>

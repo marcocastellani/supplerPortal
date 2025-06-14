@@ -36,9 +36,18 @@ export const Routes = ({ isMicrofrontend }: RoutesProps) => {
             <Route path="" element={<Home />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="supply-network" element={<SupplyNetwork />} />
-            <Route path="supply-network/new" element={<NewSupplyNetworkEntity />} />
-            <Route path="questionnaires/templates" element={<QuestionnaireTemplates />} />
-            <Route path="questionnaires/assignments" element={<QuestionnaireAssignments />} />
+            <Route
+              path="supply-network/new"
+              element={<NewSupplyNetworkEntity />}
+            />
+            <Route
+              path="questionnaires/templates"
+              element={<QuestionnaireTemplates />}
+            />
+            <Route
+              path="questionnaires/assignments"
+              element={<QuestionnaireAssignments />}
+            />
             <Route path="kpi/dashboard" element={<KPIDashboard />} />
             <Route path="kpi/thresholds" element={<KPIThresholds />} />
             <Route path="audits" element={<Audits />} />

@@ -6,9 +6,7 @@ export const QuestionnaireTemplates = () => {
       <Grid container rowSpacing={3} sx={{ paddingTop: 5 }}>
         <Grid item xs={12}>
           <Text variant="h3">Gestione Template</Text>
-          <Text variant="body1">
-            Gestione template questionari
-          </Text>
+          <Text variant="body1">Gestione template questionari</Text>
         </Grid>
       </Grid>
     </Container>
