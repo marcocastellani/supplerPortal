@@ -24,7 +24,7 @@ Creare una dashboard iniziale che mostri agli utenti le loro scadenze. Queste sc
 
 ## 📖 User Stories
 
-### #1 - Visualizzazione questionari in scadenza (Utente) 
+### #1 - Visualizzazione questionari in scadenza (Utente) - DONE ✅
 **Come** utente  
 **Voglio** visualizzare i questionari dei miei fornitori assegnati in scadenza nelle prossime 4 settimane  
 **Così da** non perdere deadline importanti e sollecitare i fornitori o bloccarli
