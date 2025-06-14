@@ -1,13 +1,13 @@
-import React from 'react';
-import { Grid, Text, Input, Select } from '@remira/unifiedui';
-import { RequiredFieldsLegend, FormLabel } from '../../Forms';
+import React from "react";
+import { Grid, Text, Input, Select } from "@remira/unifiedui";
+import { RequiredFieldsLegend, FormLabel } from "../../Forms";
 import {
   EntityType,
   RoleInSupplyChain,
   AccreditationStatus,
   SupplyNetworkEntityFormData,
   EnumValues,
-} from '../../../types/supplyNetworkEntities';
+} from "../../../types/supplyNetworkEntities";
 
 interface StatusContactStepProps {
   formData: SupplyNetworkEntityFormData;
@@ -44,7 +44,10 @@ export const StatusContactStep: React.FC<StatusContactStepProps> = ({
             value={formData.accreditationStatus || ""}
             onChange={(event, option: any) => {
               const newValue = option?.value || event?.target?.value;
-              onInputChange("accreditationStatus", newValue as AccreditationStatus);
+              onInputChange(
+                "accreditationStatus",
+                newValue as AccreditationStatus
+              );
             }}
             options={enumValues.accreditationStatuses.map((status) => ({
               value: status.value,
@@ -78,7 +81,9 @@ export const StatusContactStep: React.FC<StatusContactStepProps> = ({
             <Input
               label="Contact Person Name"
               value={formData.contactPersonName}
-              onChange={(value: string) => onInputChange("contactPersonName", value)}
+              onChange={(value: string) =>
+                onInputChange("contactPersonName", value)
+              }
               fullWidth
             />
           </Grid>

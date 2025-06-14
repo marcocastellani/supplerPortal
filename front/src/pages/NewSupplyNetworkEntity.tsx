@@ -51,7 +51,12 @@ export const NewSupplyNetworkEntity = () => {
   const [tagsInputValue, setTagsInputValue] = useState<string>(""); // Local state for tags input
 
   // Use custom hook for error handling
-  const { error, errorType, handleError: hookHandleError, clearError } = useErrorHandling();
+  const {
+    error,
+    errorType,
+    handleError: hookHandleError,
+    clearError,
+  } = useErrorHandling();
 
   // Use custom hook for form validation
   const {

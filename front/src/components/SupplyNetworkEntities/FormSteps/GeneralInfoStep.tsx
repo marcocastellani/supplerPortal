@@ -1,8 +1,13 @@
-import React from 'react';
-import { Grid, Text, Input, Select } from '@remira/unifiedui';
-import { RequiredFieldsLegend, ErrorMessage, ValidationProgress, FormLabel } from '../../Forms';
-import { ISO_COUNTRIES } from '../../../utils/countries';
-import { SupplyNetworkEntityFormData } from '../../../types/supplyNetworkEntities';
+import React from "react";
+import { Grid, Text, Input, Select } from "@remira/unifiedui";
+import {
+  RequiredFieldsLegend,
+  ErrorMessage,
+  ValidationProgress,
+  FormLabel,
+} from "../../Forms";
+import { ISO_COUNTRIES } from "../../../utils/countries";
+import { SupplyNetworkEntityFormData } from "../../../types/supplyNetworkEntities";
 
 interface GeneralInfoStepProps {
   formData: SupplyNetworkEntityFormData;
@@ -17,15 +22,20 @@ interface GeneralInfoStepProps {
     externalCode?: boolean;
   };
   onInputChange: (field: keyof SupplyNetworkEntityFormData, value: any) => void;
-  onFieldBlur: (field: keyof SupplyNetworkEntityFormData, value: string) => void;
+  onFieldBlur: (
+    field: keyof SupplyNetworkEntityFormData,
+    value: string
+  ) => void;
   getInputStyle: (fieldName: string) => any;
   getHelperText: (fieldName: string, defaultText: string) => string;
-  setFieldErrors: React.Dispatch<React.SetStateAction<{
-    legalName?: string;
-    externalCode?: string;
-    email?: string;
-    country?: string;
-  }>>;
+  setFieldErrors: React.Dispatch<
+    React.SetStateAction<{
+      legalName?: string;
+      externalCode?: string;
+      email?: string;
+      country?: string;
+    }>
+  >;
 }
 
 export const GeneralInfoStep: React.FC<GeneralInfoStepProps> = ({
@@ -63,7 +73,9 @@ export const GeneralInfoStep: React.FC<GeneralInfoStepProps> = ({
             style={getInputStyle("legalName")}
           />
           <ErrorMessage message={fieldErrors.legalName} />
-          <ValidationProgress isValidating={validationInProgress.legalName || false} />
+          <ValidationProgress
+            isValidating={validationInProgress.legalName || false}
+          />
         </Grid>
 
         <Grid item xs={12} md={4}>
@@ -86,11 +98,16 @@ export const GeneralInfoStep: React.FC<GeneralInfoStepProps> = ({
             value={formData.externalCode}
             onChange={(value: string) => onInputChange("externalCode", value)}
             fullWidth
-            helperText={getHelperText("externalCode", "ERP, PLM reference code (optional)")}
+            helperText={getHelperText(
+              "externalCode",
+              "ERP, PLM reference code (optional)"
+            )}
             style={getInputStyle("externalCode")}
           />
           <ErrorMessage message={fieldErrors.externalCode} />
-          <ValidationProgress isValidating={validationInProgress.externalCode || false} />
+          <ValidationProgress
+            isValidating={validationInProgress.externalCode || false}
+          />
         </Grid>
 
         <Grid item xs={12} md={6}>
@@ -154,7 +171,10 @@ export const GeneralInfoStep: React.FC<GeneralInfoStepProps> = ({
             }}
             options={ISO_COUNTRIES}
             fullWidth
-            helperText={getHelperText("country", "Select country (ISO 3166-1 alpha-2)")}
+            helperText={getHelperText(
+              "country",
+              "Select country (ISO 3166-1 alpha-2)"
+            )}
           />
           <ErrorMessage message={fieldErrors.country} />
         </Grid>

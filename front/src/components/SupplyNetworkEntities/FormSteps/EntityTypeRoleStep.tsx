@@ -1,14 +1,14 @@
-import React from 'react';
-import { Grid, Text, Select } from '@remira/unifiedui';
-import { EntitySelector } from '../EntitySelector';
-import { RequiredFieldsLegend, FormLabel } from '../../Forms';
+import React from "react";
+import { Grid, Text, Select } from "@remira/unifiedui";
+import { EntitySelector } from "../EntitySelector";
+import { RequiredFieldsLegend, FormLabel } from "../../Forms";
 import {
   EntityType,
   RoleInSupplyChain,
   SupplyNetworkEntityFormData,
   EnumValues,
   SupplyNetworkEntitySearchResultDto,
-} from '../../../types/supplyNetworkEntities';
+} from "../../../types/supplyNetworkEntities";
 
 interface EntityTypeRoleStepProps {
   formData: SupplyNetworkEntityFormData;

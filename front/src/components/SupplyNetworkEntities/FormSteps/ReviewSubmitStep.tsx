@@ -1,6 +1,6 @@
-import React from 'react';
-import { Grid, Text } from '@remira/unifiedui';
-import { SupplyNetworkEntityFormData } from '../../../types/supplyNetworkEntities';
+import React from "react";
+import { Grid, Text } from "@remira/unifiedui";
+import { SupplyNetworkEntityFormData } from "../../../types/supplyNetworkEntities";
 
 interface ReviewSubmitStepProps {
   formData: SupplyNetworkEntityFormData;
