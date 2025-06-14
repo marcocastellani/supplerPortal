@@ -1,13 +1,7 @@
-import React from 'react';
-import {
-  Grid,
-  Box,
-  Typography,
-  Stack,
-  Fade,
-} from '@mui/material';
-import { UpcomingQuestionnaireDto } from '../../types/dashboard';
-import { QuestionnaireCard } from './QuestionnaireCard';
+import React from "react";
+import { Grid, Box, Typography, Stack, Fade } from "@mui/material";
+import { UpcomingQuestionnaireDto } from "../../types/dashboard";
+import { QuestionnaireCard } from "./QuestionnaireCard";
 
 interface QuestionnaireGridProps {
   questionnaires: UpcomingQuestionnaireDto[];
@@ -18,16 +12,18 @@ export const QuestionnaireGrid: React.FC<QuestionnaireGridProps> = ({
   questionnaires,
   onQuestionnaireAction,
 }) => {
-  const urgentCount = questionnaires.filter(q => q.daysToDeadline <= 2 || q.isOverdue).length;
-  const overdueCount = questionnaires.filter(q => q.isOverdue).length;
+  const urgentCount = questionnaires.filter(
+    (q) => q.daysToDeadline <= 2 || q.isOverdue
+  ).length;
+  const overdueCount = questionnaires.filter((q) => q.isOverdue).length;
 
   if (!questionnaires || questionnaires.length === 0) {
     return (
-      <Box 
-        sx={{ 
-          textAlign: 'center', 
+      <Box
+        sx={{
+          textAlign: "center",
           py: 8,
-          color: 'text.secondary'
+          color: "text.secondary",
         }}
       >
         <Typography variant="h6" gutterBottom>
@@ -45,30 +41,30 @@ export const QuestionnaireGrid: React.FC<QuestionnaireGridProps> = ({
       {/* Statistics */}
       <Box sx={{ mb: 3 }}>
         <Stack direction="row" spacing={4} sx={{ mb: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Typography variant="body2" color="text.secondary">
-              Totale: 
+              Totale:
             </Typography>
             <Typography variant="h6" color="primary">
               {questionnaires.length}
             </Typography>
           </Box>
-          
+
           {urgentCount > 0 && (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <Typography variant="body2" color="text.secondary">
-                Urgenti: 
+                Urgenti:
               </Typography>
               <Typography variant="h6" color="warning.main">
                 {urgentCount}
               </Typography>
             </Box>
           )}
-          
+
           {overdueCount > 0 && (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <Typography variant="body2" color="text.secondary">
-                In ritardo: 
+                In ritardo:
               </Typography>
               <Typography variant="h6" color="error.main">
                 {overdueCount}
@@ -82,8 +78,8 @@ export const QuestionnaireGrid: React.FC<QuestionnaireGridProps> = ({
       <Grid container spacing={3}>
         {questionnaires.map((questionnaire, index) => (
           <Grid item xs={12} sm={6} lg={4} key={questionnaire.id}>
-            <Fade 
-              in={true} 
+            <Fade
+              in={true}
               timeout={300}
               style={{ transitionDelay: `${index * 100}ms` }}
             >

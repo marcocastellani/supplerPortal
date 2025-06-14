@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { GetUpcomingQuestionnairesResponse, DashboardFilters, UpcomingQuestionnaireDto } from '../types/dashboard';
+import {  DashboardFilters, UpcomingQuestionnaireDto } from '../types/dashboard';
 
 // L'URL base è già configurato da setAxiosDefaultBaseUrl in App.tsx
 export const dashboardApi = {
-  getUpcomingQuestionnaires: async (filters: DashboardFilters = {}): Promise<GetUpcomingQuestionnairesResponse> => {
+  getUpcomingQuestionnaires: async (filters: DashboardFilters = {}): Promise<UpcomingQuestionnaireDto[]> => {
     const params = new URLSearchParams();
     
     // Aggiungo la versione API richiesta
@@ -24,7 +24,7 @@ export const dashboardApi = {
     const response = await axios.get('/api/dashboard/questionnaires', {
       params
     });
-
+    console.log("Response data:", response.data);
     return response.data;
   }
 };
@@ -32,5 +32,5 @@ export const dashboardApi = {
 // Simplified function for the new component
 export const getDashboardQuestionnaires = async (): Promise<UpcomingQuestionnaireDto[]> => {
   const result = await dashboardApi.getUpcomingQuestionnaires();
-  return result.questionnaires;
+  return result;
 };

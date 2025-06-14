@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   FormControl,
@@ -10,13 +10,8 @@ import {
   Stack,
   IconButton,
   Collapse,
-} from '@mui/material';
-import { 
-  FilterList, 
-  ExpandMore, 
-  ExpandLess,
-  Clear 
-} from '@mui/icons-material';
+} from "@mui/material";
+import { FilterList, ExpandMore, ExpandLess, Clear } from "@mui/icons-material";
 
 export interface DashboardFiltersProps {
   suppliers: string[];
@@ -32,14 +27,14 @@ export interface DashboardFiltersProps {
 export const DashboardFilters: React.FC<DashboardFiltersProps> = ({
   suppliers,
   onFiltersChange,
-  isLoading = false
+  isLoading = false,
 }) => {
   const [expanded, setExpanded] = useState(false);
   const [filters, setFilters] = useState({
-    status: 'all',
-    priority: 'all',
-    supplier: 'all',
-    search: ''
+    status: "all",
+    priority: "all",
+    supplier: "all",
+    search: "",
   });
 
   const handleFilterChange = (key: string, value: string) => {
@@ -50,10 +45,10 @@ export const DashboardFilters: React.FC<DashboardFiltersProps> = ({
 
   const handleClearFilters = () => {
     const clearedFilters = {
-      status: 'all',
-      priority: 'all',
-      supplier: 'all',
-      search: ''
+      status: "all",
+      priority: "all",
+      supplier: "all",
+      search: "",
     };
     setFilters(clearedFilters);
     onFiltersChange(clearedFilters);
@@ -61,21 +56,27 @@ export const DashboardFilters: React.FC<DashboardFiltersProps> = ({
 
   return (
     <Paper elevation={1} sx={{ p: 2 }}>
-      <Box 
-        sx={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between',
-          cursor: 'pointer'
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          cursor: "pointer",
         }}
         onClick={() => setExpanded(!expanded)}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <FilterList />
           <span>Filtri</span>
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleClearFilters(); }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <IconButton
+            size="small"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClearFilters();
+            }}
+          >
             <Clear />
           </IconButton>
           {expanded ? <ExpandLess /> : <ExpandMore />}
@@ -83,12 +84,16 @@ export const DashboardFilters: React.FC<DashboardFiltersProps> = ({
       </Box>
 
       <Collapse in={expanded}>
-        <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ mt: 2 }}>
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          spacing={2}
+          sx={{ mt: 2 }}
+        >
           {/* Search */}
           <TextField
             label="Cerca"
             value={filters.search}
-            onChange={(e) => handleFilterChange('search', e.target.value)}
+            onChange={(e) => handleFilterChange("search", e.target.value)}
             variant="outlined"
             size="small"
             disabled={isLoading}
@@ -101,7 +106,7 @@ export const DashboardFilters: React.FC<DashboardFiltersProps> = ({
             <Select
               value={filters.status}
               label="Stato"
-              onChange={(e) => handleFilterChange('status', e.target.value)}
+              onChange={(e) => handleFilterChange("status", e.target.value)}
               disabled={isLoading}
             >
               <MenuItem value="all">Tutti</MenuItem>
@@ -118,7 +123,7 @@ export const DashboardFilters: React.FC<DashboardFiltersProps> = ({
             <Select
               value={filters.priority}
               label="Priorità"
-              onChange={(e) => handleFilterChange('priority', e.target.value)}
+              onChange={(e) => handleFilterChange("priority", e.target.value)}
               disabled={isLoading}
             >
               <MenuItem value="all">Tutte</MenuItem>
@@ -134,7 +139,7 @@ export const DashboardFilters: React.FC<DashboardFiltersProps> = ({
             <Select
               value={filters.supplier}
               label="Fornitore"
-              onChange={(e) => handleFilterChange('supplier', e.target.value)}
+              onChange={(e) => handleFilterChange("supplier", e.target.value)}
               disabled={isLoading}
             >
               <MenuItem value="all">Tutti</MenuItem>
