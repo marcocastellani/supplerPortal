@@ -142,3 +142,20 @@ export interface EnumValues {
   rolesInSupplyChain: EnumOption[];
   accreditationStatuses: EnumOption[];
 }
+
+// Search Result DTO (simplified for typeahead)
+export interface SupplyNetworkEntitySearchResultDto {
+  id: string;
+  legalName: string;
+  externalCode?: string;
+  shortName?: string;
+  entityType: string;
+  vatCode?: string;
+  email?: string;
+  contactPersonName?: string;
+  city?: string;
+  country?: string;
+  displayText: string;  // Computed field from backend
+}
+
+// Query & Command DTOs

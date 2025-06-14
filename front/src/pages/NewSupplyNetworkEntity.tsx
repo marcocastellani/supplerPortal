@@ -4,6 +4,7 @@ import {
   FormWizard,
   WizardStep,
 } from "../components/SupplyNetworkEntities/FormWizard";
+import { EntitySelector } from "../components/SupplyNetworkEntities/EntitySelector";
 import { SupplyNetworkEntitiesService } from "../services/supplyNetworkEntitiesService";
 import {
   EntityType,
@@ -11,7 +12,7 @@ import {
   AccreditationStatus,
   SupplyNetworkEntityFormData,
   EnumValues,
-  SupplyNetworkEntityDto,
+  SupplyNetworkEntitySearchResultDto,
 } from "../types/supplyNetworkEntities";
 
 export const NewSupplyNetworkEntity = () => {
@@ -38,9 +39,7 @@ export const NewSupplyNetworkEntity = () => {
   });
 
   const [enumValues, setEnumValues] = useState<EnumValues | null>(null);
-  const [potentialParents, setPotentialParents] = useState<
-    SupplyNetworkEntityDto[]
-  >([]);
+  const [selectedParent, setSelectedParent] = useState<SupplyNetworkEntitySearchResultDto | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -99,18 +98,7 @@ export const NewSupplyNetworkEntity = () => {
       }
     };
 
-    const loadPotentialParents = async () => {
-      try {
-        const parents =
-          await SupplyNetworkEntitiesService.getPotentialParents();
-        setPotentialParents(parents);
-      } catch (error) {
-        console.error("Failed to load potential parents:", error);
-      }
-    };
-
     loadEnumValues();
-    loadPotentialParents();
   }, []);
 
   const handleInputChange = (
@@ -335,18 +323,16 @@ export const NewSupplyNetworkEntity = () => {
 
           {formData.isSubEntity && (
             <Grid item xs={12}>
-              <Select
+              <EntitySelector
                 label="Parent Entity"
-                value={formData.parentId || ""}
-                onChange={(event, option: any) => {
-                  const newValue = option?.value || event?.target?.value;
-                  handleInputChange("parentId", newValue);
+                value={selectedParent}
+                onChange={(entity) => {
+                  setSelectedParent(entity);
+                  handleInputChange("parentId", entity?.id || "");
                 }}
-                options={potentialParents.map((parent) => ({
-                  value: parent.id,
-                  label: parent.legalName,
-                }))}
-                fullWidth
+                entityType={EntityType.Supplier}
+                placeholder="Type at least 3 characters to search for parent entity..."
+                helperText="Search by name, code, VAT number, city, or contact person"
               />
             </Grid>
           )}

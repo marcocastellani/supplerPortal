@@ -6,7 +6,8 @@ import {
   ValidateFieldResponse,
   EnumValues,
   EntityType,
-  AccreditationStatus
+  AccreditationStatus,
+  SupplyNetworkEntitySearchResultDto
 } from '../types/supplyNetworkEntities';
 
 export class SupplyNetworkEntitiesService {
@@ -125,5 +126,35 @@ export class SupplyNetworkEntitiesService {
     });
     
     return result.items;
+  }
+
+  /**
+   * Search for supply network entities (typeahead)
+   */
+  static async searchSupplyNetworkEntities(params: {
+    searchTerm: string;
+    entityType?: EntityType;
+    maxResults?: number;
+    activeOnly?: boolean;
+  }): Promise<SupplyNetworkEntitySearchResultDto[]> {
+    const queryParams = new URLSearchParams();
+    queryParams.append('api-version', '2025-06-01');
+    queryParams.append('searchTerm', params.searchTerm);
+    
+    if (params.entityType) {
+      queryParams.append('entityType', params.entityType);
+    }
+    if (params.maxResults) {
+      queryParams.append('maxResults', params.maxResults.toString());
+    }
+    if (params.activeOnly !== undefined) {
+      queryParams.append('activeOnly', params.activeOnly.toString());
+    }
+
+    const response = await axios.get('/api/supplynetworkentities/search', {
+      params: queryParams
+    });
+
+    return response.data;
   }
 }
