@@ -6,18 +6,18 @@ Questo documento descrive lo scopo e l'utilizzo dei file principali nel progetto
 
 | File/Cartella                                                       | Descrizione                                                                 |
 |---------------------------------------------------------------------|-----------------------------------------------------------------------------|
-| `SupplierPortal.Domain/Entities/User.cs`                          | Entità dominio User con relazioni verso Supplier e Agent                   |
-| `SupplierPortal.Domain/Entities/Supplier.cs`                      | Entità dominio Supplier con questionari e utenti assegnati                 |
-| `SupplierPortal.Domain/Entities/UserSupplier.cs`                  | Tabella di relazione User-Supplier con ruolo                               |
+| `SupplierPortal.Domain/Entities/User.cs`                          | Entità dominio User con relazioni verso SupplyNetworkEntities e Agent                   |
+| `SupplierPortal.Domain/Entities/SupplyNetworkEntities.cs`         | Entità dominio rete di fornitura (ex-Supplier) con questionari e utenti assegnati      |
+| `SupplierPortal.Domain/Entities/UserSupplier.cs`                  | Tabella di relazione User-SupplyNetworkEntities con ruolo                               |
 | `SupplierPortal.Domain/Entities/AgentAssignment.cs`               | Assegnazione di agent a fornitori per specifici utenti                     |
 | `SupplierPortal.Domain/Entities/Questionnaire.cs`                 | Entità questionario con scadenze e assegnazioni + enum QuestionnaireStatus |
 | `SupplierPortal.Domain/Entities/Remediation.cs`                   | Entità remediation collegata ai questionari + enum RemediationStatus       |
-| `SupplierPortal.Infrastructure/Configurations/*Configuration.cs`   | Configurazioni EF Core per tutte le entità con constraint ON DELETE NO ACTION |
+| `SupplierPortal.Infrastructure/Configurations/*Configuration.cs`   | Configurazioni EF Core per tutte le entità con constraint ON DELETE NO ACTION, inclusa SupplyNetworkEntitiesConfiguration |
 | `SupplierPortal.Infrastructure/Migrations/20250613225731_InitialCreate.cs` | Migrazione EF Core applicata al database Azure SQL Edge        |
 | `SupplierPortal.Application/Dashboard/Queries/GetUpcomingQuestionnaires/*` | Query CQRS/MediatR per recuperare questionari in scadenza    |
 | `SupplierPortal.Application/Common/Extensions/DateTimeExtensions.cs` | Extension methods per calcoli date e scadenze                           |
 | `SupplierPortal.API/Controllers/DashboardController.cs`           | Controller API per esporre endpoint dashboard con versioning                |
-| `SupplierPortal.API/Data/DatabaseSeeder.cs`                       | ⭐ Seeder per dati di test (8 questionari, 4 users, 3 suppliers)          |
+| `SupplierPortal.API/Data/DatabaseSeeder.cs`                       | ⭐ Seeder per dati di test (8 questionari, 4 users, 3 supply network entities)          |
 | `SupplierPortal.API/Program.cs`                                   | ⭐ Configurazione CORS per sviluppo + chiamata al DatabaseSeeder            |
 | `tests/SupplierPortal.Application.IntegrationTests/Dashboard/*`    | Test di integrazione completi con testcontainer SQL Server                 |
 
@@ -216,3 +216,17 @@ src/components/Dashboard/
 - `front/src/components/Dashboard/DashboardQuestionnaires.tsx` - UnifiedUI + edge cases
 - `front/public/locales/en/translation.json` - Traduzioni errori
 - `api/tests/SupplierPortal.Application.UnitTests/Dashboard/` - Test corretti
+
+## 🔄 Refactoring Log
+
+### 14 giugno 2025 - Generalizzazione entità Supplier
+- **BREAKING CHANGE**: Rinominata entità `Supplier` in `SupplyNetworkEntities` per renderla più generica
+- **File coinvolti**:
+  - `SupplierPortal.Domain/Entities/Supplier.cs` → `SupplyNetworkEntities.cs`
+  - `SupplierPortal.Infrastructure/Configurations/SupplierConfiguration.cs` → `SupplyNetworkEntitiesConfiguration.cs`
+  - Aggiornate tutte le navigation properties nelle entità correlate (`UserSupplier`, `Questionnaire`)
+  - Aggiornati DbContext e interfacce
+  - Aggiornato DatabaseSeeder per utilizzare la nuova entità
+- **Stato database**: Serve migration per rinominare tabella da `Suppliers` a `SupplyNetworkEntities`
+- **Test**: ✅ Unit tests (6/6) e Integration tests (6/6) passano
+- **Build**: ✅ Compilazione riuscita senza errori

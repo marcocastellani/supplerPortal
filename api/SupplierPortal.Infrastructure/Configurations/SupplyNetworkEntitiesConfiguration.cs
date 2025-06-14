@@ -4,9 +4,9 @@ using Remira.UCP.SupplierPortal.Domain.Entities;
 
 namespace Remira.UCP.SupplierPortal.Infrastructure.Configurations;
 
-public class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
+public class SupplyNetworkEntitiesConfiguration : IEntityTypeConfiguration<SupplyNetworkEntities>
 {
-    public void Configure(EntityTypeBuilder<Supplier> builder)
+    public void Configure(EntityTypeBuilder<SupplyNetworkEntities> builder)
     {
         builder.HasKey(s => s.Id);
         

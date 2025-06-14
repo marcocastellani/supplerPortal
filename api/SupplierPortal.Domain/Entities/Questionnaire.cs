@@ -31,7 +31,7 @@ public class Questionnaire : BaseAuditableEntity
     public Guid? AssignedAgentId { get; set; }
     
     // Navigation properties
-    public Supplier Supplier { get; set; } = null!;
+    public SupplyNetworkEntities Supplier { get; set; } = null!;
     public User? AssignedUser { get; set; }
     public User? AssignedAgent { get; set; }
     public ICollection<Remediation> Remediations { get; set; } = new List<Remediation>();

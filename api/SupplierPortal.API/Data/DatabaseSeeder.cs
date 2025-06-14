@@ -77,9 +77,9 @@ public static class DatabaseSeeder
         await context.Users.AddRangeAsync(users);
 
         // Suppliers di test
-        var suppliers = new List<Supplier>
+        var suppliers = new List<SupplyNetworkEntities>
         {
-            new Supplier
+            new SupplyNetworkEntities
             {
                 Id = Guid.NewGuid(),
                 Name = "Acme Corporation",
@@ -89,7 +89,7 @@ public static class DatabaseSeeder
                 Created = DateTime.UtcNow,
                 CreatedBy = "system"
             },
-            new Supplier
+            new SupplyNetworkEntities
             {
                 Id = Guid.NewGuid(),
                 Name = "TechSolutions Ltd",
@@ -99,7 +99,7 @@ public static class DatabaseSeeder
                 Created = DateTime.UtcNow,
                 CreatedBy = "system"
             },
-            new Supplier
+            new SupplyNetworkEntities
             {
                 Id = Guid.NewGuid(),
                 Name = "Global Manufacturing",

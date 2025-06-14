@@ -9,5 +9,5 @@ public class UserSupplier : BaseAuditableEntity
     
     // Navigation properties
     public User User { get; set; } = null!;
-    public Supplier Supplier { get; set; } = null!;
+    public SupplyNetworkEntities Supplier { get; set; } = null!;
 }

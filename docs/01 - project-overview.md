@@ -23,22 +23,23 @@ Integrabile con sistemi documentali, di qualità e MES, il software diventa il c
 
 ## Epic & User Story
 
-### Epic: Accreditamento fornitori
+### Epic A: Accreditamento fornitori
 
-- Come buyer, voglio poter inviare una richiesta di accreditamento a un nuovo fornitore così da avviare il processo di onboarding in modo tracciabile.
-- Come fornitore, voglio compilare i dati richiesti per l’accreditamento in un’interfaccia chiara così da completare velocemente l’onboarding.
-- Come amministratore, voglio poter approvare o respingere le richieste in base a soglie e documenti ricevuti, così da garantire la compliance.
+1. Come buyer, voglio poter inviare una richiesta di accreditamento a un nuovo fornitore così da avviare il processo di onboarding in modo tracciabile.
+2. Come fornitore, voglio compilare i dati richiesti per l’accreditamento in un’interfaccia chiara così da completare velocemente l’onboarding.
+3. Come amministratore, voglio poter approvare o respingere le richieste in base a soglie e documenti ricevuti, così da garantire la compliance.
+4. come amministratiore, voglio poter inserire manualmente i miei fornitori in modo da non costringere i fornitori giá accreditati a riaccreditarsi.
 
-### Epic: Gestione questionari
+### Epic B: Gestione questionari
 
-- Come sustainability manager, voglio creare template personalizzati di questionari con domande condizionali così da raccogliere solo le informazioni rilevanti per ogni tipo di fornitore.
-- Come fornitore, voglio ricevere notifiche automatiche e compilare il questionario direttamente da web così da rispettare le scadenze.
-- Come valutatore, voglio analizzare le risposte e assegnare punteggi e commenti per ogni sezione così da avere una valutazione chiara e storicizzata.
+1. Come sustainability manager, voglio creare template personalizzati di questionari con domande condizionali così da raccogliere solo le informazioni rilevanti per ogni tipo di fornitore.
+2. Come fornitore, voglio ricevere notifiche automatiche e compilare il questionario direttamente da web così da rispettare le scadenze.
+3. Come valutatore, voglio analizzare le risposte e assegnare punteggi e commenti per ogni sezione così da avere una valutazione chiara e storicizzata.
 
-### Epic: KPI & Performance
+### Epic C: KPI & Performance
 
-- Come quality manager, voglio che il sistema generi automaticamente i KPI dei fornitori a partire dai dati raccolti così da avere un cruscotto sempre aggiornato.
-- Come decision-maker, voglio confrontare i KPI dei fornitori tra loro per categoria merceologica così da facilitare la selezione dei migliori partner.
+1. Come quality manager, voglio che il sistema generi automaticamente i KPI dei fornitori a partire dai dati raccolti così da avere un cruscotto sempre aggiornato.
+2. Come decision-maker, voglio confrontare i KPI dei fornitori tra loro per categoria merceologica così da facilitare la selezione dei migliori partner.
 
 ---
 

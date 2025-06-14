@@ -25,7 +25,7 @@ public class GetUpcomingQuestionnairesQueryTests : BaseTestFixture
             IsActive = true
         };
         
-        var supplier1 = new Supplier
+        var supplier1 = new SupplyNetworkEntities
         {
             Name = "Supplier 1",
             Code = "SUP001",
@@ -33,7 +33,7 @@ public class GetUpcomingQuestionnairesQueryTests : BaseTestFixture
             IsActive = true
         };
         
-        var supplier2 = new Supplier
+        var supplier2 = new SupplyNetworkEntities
         {
             Name = "Supplier 2", 
             Code = "SUP002",
@@ -107,7 +107,7 @@ public class GetUpcomingQuestionnairesQueryTests : BaseTestFixture
             IsActive = true
         };
         
-        var supplier = new Supplier
+        var supplier = new SupplyNetworkEntities
         {
             Name = "Test Supplier",
             Code = "TEST001",
@@ -180,7 +180,7 @@ public class GetUpcomingQuestionnairesQueryTests : BaseTestFixture
             IsActive = true
         };
         
-        var supplier = new Supplier
+        var supplier = new SupplyNetworkEntities
         {
             Name = "Test Supplier",
             Code = "TEST002",
@@ -253,7 +253,7 @@ public class GetUpcomingQuestionnairesQueryTests : BaseTestFixture
             IsActive = true
         };
         
-        var supplier = new Supplier
+        var supplier = new SupplyNetworkEntities
         {
             Name = "Test Supplier",
             Code = "TEST003",

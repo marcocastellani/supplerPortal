@@ -9,7 +9,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
     public DbSet<Test> Test => Set<Test>();
     public DbSet<User> Users => Set<User>();
-    public DbSet<Supplier> Suppliers => Set<Supplier>();
+    public DbSet<SupplyNetworkEntities> Suppliers => Set<SupplyNetworkEntities>();
     public DbSet<UserSupplier> UserSuppliers => Set<UserSupplier>();
     public DbSet<AgentAssignment> AgentAssignments => Set<AgentAssignment>();
     public DbSet<Questionnaire> Questionnaires => Set<Questionnaire>();

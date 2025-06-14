@@ -2,7 +2,7 @@ using Remira.UCP.SupplierPortal.Domain.Common;
 
 namespace Remira.UCP.SupplierPortal.Domain.Entities;
 
-public class Supplier : BaseAuditableEntity
+public class SupplyNetworkEntities : BaseAuditableEntity
 {
     public string Name { get; set; } = string.Empty;
     public string Code { get; set; } = string.Empty;
