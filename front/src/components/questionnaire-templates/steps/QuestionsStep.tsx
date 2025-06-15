@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -23,20 +23,29 @@ import {
   ListItemText,
   ListItemSecondaryAction,
   Chip,
-  Grid
-} from '@mui/material';
+  Grid,
+} from "@mui/material";
 import {
   Add as AddIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
-  DragIndicator as DragIcon
-} from '@mui/icons-material';
-import { TemplateQuestion, QuestionnaireSection, QuestionType } from '../../../types/questionnaire-templates';
+  DragIndicator as DragIcon,
+} from "@mui/icons-material";
+import {
+  TemplateQuestion,
+  QuestionnaireSection,
+  QuestionType,
+} from "../../../types/questionnaire-templates";
 
 interface QuestionsStepProps {
   questions: TemplateQuestion[];
   sections: QuestionnaireSection[];
-  onAdd: (question: Omit<TemplateQuestion, 'id' | 'createdAt' | 'questionnaireTemplateId'>) => void;
+  onAdd: (
+    question: Omit<
+      TemplateQuestion,
+      "id" | "createdAt" | "questionnaireTemplateId"
+    >
+  ) => void;
   onUpdate: (id: string, data: Partial<TemplateQuestion>) => void;
   onDelete: (id: string) => void;
   onReorder: (sectionId: string, fromIndex: number, toIndex: number) => void;
@@ -53,13 +62,13 @@ interface QuestionFormData {
 }
 
 const questionTypeLabels = {
-  [QuestionType.Text]: 'Text',
-  [QuestionType.Number]: 'Number',
-  [QuestionType.Boolean]: 'Yes/No',
-  [QuestionType.SingleChoice]: 'Single Choice',
-  [QuestionType.MultiChoice]: 'Multiple Choice',
-  [QuestionType.Date]: 'Date',
-  [QuestionType.FileUpload]: 'File Upload'
+  [QuestionType.Text]: "Text",
+  [QuestionType.Number]: "Number",
+  [QuestionType.Boolean]: "Yes/No",
+  [QuestionType.SingleChoice]: "Single Choice",
+  [QuestionType.MultiChoice]: "Multiple Choice",
+  [QuestionType.Date]: "Date",
+  [QuestionType.FileUpload]: "File Upload",
 };
 
 export const QuestionsStep: React.FC<QuestionsStepProps> = ({
@@ -69,17 +78,18 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
   onUpdate,
   onDelete,
   onReorder,
-  errors
+  errors,
 }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingQuestion, setEditingQuestion] = useState<TemplateQuestion | null>(null);
+  const [editingQuestion, setEditingQuestion] =
+    useState<TemplateQuestion | null>(null);
   const [formData, setFormData] = useState<QuestionFormData>({
-    title: '',
-    description: '',
+    title: "",
+    description: "",
     questionType: QuestionType.Text,
-    sectionId: '',
+    sectionId: "",
     isRequired: false,
-    configuration: {}
+    configuration: {},
   });
   const [formErrors, setFormErrors] = useState<string[]>([]);
 
@@ -88,21 +98,21 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
       setEditingQuestion(question);
       setFormData({
         title: question.title,
-        description: question.description || '',
+        description: question.description || "",
         questionType: question.questionType,
         sectionId: question.sectionId,
         isRequired: question.isRequired,
-        configuration: question.configuration || {}
+        configuration: question.configuration || {},
       });
     } else {
       setEditingQuestion(null);
       setFormData({
-        title: '',
-        description: '',
+        title: "",
+        description: "",
         questionType: QuestionType.Text,
-        sectionId: sections[0]?.id || '',
+        sectionId: sections[0]?.id || "",
         isRequired: false,
-        configuration: {}
+        configuration: {},
       });
     }
     setFormErrors([]);
@@ -113,33 +123,33 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
     setDialogOpen(false);
     setEditingQuestion(null);
     setFormData({
-      title: '',
-      description: '',
+      title: "",
+      description: "",
       questionType: QuestionType.Text,
-      sectionId: '',
+      sectionId: "",
       isRequired: false,
-      configuration: {}
+      configuration: {},
     });
     setFormErrors([]);
   };
 
   const validateForm = (): boolean => {
     const errors: string[] = [];
-    
+
     if (!formData.title.trim()) {
-      errors.push('Question title is required');
+      errors.push("Question title is required");
     }
-    
+
     if (formData.title.length > 500) {
-      errors.push('Question title must be less than 500 characters');
+      errors.push("Question title must be less than 500 characters");
     }
-    
+
     if (!formData.sectionId) {
-      errors.push('Question must belong to a section');
+      errors.push("Question must belong to a section");
     }
 
     if (formData.description.length > 1000) {
-      errors.push('Question description must be less than 1000 characters');
+      errors.push("Question description must be less than 1000 characters");
     }
 
     setFormErrors(errors);
@@ -151,8 +161,10 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
       return;
     }
 
-    const sectionQuestions = questions.filter(q => q.sectionId === formData.sectionId);
-    
+    const sectionQuestions = questions.filter(
+      (q) => q.sectionId === formData.sectionId
+    );
+
     const questionData = {
       title: formData.title.trim(),
       description: formData.description.trim(),
@@ -162,7 +174,7 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
       order: editingQuestion?.order || sectionQuestions.length + 1,
       configuration: formData.configuration,
       translations: {},
-      conditions: []
+      conditions: [],
     };
 
     if (editingQuestion) {
@@ -175,19 +187,23 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
   };
 
   const handleDelete = (question: TemplateQuestion) => {
-    if (window.confirm(`Are you sure you want to delete question "${question.title}"?`)) {
+    if (
+      window.confirm(
+        `Are you sure you want to delete question "${question.title}"?`
+      )
+    ) {
       onDelete(question.id);
     }
   };
 
   const getSectionName = (sectionId: string) => {
-    const section = sections.find(s => s.id === sectionId);
-    return section?.title || 'Unknown Section';
+    const section = sections.find((s) => s.id === sectionId);
+    return section?.title || "Unknown Section";
   };
 
   const getQuestionsBySection = (sectionId: string) => {
     return questions
-      .filter(q => q.sectionId === sectionId)
+      .filter((q) => q.sectionId === sectionId)
       .sort((a, b) => a.order - b.order);
   };
 
@@ -196,14 +212,15 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
       <Typography variant="h5" gutterBottom>
         Template Questions
       </Typography>
-      
+
       <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-        Add questions to your template sections. Each question can be customized with different types and validation rules.
+        Add questions to your template sections. Each question can be customized
+        with different types and validation rules.
       </Typography>
 
       {errors.length > 0 && (
         <Alert severity="error" sx={{ mb: 3 }}>
-          <ul style={{ margin: 0, paddingLeft: '20px' }}>
+          <ul style={{ margin: 0, paddingLeft: "20px" }}>
             {errors.map((error, index) => (
               <li key={index}>{error}</li>
             ))}
@@ -226,18 +243,22 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
         </Button>
       )}
 
-      {sections.map(section => {
+      {sections.map((section) => {
         const sectionQuestions = getQuestionsBySection(section.id);
-        
+
         return (
           <Card key={section.id} sx={{ mb: 3 }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 {section.title}
               </Typography>
-              
+
               {sectionQuestions.length === 0 ? (
-                <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ fontStyle: "italic" }}
+                >
                   No questions in this section yet
                 </Typography>
               ) : (
@@ -247,19 +268,25 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
                       key={question.id}
                       sx={{
                         border: 1,
-                        borderColor: 'divider',
+                        borderColor: "divider",
                         borderRadius: 1,
                         mb: 1,
-                        bgcolor: 'background.paper'
+                        bgcolor: "background.paper",
                       }}
                     >
                       <IconButton sx={{ mr: 1 }}>
                         <DragIcon />
                       </IconButton>
-                      
+
                       <ListItemText
                         primary={
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1,
+                            }}
+                          >
                             <Typography variant="subtitle1">
                               {question.title}
                             </Typography>
@@ -285,13 +312,16 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
                                 {question.description}
                               </Typography>
                             )}
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                            >
                               Order: {question.order}
                             </Typography>
                           </Box>
                         }
                       />
-                      
+
                       <ListItemSecondaryAction>
                         <IconButton
                           edge="end"
@@ -318,7 +348,7 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
       })}
 
       {questions.length === 0 && sections.length > 0 && (
-        <Card sx={{ textAlign: 'center', py: 4 }}>
+        <Card sx={{ textAlign: "center", py: 4 }}>
           <CardContent>
             <Typography variant="h6" color="text.secondary">
               No questions created yet
@@ -345,13 +375,13 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
         fullWidth
       >
         <DialogTitle>
-          {editingQuestion ? 'Edit Question' : 'Add New Question'}
+          {editingQuestion ? "Edit Question" : "Add New Question"}
         </DialogTitle>
-        
+
         <DialogContent>
           {formErrors.length > 0 && (
             <Alert severity="error" sx={{ mb: 2 }}>
-              <ul style={{ margin: 0, paddingLeft: '20px' }}>
+              <ul style={{ margin: 0, paddingLeft: "20px" }}>
                 {formErrors.map((error, index) => (
                   <li key={index}>{error}</li>
                 ))}
@@ -365,7 +395,9 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
                 fullWidth
                 label="Question Title"
                 value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, title: e.target.value })
+                }
                 required
                 sx={{ mb: 2 }}
               />
@@ -378,7 +410,9 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
                 rows={3}
                 label="Question Description (Optional)"
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
                 helperText="Provide additional context or instructions for this question"
                 sx={{ mb: 2 }}
               />
@@ -389,11 +423,13 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
                 <InputLabel>Section</InputLabel>
                 <Select
                   value={formData.sectionId}
-                  onChange={(e) => setFormData({ ...formData, sectionId: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, sectionId: e.target.value })
+                  }
                   label="Section"
                   required
                 >
-                  {sections.map(section => (
+                  {sections.map((section) => (
                     <MenuItem key={section.id} value={section.id}>
                       {section.title}
                     </MenuItem>
@@ -407,7 +443,12 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
                 <InputLabel>Question Type</InputLabel>
                 <Select
                   value={formData.questionType}
-                  onChange={(e) => setFormData({ ...formData, questionType: e.target.value as QuestionType })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      questionType: e.target.value as QuestionType,
+                    })
+                  }
                   label="Question Type"
                 >
                   {Object.entries(questionTypeLabels).map(([value, label]) => (
@@ -424,7 +465,9 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
                 control={
                   <Checkbox
                     checked={formData.isRequired}
-                    onChange={(e) => setFormData({ ...formData, isRequired: e.target.checked })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, isRequired: e.target.checked })
+                    }
                   />
                 }
                 label="Required question"
@@ -432,11 +475,11 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
             </Grid>
           </Grid>
         </DialogContent>
-        
+
         <DialogActions>
           <Button onClick={handleCloseDialog}>Cancel</Button>
           <Button onClick={handleSave} variant="contained">
-            {editingQuestion ? 'Update' : 'Add'} Question
+            {editingQuestion ? "Update" : "Add"} Question
           </Button>
         </DialogActions>
       </Dialog>

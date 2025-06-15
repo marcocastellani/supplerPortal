@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   Card,
@@ -10,15 +10,15 @@ import {
   Button,
   Alert,
   CircularProgress,
-  Snackbar
-} from '@mui/material';
-import { useTemplateWizard } from '../../hooks/useTemplateWizard';
-import { WizardStep } from '../../types/questionnaire-templates';
-import { BasicInfoStep } from './steps/BasicInfoStep';
-import { SectionsStep } from './steps/SectionsStep';
-import { QuestionsStep } from './steps/QuestionsStep';
-import { ConditionsStep } from './steps/ConditionsStep';
-import { ReviewStep } from './steps/ReviewStep';
+  Snackbar,
+} from "@mui/material";
+import { useTemplateWizard } from "../../hooks/useTemplateWizard";
+import { WizardStep } from "../../types/questionnaire-templates";
+import { BasicInfoStep } from "./steps/BasicInfoStep";
+import { SectionsStep } from "./steps/SectionsStep";
+import { QuestionsStep } from "./steps/QuestionsStep";
+import { ConditionsStep } from "./steps/ConditionsStep";
+import { ReviewStep } from "./steps/ReviewStep";
 
 interface TemplateWizardProps {
   templateId?: string;
@@ -27,21 +27,23 @@ interface TemplateWizardProps {
 }
 
 const stepLabels = {
-  [WizardStep.BasicInfo]: 'Basic Information',
-  [WizardStep.Sections]: 'Sections',
-  [WizardStep.Questions]: 'Questions',
-  [WizardStep.Conditions]: 'Conditional Logic',
-  [WizardStep.Review]: 'Review & Publish'
+  [WizardStep.BasicInfo]: "Basic Information",
+  [WizardStep.Sections]: "Sections",
+  [WizardStep.Questions]: "Questions",
+  [WizardStep.Conditions]: "Conditional Logic",
+  [WizardStep.Review]: "Review & Publish",
 };
 
 export const TemplateWizard: React.FC<TemplateWizardProps> = ({
   templateId,
   onComplete,
-  onCancel
+  onCancel,
 }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success"
+  );
 
   const {
     state,
@@ -67,19 +69,19 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
     saveDraft,
     publishTemplate,
     validateCurrentStep,
-    getStepErrors
+    getStepErrors,
   } = useTemplateWizard({
     templateId,
     onSave: () => {
-      setSnackbarMessage('Template saved successfully');
-      setSnackbarSeverity('success');
+      setSnackbarMessage("Template saved successfully");
+      setSnackbarSeverity("success");
       setSnackbarOpen(true);
     },
     onError: (error) => {
       setSnackbarMessage(error.message);
-      setSnackbarSeverity('error');
+      setSnackbarSeverity("error");
       setSnackbarOpen(true);
-    }
+    },
   });
 
   const handleNext = () => {
@@ -92,12 +94,14 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
     try {
       await publishTemplate();
       onComplete?.(templateId!);
-      setSnackbarMessage('Template published successfully');
-      setSnackbarSeverity('success');
+      setSnackbarMessage("Template published successfully");
+      setSnackbarSeverity("success");
       setSnackbarOpen(true);
     } catch (error) {
-      setSnackbarMessage(error instanceof Error ? error.message : 'Failed to publish template');
-      setSnackbarSeverity('error');
+      setSnackbarMessage(
+        error instanceof Error ? error.message : "Failed to publish template"
+      );
+      setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }
   };
@@ -106,8 +110,10 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
     try {
       await saveDraft();
     } catch (error) {
-      setSnackbarMessage(error instanceof Error ? error.message : 'Failed to save draft');
-      setSnackbarSeverity('error');
+      setSnackbarMessage(
+        error instanceof Error ? error.message : "Failed to save draft"
+      );
+      setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }
   };
@@ -177,27 +183,32 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
 
   if (isLoading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="400px"
+      >
         <CircularProgress />
       </Box>
     );
   }
 
   return (
-    <Box sx={{ maxWidth: 1200, mx: 'auto', p: 3 }}>
+    <Box sx={{ maxWidth: 1200, mx: "auto", p: 3 }}>
       <Card>
         <CardContent>
           <Typography variant="h4" component="h1" gutterBottom>
-            {templateId ? 'Edit Template' : 'Create New Template'}
+            {templateId ? "Edit Template" : "Create New Template"}
           </Typography>
-          
+
           {/* Auto-save indicator */}
           {state.isAutoSaving && (
             <Alert severity="info" sx={{ mb: 2 }}>
               Auto-saving changes...
             </Alert>
           )}
-          
+
           {state.lastSaved && (
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
               Last saved: {new Date(state.lastSaved).toLocaleString()}
@@ -210,7 +221,7 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
               <Step key={step}>
                 <StepLabel
                   onClick={() => goToStep(step)}
-                  sx={{ cursor: 'pointer' }}
+                  sx={{ cursor: "pointer" }}
                   error={getStepErrors(step).length > 0}
                 >
                   {stepLabels[step]}
@@ -220,12 +231,16 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
           </Stepper>
 
           {/* Step Content */}
-          <Box sx={{ minHeight: 400, mb: 4 }}>
-            {renderCurrentStep()}
-          </Box>
+          <Box sx={{ minHeight: 400, mb: 4 }}>{renderCurrentStep()}</Box>
 
           {/* Navigation */}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <Box>
               {canGoPrevious && (
                 <Button onClick={previousStep} sx={{ mr: 2 }}>
@@ -248,7 +263,7 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
                   Save Draft
                 </Button>
               )}
-              
+
               {canGoNext ? (
                 <Button
                   variant="contained"
@@ -280,7 +295,7 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
         <Alert
           onClose={() => setSnackbarOpen(false)}
           severity={snackbarSeverity}
-          sx={{ width: '100%' }}
+          sx={{ width: "100%" }}
         >
           {snackbarMessage}
         </Alert>

@@ -805,3 +805,4 @@ tests/SupplierPortal.Application.UnitTests/QuestionnaireTemplates/
 ```
 
 **Tutti i test passano** ✅ - Ready per continuare con il **Frontend State Management**
+````

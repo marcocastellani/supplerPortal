@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -20,20 +20,29 @@ import {
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
-  Grid
-} from '@mui/material';
+  Grid,
+} from "@mui/material";
 import {
   Add as AddIcon,
   Edit as EditIcon,
-  Delete as DeleteIcon
-} from '@mui/icons-material';
-import { QuestionCondition, TemplateQuestion, QuestionnaireSection } from '../../../types/questionnaire-templates';
+  Delete as DeleteIcon,
+} from "@mui/icons-material";
+import {
+  QuestionCondition,
+  TemplateQuestion,
+  QuestionnaireSection,
+} from "../../../types/questionnaire-templates";
 
 interface ConditionsStepProps {
   conditions: QuestionCondition[];
   questions: TemplateQuestion[];
   sections: QuestionnaireSection[];
-  onAdd: (condition: Omit<QuestionCondition, 'id' | 'createdAt' | 'questionnaireTemplateId'>) => void;
+  onAdd: (
+    condition: Omit<
+      QuestionCondition,
+      "id" | "createdAt" | "questionnaireTemplateId"
+    >
+  ) => void;
   onUpdate: (id: string, data: Partial<QuestionCondition>) => void;
   onDelete: (id: string) => void;
   errors: string[];
@@ -53,15 +62,16 @@ export const ConditionsStep: React.FC<ConditionsStepProps> = ({
   onAdd,
   onUpdate,
   onDelete,
-  errors
+  errors,
 }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingCondition, setEditingCondition] = useState<QuestionCondition | null>(null);
+  const [editingCondition, setEditingCondition] =
+    useState<QuestionCondition | null>(null);
   const [formData, setFormData] = useState<ConditionFormData>({
-    sourceQuestionId: '',
-    targetQuestionId: '',
-    conditionType: 'equals',
-    expectedValue: ''
+    sourceQuestionId: "",
+    targetQuestionId: "",
+    conditionType: "equals",
+    expectedValue: "",
   });
   const [formErrors, setFormErrors] = useState<string[]>([]);
 
@@ -72,15 +82,15 @@ export const ConditionsStep: React.FC<ConditionsStepProps> = ({
         sourceQuestionId: condition.sourceQuestionId,
         targetQuestionId: condition.targetQuestionId,
         conditionType: condition.conditionType,
-        expectedValue: condition.expectedValue
+        expectedValue: condition.expectedValue,
       });
     } else {
       setEditingCondition(null);
       setFormData({
-        sourceQuestionId: '',
-        targetQuestionId: '',
-        conditionType: 'equals',
-        expectedValue: ''
+        sourceQuestionId: "",
+        targetQuestionId: "",
+        conditionType: "equals",
+        expectedValue: "",
       });
     }
     setFormErrors([]);
@@ -91,31 +101,31 @@ export const ConditionsStep: React.FC<ConditionsStepProps> = ({
     setDialogOpen(false);
     setEditingCondition(null);
     setFormData({
-      sourceQuestionId: '',
-      targetQuestionId: '',
-      conditionType: 'equals',
-      expectedValue: ''
+      sourceQuestionId: "",
+      targetQuestionId: "",
+      conditionType: "equals",
+      expectedValue: "",
     });
     setFormErrors([]);
   };
 
   const validateForm = (): boolean => {
     const errors: string[] = [];
-    
+
     if (!formData.sourceQuestionId) {
-      errors.push('Source question is required');
+      errors.push("Source question is required");
     }
-    
+
     if (!formData.targetQuestionId) {
-      errors.push('Target question is required');
+      errors.push("Target question is required");
     }
-    
+
     if (formData.sourceQuestionId === formData.targetQuestionId) {
-      errors.push('Source and target questions must be different');
+      errors.push("Source and target questions must be different");
     }
-    
+
     if (!formData.expectedValue.trim()) {
-      errors.push('Expected value is required');
+      errors.push("Expected value is required");
     }
 
     setFormErrors(errors);
@@ -131,7 +141,7 @@ export const ConditionsStep: React.FC<ConditionsStepProps> = ({
       sourceQuestionId: formData.sourceQuestionId,
       targetQuestionId: formData.targetQuestionId,
       conditionType: formData.conditionType,
-      expectedValue: formData.expectedValue.trim()
+      expectedValue: formData.expectedValue.trim(),
     };
 
     if (editingCondition) {
@@ -146,23 +156,27 @@ export const ConditionsStep: React.FC<ConditionsStepProps> = ({
   const handleDelete = (condition: QuestionCondition) => {
     const sourceQuestion = getQuestionById(condition.sourceQuestionId);
     const targetQuestion = getQuestionById(condition.targetQuestionId);
-    
-    if (window.confirm(`Are you sure you want to delete the condition from "${sourceQuestion?.title}" to "${targetQuestion?.title}"?`)) {
+
+    if (
+      window.confirm(
+        `Are you sure you want to delete the condition from "${sourceQuestion?.title}" to "${targetQuestion?.title}"?`
+      )
+    ) {
       onDelete(condition.id);
     }
   };
 
   const getQuestionById = (id: string) => {
-    return questions.find(q => q.id === id);
+    return questions.find((q) => q.id === id);
   };
 
   const getSectionById = (id: string) => {
-    return sections.find(s => s.id === id);
+    return sections.find((s) => s.id === id);
   };
 
   const getQuestionLabel = (question: TemplateQuestion) => {
     const section = getSectionById(question.sectionId);
-    return `${section?.title || 'Unknown'}: ${question.title}`;
+    return `${section?.title || "Unknown"}: ${question.title}`;
   };
 
   return (
@@ -170,15 +184,16 @@ export const ConditionsStep: React.FC<ConditionsStepProps> = ({
       <Typography variant="h5" gutterBottom>
         Conditional Logic
       </Typography>
-      
+
       <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-        Create conditions that show or hide questions based on answers to other questions. 
-        This helps create dynamic questionnaires that adapt to user responses.
+        Create conditions that show or hide questions based on answers to other
+        questions. This helps create dynamic questionnaires that adapt to user
+        responses.
       </Typography>
 
       {errors.length > 0 && (
         <Alert severity="error" sx={{ mb: 3 }}>
-          <ul style={{ margin: 0, paddingLeft: '20px' }}>
+          <ul style={{ margin: 0, paddingLeft: "20px" }}>
             {errors.map((error, index) => (
               <li key={index}>{error}</li>
             ))}
@@ -205,16 +220,16 @@ export const ConditionsStep: React.FC<ConditionsStepProps> = ({
         {conditions.map((condition) => {
           const sourceQuestion = getQuestionById(condition.sourceQuestionId);
           const targetQuestion = getQuestionById(condition.targetQuestionId);
-          
+
           return (
             <ListItem
               key={condition.id}
               sx={{
                 mb: 2,
                 border: 1,
-                borderColor: 'divider',
+                borderColor: "divider",
                 borderRadius: 1,
-                bgcolor: 'background.default'
+                bgcolor: "background.default",
               }}
             >
               <ListItemText
@@ -224,18 +239,25 @@ export const ConditionsStep: React.FC<ConditionsStepProps> = ({
                       Conditional Rule
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      <strong>If:</strong> {sourceQuestion ? getQuestionLabel(sourceQuestion) : 'Unknown Question'}
+                      <strong>If:</strong>{" "}
+                      {sourceQuestion
+                        ? getQuestionLabel(sourceQuestion)
+                        : "Unknown Question"}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      <strong>{condition.conditionType}:</strong> &ldquo;{condition.expectedValue}&rdquo;
+                      <strong>{condition.conditionType}:</strong> &ldquo;
+                      {condition.expectedValue}&rdquo;
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      <strong>Then show:</strong> {targetQuestion ? getQuestionLabel(targetQuestion) : 'Unknown Question'}
+                      <strong>Then show:</strong>{" "}
+                      {targetQuestion
+                        ? getQuestionLabel(targetQuestion)
+                        : "Unknown Question"}
                     </Typography>
                   </Box>
                 }
               />
-              
+
               <ListItemSecondaryAction>
                 <IconButton
                   edge="end"
@@ -258,7 +280,7 @@ export const ConditionsStep: React.FC<ConditionsStepProps> = ({
       </List>
 
       {conditions.length === 0 && questions.length >= 2 && (
-        <Card sx={{ textAlign: 'center', py: 4 }}>
+        <Card sx={{ textAlign: "center", py: 4 }}>
           <CardContent>
             <Typography variant="h6" color="text.secondary">
               No conditional logic defined
@@ -285,13 +307,13 @@ export const ConditionsStep: React.FC<ConditionsStepProps> = ({
         fullWidth
       >
         <DialogTitle>
-          {editingCondition ? 'Edit Condition' : 'Add New Condition'}
+          {editingCondition ? "Edit Condition" : "Add New Condition"}
         </DialogTitle>
-        
+
         <DialogContent>
           {formErrors.length > 0 && (
             <Alert severity="error" sx={{ mb: 2 }}>
-              <ul style={{ margin: 0, paddingLeft: '20px' }}>
+              <ul style={{ margin: 0, paddingLeft: "20px" }}>
                 {formErrors.map((error, index) => (
                   <li key={index}>{error}</li>
                 ))}
@@ -300,7 +322,8 @@ export const ConditionsStep: React.FC<ConditionsStepProps> = ({
           )}
 
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            Create a rule that shows or hides a question based on the answer to another question.
+            Create a rule that shows or hides a question based on the answer to
+            another question.
           </Typography>
 
           <Grid container spacing={2}>
@@ -309,11 +332,16 @@ export const ConditionsStep: React.FC<ConditionsStepProps> = ({
                 <InputLabel>Source Question (IF)</InputLabel>
                 <Select
                   value={formData.sourceQuestionId}
-                  onChange={(e) => setFormData({ ...formData, sourceQuestionId: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      sourceQuestionId: e.target.value,
+                    })
+                  }
                   label="Source Question (IF)"
                   required
                 >
-                  {questions.map(question => (
+                  {questions.map((question) => (
                     <MenuItem key={question.id} value={question.id}>
                       {getQuestionLabel(question)}
                     </MenuItem>
@@ -327,7 +355,9 @@ export const ConditionsStep: React.FC<ConditionsStepProps> = ({
                 <InputLabel>Condition Type</InputLabel>
                 <Select
                   value={formData.conditionType}
-                  onChange={(e) => setFormData({ ...formData, conditionType: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, conditionType: e.target.value })
+                  }
                   label="Condition Type"
                 >
                   <MenuItem value="equals">Equals</MenuItem>
@@ -344,7 +374,9 @@ export const ConditionsStep: React.FC<ConditionsStepProps> = ({
                 fullWidth
                 label="Expected Value"
                 value={formData.expectedValue}
-                onChange={(e) => setFormData({ ...formData, expectedValue: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, expectedValue: e.target.value })
+                }
                 required
                 helperText="The value to compare against"
                 sx={{ mb: 2 }}
@@ -356,13 +388,18 @@ export const ConditionsStep: React.FC<ConditionsStepProps> = ({
                 <InputLabel>Target Question (THEN SHOW)</InputLabel>
                 <Select
                   value={formData.targetQuestionId}
-                  onChange={(e) => setFormData({ ...formData, targetQuestionId: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      targetQuestionId: e.target.value,
+                    })
+                  }
                   label="Target Question (THEN SHOW)"
                   required
                 >
                   {questions
-                    .filter(q => q.id !== formData.sourceQuestionId)
-                    .map(question => (
+                    .filter((q) => q.id !== formData.sourceQuestionId)
+                    .map((question) => (
                       <MenuItem key={question.id} value={question.id}>
                         {getQuestionLabel(question)}
                       </MenuItem>
@@ -372,11 +409,11 @@ export const ConditionsStep: React.FC<ConditionsStepProps> = ({
             </Grid>
           </Grid>
         </DialogContent>
-        
+
         <DialogActions>
           <Button onClick={handleCloseDialog}>Cancel</Button>
           <Button onClick={handleSave} variant="contained">
-            {editingCondition ? 'Update' : 'Add'} Condition
+            {editingCondition ? "Update" : "Add"} Condition
           </Button>
         </DialogActions>
       </Dialog>
