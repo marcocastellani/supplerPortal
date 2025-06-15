@@ -120,7 +120,7 @@ public static class DatabaseSeeder
             }
         };
 
-        await context.Suppliers.AddRangeAsync(suppliers);
+        await context.SupplyNetworkEntities.AddRangeAsync(suppliers);
         await context.SaveChangesAsync();
 
         // Riferimenti per le relazioni

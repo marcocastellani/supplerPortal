@@ -24,7 +24,7 @@ public class UpdateSupplyNetworkEntityFieldCommandHandler : IRequestHandler<Upda
 
     public async Task<SupplyNetworkEntityDto> Handle(UpdateSupplyNetworkEntityFieldCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _context.Suppliers
+        var entity = await _context.SupplyNetworkEntities
             .FirstOrDefaultAsync(x => x.Id == request.EntityId, cancellationToken);
 
         if (entity == null)

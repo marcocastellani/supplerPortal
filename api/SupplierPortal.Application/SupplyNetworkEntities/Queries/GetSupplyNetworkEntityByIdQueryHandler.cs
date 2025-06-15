@@ -19,7 +19,7 @@ public class GetSupplyNetworkEntityByIdQueryHandler : IRequestHandler<GetSupplyN
 
     public async Task<SupplyNetworkEntityDto?> Handle(GetSupplyNetworkEntityByIdQuery request, CancellationToken cancellationToken)
     {
-        var entity = await _context.Suppliers
+        var entity = await _context.SupplyNetworkEntities
             .Include(s => s.Parent)
             .FirstOrDefaultAsync(s => s.Id == request.Id, cancellationToken);
 

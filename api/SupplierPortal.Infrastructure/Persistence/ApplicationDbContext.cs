@@ -9,11 +9,17 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
     public DbSet<Test> Test => Set<Test>();
     public DbSet<User> Users => Set<User>();
-    public DbSet<SupplyNetworkEntities> Suppliers => Set<SupplyNetworkEntities>();
+    public DbSet<SupplyNetworkEntities> SupplyNetworkEntities => Set<SupplyNetworkEntities>();
     public DbSet<UserSupplier> UserSuppliers => Set<UserSupplier>();
     public DbSet<AgentAssignment> AgentAssignments => Set<AgentAssignment>();
     public DbSet<Questionnaire> Questionnaires => Set<Questionnaire>();
     public DbSet<Remediation> Remediations => Set<Remediation>();
+    
+    // Questionnaire Template Management
+    public DbSet<QuestionnaireTemplate> QuestionnaireTemplates => Set<QuestionnaireTemplate>();
+    public DbSet<QuestionnaireSection> QuestionnaireSections => Set<QuestionnaireSection>();
+    public DbSet<TemplateQuestion> TemplateQuestions => Set<TemplateQuestion>();
+    public DbSet<QuestionCondition> QuestionConditions => Set<QuestionCondition>();
 
     private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
 

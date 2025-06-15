@@ -20,7 +20,7 @@ public class GetSupplyNetworkEntitiesQueryHandler : IRequestHandler<GetSupplyNet
 
     public async Task<GetSupplyNetworkEntitiesQueryResult> Handle(GetSupplyNetworkEntitiesQuery request, CancellationToken cancellationToken)
     {
-        var query = _context.Suppliers
+        var query = _context.SupplyNetworkEntities
             .Include(s => s.Parent)
             .AsQueryable();
 

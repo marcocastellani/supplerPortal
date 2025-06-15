@@ -79,7 +79,7 @@ public class CreateSupplyNetworkEntityCommandValidator : AbstractValidator<Creat
 
     private async Task<bool> BeUniqueVatCode(string vatCode, CancellationToken cancellationToken)
     {
-        return !await _context.Suppliers
+        return !await _context.SupplyNetworkEntities
             .AnyAsync(s => s.VatCode == vatCode, cancellationToken);
     }
 
@@ -87,7 +87,7 @@ public class CreateSupplyNetworkEntityCommandValidator : AbstractValidator<Creat
     {
         if (!parentId.HasValue) return true;
         
-        return await _context.Suppliers
+        return await _context.SupplyNetworkEntities
             .AnyAsync(s => s.Id == parentId.Value, cancellationToken);
     }
 }

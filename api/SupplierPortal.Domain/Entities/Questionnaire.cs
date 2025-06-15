@@ -30,9 +30,19 @@ public class Questionnaire : BaseAuditableEntity
     public Guid? AssignedUserId { get; set; }
     public Guid? AssignedAgentId { get; set; }
     
+    /// <summary>
+    /// ID of the template this questionnaire was created from
+    /// </summary>
+    public Guid? TemplateId { get; set; }
+    
     // Navigation properties
     public SupplyNetworkEntities Supplier { get; set; } = null!;
     public User? AssignedUser { get; set; }
     public User? AssignedAgent { get; set; }
     public ICollection<Remediation> Remediations { get; set; } = new List<Remediation>();
+    
+    /// <summary>
+    /// Template this questionnaire was created from (if any)
+    /// </summary>
+    public QuestionnaireTemplate? Template { get; set; }
 }

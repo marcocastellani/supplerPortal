@@ -32,7 +32,7 @@ public class CreateSupplyNetworkEntityCommandHandler : IRequestHandler<CreateSup
    
         if (!string.IsNullOrEmpty(request.VatCode))
         {
-            var existingByVat = await _context.Suppliers
+            var existingByVat = await _context.SupplyNetworkEntities
                 .FirstOrDefaultAsync(s => s.VatCode == request.VatCode, cancellationToken);
             
             if (existingByVat != null)
@@ -42,7 +42,7 @@ public class CreateSupplyNetworkEntityCommandHandler : IRequestHandler<CreateSup
         // Validazione Parent Entity se specificata
         if (request.ParentId.HasValue)
         {
-            var parentExists = await _context.Suppliers
+            var parentExists = await _context.SupplyNetworkEntities
                 .AnyAsync(s => s.Id == request.ParentId.Value, cancellationToken);
             
             if (!parentExists)
@@ -76,11 +76,11 @@ public class CreateSupplyNetworkEntityCommandHandler : IRequestHandler<CreateSup
             // Created e CreatedBy sono gestiti dall'AuditableEntitySaveChangesInterceptor
         };
 
-        _context.Suppliers.Add(entity);
+        _context.SupplyNetworkEntities.Add(entity);
         await _context.SaveChangesAsync(cancellationToken);
 
         // Recupero l'entità con le relazioni per il mapping
-        var createdEntity = await _context.Suppliers
+        var createdEntity = await _context.SupplyNetworkEntities
             .Include(s => s.Parent)
             .FirstOrDefaultAsync(s => s.Id == entity.Id, cancellationToken);
 

@@ -25,7 +25,7 @@ public class SearchSupplyNetworkEntitiesQueryHandler : IRequestHandler<SearchSup
 
         var searchTerm = request.SearchTerm.Trim().ToLower();
 
-        var query = _context.Suppliers.AsQueryable();
+        var query = _context.SupplyNetworkEntities.AsQueryable();
 
         // Filter by active status
         if (request.ActiveOnly)
