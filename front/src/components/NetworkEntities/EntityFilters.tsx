@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid, Select, Card, Text } from '@remira/unifiedui';
 import { TextField, InputAdornment, Box } from '@mui/material';
@@ -18,7 +18,7 @@ export interface EntityFiltersProps {
   onFilterStatusChange: (event: any, option: any) => void;
 }
 
-export const EntityFilters: React.FC<EntityFiltersProps> = ({
+const EntityFilters: React.FC<EntityFiltersProps> = ({
   searchQuery,
   filterType,
   filterStatus,
@@ -30,63 +30,74 @@ export const EntityFilters: React.FC<EntityFiltersProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const entityTypeOptions = getEntityTypeFilterOptions(t);
-  const statusOptions = getStatusFilterOptions(t);
+  // Memoized results text to prevent unnecessary re-renders [PA]
+  const resultsText = useMemo(() => {
+    if (isLoading) return t('networkEntities.loading', 'Loading...');
+    return t('networkEntities.resultsCount', { count: totalCount });
+  }, [isLoading, totalCount, t]);
+
+  // Memoized filter options to prevent recreation [PA]
+  const entityTypeOptions = useMemo(() => getEntityTypeFilterOptions(t), [t]);
+  const statusOptions = useMemo(() => getStatusFilterOptions(t), [t]);
 
   return (
     <Card title="Search & Filter">
-      <Box p={2}>
-        <Grid container spacing={2}>
-          {/* Search Field */}
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              placeholder={t('networkEntities.searchPlaceholder')}
-              value={searchQuery}
-              onChange={onSearchChange}
-              disabled={isLoading}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon color="action" />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
+      <Grid container spacing={2}>
+        {/* Search Input */}
+        <Grid item xs={12} md={6}>
+          <TextField
+            fullWidth
+            label={t('networkEntities.search')}
+            placeholder={t('networkEntities.searchPlaceholder')}
+            value={searchQuery}
+            onChange={onSearchChange}
+            disabled={isLoading}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Grid>
 
-          {/* Entity Type Filter */}
-          <Grid item xs={12} md={3}>
-            <Select
-              value={filterType}
-              onChange={onFilterTypeChange}
-              options={entityTypeOptions}
-              fullWidth
-              disabled={isLoading}
-            />
-          </Grid>
+        {/* Entity Type Filter */}
+        <Grid item xs={12} md={3}>
+          <Select
+            label={t('networkEntities.filterByType')}
+            value={filterType}
+            onChange={onFilterTypeChange}
+            options={entityTypeOptions}
+            disabled={isLoading}
+            fullWidth
+          />
+        </Grid>
 
-          {/* Status Filter */}
-          <Grid item xs={12} md={3}>
-            <Select
-              value={filterStatus}
-              onChange={onFilterStatusChange}
-              options={statusOptions}
-              fullWidth
-              disabled={isLoading}
-            />
-          </Grid>
+        {/* Status Filter */}
+        <Grid item xs={12} md={3}>
+          <Select
+            label={t('networkEntities.filterByStatus')}
+            value={filterStatus}
+            onChange={onFilterStatusChange}
+            options={statusOptions}
+            disabled={isLoading}
+            fullWidth
+          />
         </Grid>
 
         {/* Results Count */}
         {!isLoading && (
           <Box mt={2}>
             <Text variant="body2">
-              {t('networkEntities.resultsCount', { count: totalCount })}
+              {resultsText}
             </Text>
           </Box>
         )}
-      </Box>
+      </Grid>
     </Card>
   );
 };
+
+// Memoize the component to prevent unnecessary re-renders [PA]
+export default React.memo(EntityFilters);

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { SupplyNetworkEntitiesService } from '../services/supplyNetworkEntitiesService';
 import { EntityType, SupplyNetworkEntityDto } from '../types/supplyNetworkEntities';
 import { log } from '../utils/logger';
+import { DATA_CONSTANTS, TIMING } from '../constants/ui';
 
 export interface NetworkEntitiesFilters {
   searchQuery: string;
@@ -29,8 +30,6 @@ export interface NetworkEntitiesActions {
   refetch: () => void;
 }
 
-const PAGE_SIZE = 20;
-
 export const useNetworkEntities = (): NetworkEntitiesState & NetworkEntitiesActions => {
   const { t } = useTranslation();
   
@@ -46,7 +45,7 @@ export const useNetworkEntities = (): NetworkEntitiesState & NetworkEntitiesActi
     searchQuery: '',
     filterType: 'all',
     filterStatus: 'all',
-    currentPage: 1,
+    currentPage: DATA_CONSTANTS.FIRST_PAGE,
   });
 
   // Fetch entities function
@@ -66,7 +65,7 @@ export const useNetworkEntities = (): NetworkEntitiesState & NetworkEntitiesActi
         type,
         status,
         page,
-        pageSize: PAGE_SIZE
+        pageSize: DATA_CONSTANTS.DEFAULT_PAGE_SIZE
       });
 
       try {
@@ -75,7 +74,7 @@ export const useNetworkEntities = (): NetworkEntitiesState & NetworkEntitiesActi
           entityType: type !== 'all' ? type : undefined,
           active: status === 'all' ? undefined : status === 'active',
           page: page,
-          pageSize: PAGE_SIZE,
+          pageSize: DATA_CONSTANTS.DEFAULT_PAGE_SIZE,
           sortBy: 'legalName',
           sortDescending: false,
         });
@@ -119,7 +118,7 @@ export const useNetworkEntities = (): NetworkEntitiesState & NetworkEntitiesActi
       ) => {
         fetchEntities(search, type, status, page);
       },
-      500
+      TIMING.DEBOUNCE_DELAY
     ),
     [fetchEntities]
   );
@@ -144,7 +143,7 @@ export const useNetworkEntities = (): NetworkEntitiesState & NetworkEntitiesActi
     setFilters(prev => ({
       ...prev,
       searchQuery: query,
-      currentPage: 1 // Reset to first page on search
+      currentPage: DATA_CONSTANTS.FIRST_PAGE // Reset to first page on search
     }));
   }, []);
 
@@ -152,7 +151,7 @@ export const useNetworkEntities = (): NetworkEntitiesState & NetworkEntitiesActi
     setFilters(prev => ({
       ...prev,
       filterType: type,
-      currentPage: 1 // Reset to first page on filter change
+      currentPage: DATA_CONSTANTS.FIRST_PAGE // Reset to first page on filter change
     }));
   }, []);
 
@@ -160,12 +159,12 @@ export const useNetworkEntities = (): NetworkEntitiesState & NetworkEntitiesActi
     setFilters(prev => ({
       ...prev,
       filterStatus: status,
-      currentPage: 1 // Reset to first page on filter change
+      currentPage: DATA_CONSTANTS.FIRST_PAGE // Reset to first page on filter change
     }));
   }, []);
 
   const setCurrentPage = useCallback((page: number) => {
-    if (page >= 1 && page <= totalPages) {
+    if (page >= DATA_CONSTANTS.FIRST_PAGE && page <= totalPages) {
       setFilters(prev => ({
         ...prev,
         currentPage: page

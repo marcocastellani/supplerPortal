@@ -10,6 +10,7 @@ import {
   AccreditationStatus,
   SupplyNetworkEntitySearchResultDto
 } from '../types/supplyNetworkEntities';
+import { DATA_CONSTANTS } from '../constants/ui';
 
 export class SupplyNetworkEntitiesService {
   
@@ -138,7 +139,7 @@ export class SupplyNetworkEntitiesService {
    */
   static async getPotentialParents(): Promise<SupplyNetworkEntityDto[]> {
     const result = await this.getSupplyNetworkEntities({
-      pageSize: 100,
+      pageSize: DATA_CONSTANTS.LARGE_PAGE_SIZE,
       active: true,
       sortBy: 'LegalName'
     });

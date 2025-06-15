@@ -3,6 +3,7 @@ import { SupplyNetworkEntitiesService } from '../services/supplyNetworkEntitiesS
 import { SupplyNetworkEntityFormData } from '../types/supplyNetworkEntities';
 import { useErrorHandling } from './useErrorHandling';
 import { log } from '../utils/logger';
+import { TIMING } from '../constants/ui';
 
 export interface UseEntitySubmissionReturn {
   isLoading: boolean;
@@ -74,10 +75,10 @@ export const useEntitySubmission = (): UseEntitySubmissionReturn => {
 
       setIsSuccess(true);
 
-      // Auto-reset success state after 3 seconds
+      // Auto-reset success state after configured duration
       setTimeout(() => {
         setIsSuccess(false);
-      }, 3000);
+      }, TIMING.SUCCESS_MESSAGE_DURATION);
 
     } catch (err) {
       log.error('Entity submission failed', {

@@ -1,4 +1,5 @@
 import { EntityType } from '../types/supplyNetworkEntities';
+import { TIMING, DATA_CONSTANTS } from './ui';
 
 export interface FilterOption {
   value: string;
@@ -20,5 +21,5 @@ export const getStatusFilterOptions = (t: (key: string) => string): FilterOption
   { value: 'inactive', label: t('networkEntities.filterInactive') },
 ];
 
-export const SEARCH_DEBOUNCE_MS = 500;
-export const DEFAULT_PAGE_SIZE = 20;
+export const SEARCH_DEBOUNCE_MS = TIMING.DEBOUNCE_DELAY;
+export const DEFAULT_PAGE_SIZE = DATA_CONSTANTS.DEFAULT_PAGE_SIZE;

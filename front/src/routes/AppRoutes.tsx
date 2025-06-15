@@ -4,7 +4,7 @@ import { NotFound } from "@/pages/NotFound";
 import { RBACExample } from "@/pages/RBACExample";
 import Dashboard from "@/pages/Dashboard";
 import { SupplyNetwork } from "@/pages/SupplyNetwork";
-import { NewSupplyNetworkEntity } from "@/pages/NewSupplyNetworkEntity";
+import NewSupplyNetworkEntity from "@/pages/NewSupplyNetworkEntity";
 import { QuestionnaireTemplates } from "@/pages/QuestionnaireTemplates";
 import { QuestionnaireAssignments } from "@/pages/QuestionnaireAssignments";
 import { KPIDashboard } from "@/pages/KPIDashboard";
