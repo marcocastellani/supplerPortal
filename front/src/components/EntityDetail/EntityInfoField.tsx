@@ -74,12 +74,12 @@ export const EntityInfoField: React.FC<EntityInfoFieldProps> = ({
           color={value ? "success" : "default"}
           size="small"
           variant="outlined"
-          sx={{ 
+          sx={{
             fontSize: "0.8125rem",
             height: "24px",
             "& .MuiChip-label": {
               px: 1.5,
-            }
+            },
           }}
         />
       );
@@ -189,7 +189,11 @@ export const EntityInfoField: React.FC<EntityInfoFieldProps> = ({
               <CheckIcon />
             </IconButton>
 
-            <IconButton size="small" onClick={handleCancel} disabled={isUpdating}>
+            <IconButton
+              size="small"
+              onClick={handleCancel}
+              disabled={isUpdating}
+            >
               <CloseIcon />
             </IconButton>
           </Box>

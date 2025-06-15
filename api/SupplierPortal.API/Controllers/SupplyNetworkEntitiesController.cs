@@ -363,4 +363,31 @@ public class SupplyNetworkEntitiesController : MediatrBaseController
         var result = await Mediator.Send(query);
         return Ok(result);
     }
+
+    /// <summary>
+    /// Get all child entities of a parent entity
+    /// </summary>
+    /// <param name="parentId">Parent entity ID</param>
+    /// <param name="activeOnly">Filter by active status only</param>
+    /// <param name="entityType">Filter by entity type</param>
+    /// <returns>List of child entities</returns>
+    [HttpGet("{parentId}/children")]
+    [ProducesResponseType(typeof(List<SupplyNetworkEntityDto>), 200)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(400)]
+    public async Task<ActionResult<List<SupplyNetworkEntityDto>>> GetSupplyNetworkEntityChildren(
+        [FromRoute] Guid parentId,
+        [FromQuery] bool? activeOnly = null,
+        [FromQuery] EntityType? entityType = null)
+    {
+        var query = new GetSupplyNetworkEntityChildrenQuery
+        {
+            ParentId = parentId,
+            ActiveOnly = activeOnly,
+            EntityType = entityType
+        };
+
+        var result = await Mediator.Send(query);
+        return Ok(result);
+    }
 }

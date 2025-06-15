@@ -88,7 +88,7 @@ Questo documento descrive lo scopo e l'utilizzo dei file principali nel progetto
 | `SupplierPortal.Application/SupplyNetworkEntities/Queries/SearchSupplyNetworkEntitiesQueryHandler.cs` | ⭐ Handler per ricerca multi-campo (min 3 char, max 15 risultati) |
 | `SupplierPortal.Application/SupplyNetworkEntities/DTOs/SupplyNetworkEntityDto.cs` | ⭐ DTO completo per entità con mapping AutoMapper |
 | `SupplierPortal.Application/SupplyNetworkEntities/DTOs/SupplyNetworkEntitySearchResultDto.cs` | ⭐ DTO ottimizzato per typeahead con DisplayText computed |
-| `SupplierPortal.API/Controllers/SupplyNetworkEntitiesController.cs` | ⭐ Controller API con endpoint REST + /search per typeahead |
+| `SupplierPortal.API/Controllers/SupplyNetworkEntitiesController.cs` | ⭐ **AGGIORNATO** - Aggiunto endpoint GET {parentId}/children + Route attribute |
 | `SupplierPortal.Infrastructure/Configurations/SupplyNetworkEntitiesConfiguration.cs` | ⭐ Configurazione EF Core con conversioni enum |
 | `SupplierPortal.Infrastructure/Migrations/20250614171218_ExpandSupplyNetworkEntities.cs` | ⭐ Migration per nuova struttura entità |
 | `SupplierPortal.Domain/Entities/UserSupplier.cs`                  | Tabella di relazione User-SupplyNetworkEntities con ruolo                               |
