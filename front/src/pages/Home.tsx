@@ -9,6 +9,7 @@ import { RBACExample } from "./RBACExample";
 import { RegionalSettingsExample } from "./RegionalSettingsExample";
 import { NewSupplyNetworkEntity } from "./NewSupplyNetworkEntity";
 import { QuestionnaireTemplates } from "./QuestionnaireTemplates";
+import { TemplateWizard } from "../components/questionnaire-templates/TemplateWizard";
 import { QuestionnaireAssignments } from "./QuestionnaireAssignments";
 import { KPIDashboard } from "./KPIDashboard";
 import { KPIThresholds } from "./KPIThresholds";
@@ -69,6 +70,7 @@ export const Home = () => {
     "/supply-network": SupplyNetwork,
     "/supply-network/new": NewSupplyNetworkEntity,
     "/questionnaires/templates": QuestionnaireTemplates,
+    "/questionnaires/templates/new": TemplateWizard,
     "/questionnaires/assignments": QuestionnaireAssignments,
     "/kpi/dashboard": KPIDashboard,
     "/kpi/thresholds": KPIThresholds,

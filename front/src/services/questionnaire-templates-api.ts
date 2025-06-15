@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {
   QuestionnaireTemplateResponse,
   SectionResponse,
@@ -7,14 +8,7 @@ import {
   TemplateStatus
 } from '../types/questionnaire-templates';
 
-// Base API configuration
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '/api';
-
-interface ApiResponse<T> {
-  data: T;
-  success: boolean;
-  message?: string;
-}
+// L'URL base è già configurato da setAxiosDefaultBaseUrl in App.tsx
 
 interface ApiError {
   message: string;
@@ -23,220 +17,261 @@ interface ApiError {
 }
 
 class QuestionnaireTemplatesApi {
-  private async request<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<T> {
-    const url = `${API_BASE_URL}${endpoint}`;
-    
-    const defaultHeaders = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    };
-
-    const config: RequestInit = {
-      ...options,
-      headers: {
-        ...defaultHeaders,
-        ...options.headers,
-      },
-    };
-
-    try {
-      const response = await fetch(url, config);
-
-      if (!response.ok) {
-        const error: ApiError = {
-          message: `HTTP Error ${response.status}: ${response.statusText}`,
-          statusCode: response.status,
-        };
-
-        try {
-          const errorData = await response.json();
-          error.message = errorData.message || error.message;
-          error.details = errorData.details || errorData.errors;
-        } catch {
-          // If error response is not JSON, keep default message
-        }
-
-        throw error;
-      }
-
-      // Handle empty responses (204 No Content)
-      if (response.status === 204) {
-        return {} as T;
-      }
-
-      return await response.json();
-    } catch (error) {
-      if (error instanceof Error && 'statusCode' in error) {
-        throw error; // Re-throw ApiError
-      }
-      
-      throw {
-        message: 'Network error or unexpected response',
-        details: [error instanceof Error ? error.message : 'Unknown error'],
+  
+  private handleError(error: any): ApiError {
+    if (error.response) {
+      // Server responded with error status
+      const data = error.response.data;
+      return {
+        message: data?.message || error.response.statusText || 'Request failed',
+        details: data?.details || (data?.errors ? Object.values(data.errors).flat() as string[] : undefined),
+        statusCode: error.response.status,
+      };
+    } else if (error.request) {
+      // Network error
+      return {
+        message: 'Network error - please check your connection',
         statusCode: 0,
-      } as ApiError;
+      };
+    } else {
+      // Other error
+      return {
+        message: error.message || 'An unexpected error occurred',
+        statusCode: 0,
+      };
     }
   }
 
-  // Template CRUD operations
-  async createTemplate(
-    request: CreateTemplateRequest
-  ): Promise<QuestionnaireTemplateResponse> {
-    return this.request<QuestionnaireTemplateResponse>('/questionnaire-templates', {
-      method: 'POST',
-      body: JSON.stringify(request),
-    });
+  // Create a new questionnaire template
+  async createTemplate(data: CreateTemplateRequest): Promise<QuestionnaireTemplateResponse> {
+    try {
+      const response = await axios.post('/questionnaire-templates', data);
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
   }
 
+  // Get a questionnaire template by ID
   async getTemplate(id: string): Promise<QuestionnaireTemplateResponse> {
-    return this.request<QuestionnaireTemplateResponse>(`/questionnaire-templates/${id}`);
+    try {
+      const response = await axios.get(`/questionnaire-templates/${id}`);
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
   }
 
-  async getDraftTemplate(id: string): Promise<QuestionnaireTemplateResponse> {
-    return this.request<QuestionnaireTemplateResponse>(`/questionnaire-templates/${id}/draft`);
+  // Get all questionnaire templates
+  async getTemplates(
+    status?: TemplateStatus,
+    page: number = 1,
+    pageSize: number = 10
+  ): Promise<{
+    data: QuestionnaireTemplateResponse[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }> {
+    try {
+      const params: any = { page, pageSize };
+      if (status) params.status = status;
+      
+      const response = await axios.get('/questionnaire-templates', { params });
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
   }
 
-  async saveDraft(request: SaveDraftRequest): Promise<void> {
-    return this.request<void>('/questionnaire-templates/save-draft', {
-      method: 'PUT',
-      body: JSON.stringify(request),
-    });
+  // Update a questionnaire template
+  async updateTemplate(
+    id: string,
+    data: Partial<CreateTemplateRequest>
+  ): Promise<QuestionnaireTemplateResponse> {
+    try {
+      const response = await axios.put(`/questionnaire-templates/${id}`, data);
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
   }
 
-  async publishTemplate(id: string): Promise<QuestionnaireTemplateResponse> {
-    return this.request<QuestionnaireTemplateResponse>(`/questionnaire-templates/${id}/publish`, {
-      method: 'POST',
-    });
+  // Delete a questionnaire template
+  async deleteTemplate(id: string): Promise<void> {
+    try {
+      await axios.delete(`/questionnaire-templates/${id}`);
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
   }
 
-  async archiveTemplate(id: string): Promise<void> {
-    return this.request<void>(`/questionnaire-templates/${id}/archive`, {
-      method: 'POST',
-    });
+  // Save template as draft
+  async saveDraft(data: SaveDraftRequest): Promise<QuestionnaireTemplateResponse> {
+    try {
+      const response = await axios.post('/questionnaire-templates/draft', data);
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
   }
 
-  async duplicateTemplate(id: string, newTitle: string): Promise<QuestionnaireTemplateResponse> {
-    return this.request<QuestionnaireTemplateResponse>(`/questionnaire-templates/${id}/duplicate`, {
-      method: 'POST',
-      body: JSON.stringify({ title: newTitle }),
-    });
+  // Get draft template
+  async getDraft(userId: string): Promise<QuestionnaireTemplateResponse | null> {
+    try {
+      const response = await axios.get(`/questionnaire-templates/draft/${userId}`);
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.status === 404) {
+        return null; // No draft found
+      }
+      throw this.handleError(error);
+    }
   }
 
-  // Section operations
-  async createSection(
+  // Clear draft template
+  async clearDraft(userId: string): Promise<void> {
+    try {
+      await axios.delete(`/questionnaire-templates/draft/${userId}`);
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Add section to template
+  async addSection(
     templateId: string,
-    request: CreateSectionRequest
+    data: CreateSectionRequest
   ): Promise<SectionResponse> {
-    return this.request<SectionResponse>(`/questionnaire-templates/${templateId}/sections`, {
-      method: 'POST',
-      body: JSON.stringify(request),
-    });
+    try {
+      const response = await axios.post(`/questionnaire-templates/${templateId}/sections`, data);
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
   }
 
+  // Update section
   async updateSection(
     templateId: string,
     sectionId: string,
-    request: Partial<CreateSectionRequest>
+    data: Partial<CreateSectionRequest>
   ): Promise<SectionResponse> {
-    return this.request<SectionResponse>(`/questionnaire-templates/${templateId}/sections/${sectionId}`, {
-      method: 'PUT',
-      body: JSON.stringify(request),
-    });
+    try {
+      const response = await axios.put(`/questionnaire-templates/${templateId}/sections/${sectionId}`, data);
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
   }
 
+  // Delete section
   async deleteSection(templateId: string, sectionId: string): Promise<void> {
-    return this.request<void>(`/questionnaire-templates/${templateId}/sections/${sectionId}`, {
-      method: 'DELETE',
-    });
-  }
-
-  async reorderSections(
-    templateId: string,
-    sectionIds: string[]
-  ): Promise<void> {
-    return this.request<void>(`/questionnaire-templates/${templateId}/sections/reorder`, {
-      method: 'POST',
-      body: JSON.stringify({ sectionIds }),
-    });
-  }
-
-  // List operations
-  async getTemplates(
-    page: number = 1,
-    pageSize: number = 20,
-    status?: TemplateStatus,
-    search?: string
-  ): Promise<{
-    items: QuestionnaireTemplateResponse[];
-    totalCount: number;
-    pageCount: number;
-  }> {
-    const params = new URLSearchParams({
-      page: page.toString(),
-      pageSize: pageSize.toString(),
-    });
-
-    if (status !== undefined) {
-      params.append('status', status.toString());
+    try {
+      await axios.delete(`/questionnaire-templates/${templateId}/sections/${sectionId}`);
+    } catch (error: any) {
+      throw this.handleError(error);
     }
+  }
 
-    if (search) {
-      params.append('search', search);
+  // Publish template
+  async publishTemplate(id: string): Promise<QuestionnaireTemplateResponse> {
+    try {
+      const response = await axios.post(`/questionnaire-templates/${id}/publish`);
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
     }
-
-    return this.request<{
-      items: QuestionnaireTemplateResponse[];
-      totalCount: number;
-      pageCount: number;
-    }>(`/questionnaire-templates?${params.toString()}`);
   }
 
-  // Validation operations
-  async validateTemplate(id: string): Promise<{
-    isValid: boolean;
-    errors: string[];
-    warnings: string[];
-  }> {
-    return this.request<{
-      isValid: boolean;
-      errors: string[];
-      warnings: string[];
-    }>(`/questionnaire-templates/${id}/validate`);
-  }
-
-  // Export/Import operations
-  async exportTemplate(id: string, format: 'json' | 'excel'): Promise<Blob> {
-    const response = await fetch(`${API_BASE_URL}/questionnaire-templates/${id}/export?format=${format}`, {
-      method: 'GET',
-      headers: {
-        'Accept': format === 'json' ? 'application/json' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Export failed: ${response.statusText}`);
+  // Archive template
+  async archiveTemplate(id: string): Promise<QuestionnaireTemplateResponse> {
+    try {
+      const response = await axios.post(`/questionnaire-templates/${id}/archive`);
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
     }
-
-    return response.blob();
   }
 
+  // Clone template
+  async cloneTemplate(id: string, newTitle: string): Promise<QuestionnaireTemplateResponse> {
+    try {
+      const response = await axios.post(`/questionnaire-templates/${id}/clone`, { title: newTitle });
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Preview template
+  async previewTemplate(id: string): Promise<QuestionnaireTemplateResponse> {
+    try {
+      const response = await axios.get(`/questionnaire-templates/${id}/preview`);
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Validate template
+  async validateTemplate(data: CreateTemplateRequest): Promise<{ isValid: boolean; errors: string[] }> {
+    try {
+      const response = await axios.post('/questionnaire-templates/validate', data);
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Export template
+  async exportTemplate(id: string, format: 'json' | 'pdf' | 'excel' = 'json'): Promise<Blob> {
+    try {
+      const response = await axios.get(`/questionnaire-templates/${id}/export`, {
+        params: { format },
+        responseType: 'blob'
+      });
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Import template
   async importTemplate(file: File): Promise<QuestionnaireTemplateResponse> {
-    const formData = new FormData();
-    formData.append('file', file);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const response = await axios.post('/questionnaire-templates/import', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
+  }
 
-    return this.request<QuestionnaireTemplateResponse>('/questionnaire-templates/import', {
-      method: 'POST',
-      body: formData,
-      headers: {}, // Let browser set Content-Type for FormData
-    });
+  // Get template statistics
+  async getTemplateStats(id: string): Promise<{
+    totalResponses: number;
+    completionRate: number;
+    averageScore: number;
+    lastUpdated: string;
+  }> {
+    try {
+      const response = await axios.get(`/questionnaire-templates/${id}/stats`);
+      return response.data;
+    } catch (error: any) {
+      throw this.handleError(error);
+    }
   }
 }
 
-// Create singleton instance
+// Export singleton instance
 export const questionnaireTemplatesApi = new QuestionnaireTemplatesApi();
 
-// Export error type for use in components
+// Export types
 export type { ApiError };

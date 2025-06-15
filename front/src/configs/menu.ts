@@ -33,6 +33,11 @@ export const appMenu = [
         icon: "FileText"
       },
       {
+        label: "Nuovo Template",
+        path: "/questionnaires/templates/new",
+        icon: "FilePlus"
+      },
+      {
         label: "Compilazioni",
         path: "/questionnaires/assignments",
         icon: "Edit3"
