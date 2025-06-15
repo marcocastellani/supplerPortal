@@ -18,6 +18,7 @@ Questo documento descrive lo scopo e l'utilizzo dei file principali nel progetto
 - **UX**: Usare Material-UI Autocomplete con rendering personalizzato per typeahead
 - **Validation**: Validazione per step nei wizard, non globale
 - **Error Handling**: Sistema avanzato con categorizzazione errori (network/validation/server), feedback UX migliorato con pulsanti dismiss/retry
+- **Server-side Filtering**: Implementare filtri complessi lato server utilizzando parametri API dedicati (es: `active: boolean` per filtro status)
 
 ### 🏗️ **Architettura**
 - **Clean Architecture**: Domain → Application → Infrastructure → API
@@ -740,4 +741,9 @@ public class CreateSupplyNetworkEntityCommandValidator : AbstractValidator<Creat
 - **Column Reordering**: Ordine ottimizzato (Name → VAT → Code → Location → Type → Status)
 - **Multilingual VAT Labels**: Traduzioni appropriate EN: "VAT", IT: "P.IVA", DE: "USt-IdNr."
 - **Data Completeness**: Gestione valori null per VAT code con fallback '-'
-- **Business Logic**: Ordine colonne allineato ai requisiti business per identificazione entità
+
+### 🔍 **Advanced Filtering System**
+- **Server-side Status Filtering**: Filtro status implementato lato server utilizzando parametro `active: boolean` nell'API
+- **Combined Filters**: Supporto per filtri combinati Type + Status con reset automatico della paginazione
+- **Filter UI Layout**: Layout responsive a 3 colonne (Search 6/12, Type 3/12, Status 3/12) per UX ottimale
+- **Debounced Server Calls**: Filtri integrati nel sistema di debouncing per performance ottimali
