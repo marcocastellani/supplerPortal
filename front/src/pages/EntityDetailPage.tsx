@@ -2,12 +2,7 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Container, Grid, Text } from "@remira/unifiedui";
-import {
-  Box,
-  Alert,
-  CircularProgress,
-  IconButton,
-} from "@mui/material";
+import { Box, Alert, CircularProgress, IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
@@ -27,7 +22,7 @@ import { useEntityDetail, useEntityUpdate } from "../hooks";
 
 /**
  * Refactored Entity Detail Page - Clean, modular, and maintainable [SF, CA, RP]
- * 
+ *
  * Key improvements:
  * - Reduced from 696 to ~100 lines (85% reduction) [CSD]
  * - Single responsibility: composition and navigation [SF]
@@ -42,7 +37,8 @@ const EntityDetailPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   // Custom hooks for data and updates [CA]
-  const { entity, parentEntity, isLoading, error, fetchEntity } = useEntityDetail(id);
+  const { entity, parentEntity, isLoading, error, fetchEntity } =
+    useEntityDetail(id);
   const { updateField } = useEntityUpdate();
 
   // Event handlers [SF]
@@ -72,7 +68,12 @@ const EntityDetailPage: React.FC = () => {
   if (isLoading) {
     return (
       <Container type="page">
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="400px"
+        >
           <Box textAlign="center">
             <CircularProgress size={48} />
             <Text variant="body1" sx={{ mt: 2 }}>
@@ -148,7 +149,12 @@ const EntityDetailPage: React.FC = () => {
       <Grid container spacing={2}>
         {/* Header with Breadcrumb */}
         <Grid item xs={12}>
-          <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            mb={2}
+          >
             <IconButton onClick={handleBackToList} sx={{ mr: 2 }}>
               <ArrowBackIcon />
             </IconButton>
@@ -166,29 +172,43 @@ const EntityDetailPage: React.FC = () => {
 
         {/* Hero Section */}
         <Grid item xs={12}>
-          <EntityHeroSection entity={entity} />
+          <EntityHeroSection entity={entity} parentEntity={parentEntity || undefined} />
         </Grid>
 
         {/* Tab Navigation */}
         <Grid item xs={12}>
-          <EntityTabNavigation activeTab={activeTab} onTabChange={handleTabChange} />
+          <EntityTabNavigation
+            activeTab={activeTab}
+            onTabChange={handleTabChange}
+          />
         </Grid>
 
         {/* Tab Content - Separated components [CA, DRY] */}
         <Grid item xs={12}>
           {activeTab === 0 && (
-            <EntityOverviewTab entity={entity} onFieldUpdate={handleFieldUpdate} />
+            <EntityOverviewTab
+              entity={entity}
+              onFieldUpdate={handleFieldUpdate}
+            />
           )}
           {activeTab === 1 && (
-            <EntityContactsTab entity={entity} onFieldUpdate={handleFieldUpdate} />
+            <EntityContactsTab
+              entity={entity}
+              onFieldUpdate={handleFieldUpdate}
+            />
           )}
           {activeTab === 2 && (
-            <EntityBusinessTab entity={entity} onFieldUpdate={handleFieldUpdate} />
+            <EntityBusinessTab
+              entity={entity}
+              onFieldUpdate={handleFieldUpdate}
+            />
           )}
           {activeTab === 3 && (
             <EntitySubEntitiesTab
               parentEntityId={entity.id}
-              onAddNew={() => navigate(`/supply-network/create?parentId=${entity.id}`)}
+              onAddNew={() =>
+                navigate(`/supply-network/create?parentId=${entity.id}`)
+              }
             />
           )}
           {activeTab === 4 && <EntitySystemTab entity={entity} />}

@@ -8,7 +8,10 @@ import { EntityDetailCard } from "../EntityDetailCard";
 
 interface EntityBusinessTabProps {
   entity: SupplyNetworkEntityDto;
-  onFieldUpdate: (fieldName: string, fieldValue: string | boolean | null) => Promise<void>;
+  onFieldUpdate: (
+    fieldName: string,
+    fieldValue: string | boolean | null
+  ) => Promise<void>;
 }
 
 /**

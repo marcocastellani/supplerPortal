@@ -3,9 +3,9 @@
 ## 🎯 **CRITICAL PATTERNS**
 
 ### API (.NET Core)
-- **Versioning**: Always use `api-version=2025-06-01`
+- **Versioning**: Always use `api-version=2025-06-01` as query parameter
 - **MediatR**: Required for all Command/Query
-- **DbSet**: Use correct names (`Suppliers` not `SupplyNetworkEntities`)
+- **DbSet**: Use correct names (`SupplyNetworkEntities` not `Suppliers`)
 - **GetById**: Always dedicated Query/Handler, never filter paginated lists
 - **AutoMapper**: Always parameterless constructor in Profile classes
 

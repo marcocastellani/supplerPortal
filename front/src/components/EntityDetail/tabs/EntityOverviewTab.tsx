@@ -9,7 +9,10 @@ import { EntityTypeChip, AccreditationStatusChip } from "../../EntityChips";
 
 interface EntityOverviewTabProps {
   entity: SupplyNetworkEntityDto;
-  onFieldUpdate: (fieldName: string, fieldValue: string | boolean | null) => Promise<void>;
+  onFieldUpdate: (
+    fieldName: string,
+    fieldValue: string | boolean | null
+  ) => Promise<void>;
 }
 
 /**
@@ -64,22 +67,36 @@ export const EntityOverviewTab: React.FC<EntityOverviewTabProps> = ({
       <Grid item xs={12} md={6}>
         <EntityDetailCard title={t("entityDetail.sections.quickStats")}>
           <Box display="flex" flexDirection="column" gap={2}>
-            <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
               <Text variant="body2" color="textSecondary">
                 {t("entityDetail.fields.entityType")}
               </Text>
               <EntityTypeChip entityType={entity.entityType} />
             </Box>
 
-            <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
               <Text variant="body2" color="textSecondary">
                 {t("entityDetail.fields.accreditationStatus")}
               </Text>
-              <AccreditationStatusChip accreditationStatus={entity.accreditationStatus} />
+              <AccreditationStatusChip
+                accreditationStatus={entity.accreditationStatus}
+              />
             </Box>
 
             {entity.country && (
-              <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
                 <Text variant="body2" color="textSecondary">
                   {t("entityDetail.fields.location")}
                 </Text>

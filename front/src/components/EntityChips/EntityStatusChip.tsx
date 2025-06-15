@@ -10,6 +10,7 @@ interface EntityStatusChipProps {
   variant?: "filled" | "outlined";
   showIcon?: boolean;
   style?: "default" | "colorful";
+  minimal?: boolean;
 }
 
 export const EntityStatusChip: React.FC<EntityStatusChipProps> = ({
@@ -18,6 +19,7 @@ export const EntityStatusChip: React.FC<EntityStatusChipProps> = ({
   variant = "outlined",
   showIcon = true,
   style = "colorful",
+  minimal = false,
 }) => {
   const { t } = useTranslation();
 
@@ -57,15 +59,31 @@ export const EntityStatusChip: React.FC<EntityStatusChipProps> = ({
       }
       sx={{
         fontWeight: "medium",
-        borderRadius: "20px",
-        height: size === "small" ? "32px" : "36px",
-        padding: size === "small" ? "0 8px" : "0 12px",
+        borderRadius: minimal ? "16px" : "20px",
+        height: minimal ? "auto" : (size === "small" ? "32px" : "36px"),
+        padding: minimal ? "0" : (size === "small" ? "0 8px" : "0 12px"),
+        border: minimal ? "none" : undefined,
+        minHeight: minimal ? "24px" : undefined,
         "& .MuiChip-label": {
-          paddingLeft: showIcon ? "0px" : "8px",
-          paddingRight: "8px",
+          paddingLeft: minimal ? "4px" : (showIcon ? "0px" : "8px"),
+          paddingRight: minimal ? "4px" : "8px",
           fontSize: size === "small" ? "0.75rem" : "0.875rem",
         },
-        ...(style === "colorful" && {
+        "& .MuiChip-icon": {
+          marginLeft: minimal ? "2px" : "4px",
+          marginRight: minimal ? "2px" : "8px",
+        },
+        ...(minimal && {
+          backgroundColor: "transparent !important",
+          color: `${colorScheme.color} !important`,
+          boxShadow: "none !important",
+          "& .MuiChip-icon": {
+            color: `${colorScheme.color} !important`,
+            marginLeft: "2px",
+            marginRight: "2px",
+          },
+        }),
+        ...(!minimal && style === "colorful" && {
           boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
           color: `${colorScheme.color} !important`,
           backgroundColor: `${colorScheme.backgroundColor} !important`,
@@ -76,7 +94,7 @@ export const EntityStatusChip: React.FC<EntityStatusChipProps> = ({
             marginRight: "8px",
           },
         }),
-        ...(style === "default" &&
+        ...(!minimal && style === "default" &&
           variant === "outlined" && {
             borderColor: "rgba(0, 0, 0, 0.23)",
           }),
