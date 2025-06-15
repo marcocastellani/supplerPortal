@@ -19,6 +19,7 @@ Questo documento descrive lo scopo e l'utilizzo dei file principali nel progetto
 - **Validation**: Validazione per step nei wizard, non globale
 - **Error Handling**: Sistema avanzato con categorizzazione errori (network/validation/server), feedback UX migliorato con pulsanti dismiss/retry
 - **Server-side Filtering**: Implementare filtri complessi lato server utilizzando parametri API dedicati (es: `active: boolean` per filtro status)
+- **Detail Page Navigation**: Gestire pagine di dettaglio attraverso il componente Home per mantenere la navigazione principale visibile
 
 ### 🏗️ **Architettura**
 - **Clean Architecture**: Domain → Application → Infrastructure → API
@@ -747,3 +748,14 @@ public class CreateSupplyNetworkEntityCommandValidator : AbstractValidator<Creat
 - **Combined Filters**: Supporto per filtri combinati Type + Status con reset automatico della paginazione
 - **Filter UI Layout**: Layout responsive a 3 colonne (Search 6/12, Type 3/12, Status 3/12) per UX ottimale
 - **Debounced Server Calls**: Filtri integrati nel sistema di debouncing per performance ottimali
+
+---
+
+## 📄 **Entity Detail Page Implementation**
+- **Professional UI Design**: Layout responsive con Container, Grid, Card e sezioni organizzate (General, Contact, Address, Metadata)
+- **Navigation Integration**: Gestita attraverso Home.tsx per mantenere il menu principale sempre visibile
+- **Error Handling**: Stati loading, error, not found con possibilità di retry e navigazione back
+- **Field Mapping**: Corretta mappatura dei campi DTO (vatCode, zipCode, phoneNumber, created, lastModified, ecc.)
+- **Icons & Chips**: Icone semantiche per entity type e status con styling coerente
+- **Multilingual Support**: Traduzioni complete EN/IT/DE per tutti i campi e sezioni
+- **Responsive Design**: Layout ottimizzato per desktop e mobile con Grid MUI
