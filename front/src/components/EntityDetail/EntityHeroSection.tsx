@@ -20,18 +20,42 @@ export const EntityHeroSection: React.FC<EntityHeroSectionProps> = ({
         <Box display="flex" alignItems="center" gap={2}>
           <Box>
             <Text variant="h4" sx={{ mb: 1 }}>
-              {entity.legalName || entity.shortName}
+              {entity.legalName} | {entity.shortName}
             </Text>
-            {entity.shortName && entity.shortName !== entity.legalName && (
-              <Text variant="h6" color="textSecondary" sx={{ mb: 1 }}>
-                {entity.shortName}
-              </Text>
-            )}
-            <Box display="flex" alignItems="center" gap={2}>
-              <EntityTypeChip entityType={entity.entityType} />
-              <EntityStatusChip active={entity.active} />
-            </Box>
-          </Box>
+          </Box>{" "}
+        </Box>{" "}
+        <Box display="flex" alignItems="right" gap={2}>
+          <EntityTypeChip entityType={entity.entityType} />
+          <EntityStatusChip active={entity.active} />
+        </Box>
+      </Box>
+      <Box display={"flex"} flexDirection="column" mt={1}>
+        <Box display="flex" alignItems="center" gap={1}>
+          {entity.vatCode && (
+            <Text variant="body2" color="textSecondary">
+              VAT: {entity.vatCode}
+            </Text>
+          )}
+          {entity.externalCode && (
+            <Text variant="body2" color="textSecondary">
+              Code: {entity.externalCode}
+            </Text>
+          )}
+        </Box>
+      </Box>
+
+      <Box display={"flex"} flexDirection="column" mt={1}>
+        <Box display="flex" alignItems="center" gap={1}>
+          {entity.vatCode && (
+            <Text variant="body2" color="textSecondary">
+              VAT: {entity.vatCode}
+            </Text>
+          )}
+          {entity.externalCode && (
+            <Text variant="body2" color="textSecondary">
+              Code: {entity.externalCode}
+            </Text>
+          )}
         </Box>
       </Box>
     </Paper>

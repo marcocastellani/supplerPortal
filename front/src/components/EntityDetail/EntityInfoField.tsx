@@ -199,10 +199,6 @@ export const EntityInfoField: React.FC<EntityInfoFieldProps> = ({
           </Box>
         ) : (
           <Box display="flex" alignItems="center" gap={1}>
-            <Text variant="body1" sx={{ minHeight: "24px" }}>
-              {displayValue()}
-            </Text>
-
             {editable && onUpdate && (
               <IconButton
                 size="small"
@@ -216,6 +212,9 @@ export const EntityInfoField: React.FC<EntityInfoFieldProps> = ({
                 <EditIcon fontSize="small" />
               </IconButton>
             )}
+            <Text variant="body1" sx={{ minHeight: "24px" }}>
+              {displayValue()}
+            </Text>
           </Box>
         )}
       </Box>
