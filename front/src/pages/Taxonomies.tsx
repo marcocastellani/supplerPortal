@@ -1,12 +1,17 @@
-import { Container, Grid, Text } from "@remira/unifiedui";
+import { Container, Grid } from "@remira/unifiedui";
+import { PageHeader } from "../components/LayoutComponents";
+import LabelIcon from "@mui/icons-material/Label";
 
 export const Taxonomies = () => {
   return (
     <Container type="page">
       <Grid container rowSpacing={3} sx={{ paddingTop: 5 }}>
         <Grid item xs={12}>
-          <Text variant="h3">Tag & Tassonomie</Text>
-          <Text variant="body1">Gestione tag e tassonomie</Text>
+          <PageHeader
+            title="Tag & Tassonomie"
+            subtitle="Gestione tag e tassonomie"
+            icon={<LabelIcon color="primary" />}
+          />
         </Grid>
       </Grid>
     </Container>

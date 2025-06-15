@@ -5,6 +5,7 @@ import { Container, Grid, Text } from "@remira/unifiedui";
 import { Box, Alert, CircularProgress, IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import { PageHeader } from "../components/LayoutComponents";
 
 import {
   EntityHeroSection,
@@ -147,27 +148,21 @@ const EntityDetailPage: React.FC = () => {
   return (
     <Container type="page">
       <Grid container spacing={2}>
-        {/* Header with Breadcrumb */}
+        {/* Header with Back and Refresh buttons */}
         <Grid item xs={12}>
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-            mb={2}
-          >
-            <IconButton onClick={handleBackToList} sx={{ mr: 2 }}>
-              <ArrowBackIcon />
-            </IconButton>
-            <Box sx={{ flexGrow: 1 }}>
+          <PageHeader
+            title={t("entityDetail.title")}
+            showBackButton={true}
+            onBackClick={handleBackToList}
+            showRefreshButton={true}
+            onRefreshClick={handleRefresh}
+            actions={
               <ParentEntityBreadcrumb
                 currentEntity={entity}
                 parentEntity={parentEntity || undefined}
               />
-            </Box>
-            <IconButton onClick={handleRefresh}>
-              <RefreshIcon />
-            </IconButton>
-          </Box>
+            }
+          />
         </Grid>
 
         {/* Hero Section */}

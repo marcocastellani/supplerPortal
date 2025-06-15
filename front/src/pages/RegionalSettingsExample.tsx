@@ -7,6 +7,8 @@ import {
   saveProfileProperty,
 } from "@remira/ucpaccelerator_unified_utils";
 import { Container, Grid, Text } from "@remira/unifiedui";
+import { PageHeader } from "../components/LayoutComponents";
+import LanguageIcon from "@mui/icons-material/Language";
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 
@@ -84,7 +86,11 @@ export const RegionalSettingsExample = () => {
     <Container type="page">
       <Grid container rowSpacing={3} sx={{ paddingTop: 5 }}>
         <Grid item xs={12}>
-          <Text variant="h3">{t("regionalSettingsExample")}</Text>
+          <PageHeader
+            title={t("regionalSettingsExample")}
+            subtitle="Regional settings and localization demonstration"
+            icon={<LanguageIcon color="primary" />}
+          />
           <div>
             <Text>{`Date Format: ${dateFormat || "Loading..."}`}</Text>
             <Text>{`Time Format: ${timeFormat || "Loading..."}`}</Text>
