@@ -14,6 +14,12 @@ public interface IApplicationDbContext
     DbSet<Questionnaire> Questionnaires { get; }
     DbSet<Remediation> Remediations { get; }
     
+    // Questionnaire Template Management
+    DbSet<QuestionnaireTemplate> QuestionnaireTemplates { get; }
+    DbSet<QuestionnaireSection> QuestionnaireSections { get; }
+    DbSet<TemplateQuestion> TemplateQuestions { get; }
+    DbSet<QuestionCondition> QuestionConditions { get; }
+    
     DatabaseFacade Database { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
