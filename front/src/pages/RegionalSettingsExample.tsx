@@ -11,6 +11,8 @@ import { PageHeader } from "../components/LayoutComponents";
 import LanguageIcon from "@mui/icons-material/Language";
 import { t } from "i18next";
 import { useEffect, useState } from "react";
+import { log } from "../utils/logger";
+import { useTranslation } from 'react-i18next';
 
 //Example of a function to save the current user's regional settings
 export const SaveRegionalSettings = async (
@@ -31,19 +33,19 @@ export const SaveRegionalSettings = async (
 
     // Save settings to localStorage
     localStorage.setItem("regionalSettings", JSON.stringify(settings));
-    console.log("Regional settings saved successfully:", settings);
+    log.info("Regional settings saved successfully", { component: 'SaveRegionalSettings', settings });
   } catch (error) {
-    console.error("Error saving regional settings:", error);
+    log.error("Error saving regional settings", { component: 'SaveRegionalSettings', error });
   }
 };
 
 export const RegionalSettingsExample = () => {
-  const [regionalSettings, setRegionalSettings] =
-    useState<RegionalSettings | null>(null);
   const [dateFormat, setDateFormat] = useState<string>("");
   const [timeFormat, setTimeFormat] = useState<string>("");
 
-  console.log(`Regional settings: ${regionalSettings}`);
+  const { t } = useTranslation();
+
+  log.debug("Regional settings component initialized", { component: 'RegionalSettingsExample' });
   useEffect(() => {
     const fetchRegionalSettings = async () => {
       const regionalSettingsData = await getProfileProperty(
@@ -53,29 +55,17 @@ export const RegionalSettingsExample = () => {
       );
 
       if (regionalSettingsData) {
-        // Save settings to state and localStorage
-        const settings = JSON.parse(regionalSettingsData.content as string);
-        setRegionalSettings(settings);
-        localStorage.setItem("regionalSettings", JSON.stringify(settings));
-
-        // Load date and time formats after fetching settings
-        setDateFormat(getPatternFromLocaleAndStyle());
-        setTimeFormat(getTimeFormat());
+        setDateFormat(regionalSettingsData.dateFormat || "DD/MM/YYYY");
+        setTimeFormat(regionalSettingsData.timeFormat || "HH:mm");
+        log.info("Regional settings loaded", { 
+          component: 'RegionalSettingsExample',
+          dateFormat: regionalSettingsData.dateFormat,
+          timeFormat: regionalSettingsData.timeFormat
+        });
       } else {
-        // Fallback to localStorage if API fails
-        const savedSettings = localStorage.getItem("regionalSettings");
-        if (savedSettings) {
-          try {
-            const parsedSettings = JSON.parse(
-              savedSettings
-            ) as RegionalSettings;
-            setRegionalSettings(parsedSettings);
-            setDateFormat(getPatternFromLocaleAndStyle());
-            setTimeFormat(getTimeFormat());
-          } catch (error) {
-            console.error("Error parsing localStorage data:", error);
-          }
-        }
+        setDateFormat("DD/MM/YYYY");
+        setTimeFormat("HH:mm");
+        log.warn("No regional settings found, using defaults", { component: 'RegionalSettingsExample' });
       }
     };
 

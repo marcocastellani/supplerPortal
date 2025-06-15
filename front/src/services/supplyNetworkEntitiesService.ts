@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { log } from '../utils/logger';
 import { 
   SupplyNetworkEntityDto, 
   CreateSupplyNetworkEntityCommand, 
@@ -63,25 +64,29 @@ export class SupplyNetworkEntitiesService {
    * Get a single supply network entity by ID
    */
   static async getSupplyNetworkEntity(id: string): Promise<SupplyNetworkEntityDto> {
-    console.log('Service: fetching entity with ID:', id);
+    log.api('GET', `/api/supplynetworkentities/${id}`, { service: 'SupplyNetworkEntitiesService', entityId: id });
     
     const params = new URLSearchParams();
     params.append('api-version', '2025-06-01');
     
     const url = `/api/supplynetworkentities/${encodeURIComponent(id)}`;
-    console.log('Service: requesting URL:', url);
     
     try {
       const response = await axios.get(url, { params });
-      console.log('Service: response received:', response.status, response.data);
+      log.apiResponse('GET', url, response.status, { 
+        service: 'SupplyNetworkEntitiesService', 
+        entityId: id,
+        entityType: response.data?.entityType
+      });
       return response.data;
     } catch (error: any) {
-      console.error('Service: request failed:', {
+      log.error('Service request failed', {
+        service: 'SupplyNetworkEntitiesService',
+        method: 'getSupplyNetworkEntity',
         url,
-        status: error?.response?.status,
-        data: error?.response?.data,
-        message: error?.message
-      });
+        entityId: id,
+        status: error?.response?.status
+      }, error);
       throw error;
     }
   }

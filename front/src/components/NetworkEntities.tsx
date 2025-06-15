@@ -6,6 +6,7 @@ import {
   EntityType,
   SupplyNetworkEntityDto,
 } from "../types/supplyNetworkEntities";
+import { FormInputChangeEvent } from "../types/ui";
 import { Link } from "react-router-dom";
 import { Container, Grid, Text, Select, Card } from "@remira/unifiedui";
 import { PageHeader } from "./LayoutComponents";
@@ -109,7 +110,7 @@ const NetworkEntities: React.FC = () => {
   }, [searchQuery, filterType, filterStatus, currentPage, debouncedFetch]);
 
   // Handle search input change
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (e: FormInputChangeEvent) => {
     setSearchQuery(e.target.value);
     setCurrentPage(1); // Reset to first page on new search
   };
