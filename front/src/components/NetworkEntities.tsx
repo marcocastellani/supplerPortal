@@ -4,6 +4,27 @@ import { debounce } from 'lodash';
 import { SupplyNetworkEntitiesService } from '../services/supplyNetworkEntitiesService';
 import { EntityType, SupplyNetworkEntityDto } from '../types/supplyNetworkEntities';
 import { Link } from 'react-router-dom';
+import { Container, Grid, Text, Select, Card } from "@remira/unifiedui";
+import { 
+  TextField, 
+  InputAdornment,
+  TableContainer,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Paper,
+  Chip,
+  Alert,
+  CircularProgress,
+  Box,
+  Pagination,
+  CardContent
+} from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import BusinessIcon from '@mui/icons-material/Business';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 const NetworkEntities: React.FC = () => {
   const { t } = useTranslation();
@@ -69,8 +90,9 @@ const NetworkEntities: React.FC = () => {
   };
 
   // Handle filter type change
-  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFilterType(e.target.value as EntityType | 'all');
+  const handleFilterTypeChange = (event: any, option: any) => {
+    const newValue = option?.value || event?.target?.value || 'all';
+    setFilterType(newValue as EntityType | 'all');
     setCurrentPage(1); // Reset to first page on filter change
   };
 
@@ -100,192 +122,232 @@ const NetworkEntities: React.FC = () => {
   };
 
   return (
-    <div className="network-entities-container p-6">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold mb-4">{t('networkEntities.title')}</h2>
-        
+    <Container type="page">
+      <Grid container spacing={3}>
+        {/* Header Section */}
+        <Grid item xs={12}>
+          <Box display="flex" alignItems="center" gap={2} mb={2}>
+            <BusinessIcon color="primary" sx={{ fontSize: 32 }} />
+            <Text variant="h4">
+              {t('networkEntities.title')}
+            </Text>
+          </Box>
+        </Grid>
+
         {/* Search and Filter Controls */}
-        <div className="flex gap-4 mb-4">
-          <div className="flex-1">
-            <input 
-              type="text" 
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder={t('networkEntities.searchPlaceholder')} 
-              value={searchQuery} 
-              onChange={handleSearchChange}
-              disabled={isLoading}
-            />
-          </div>
-          <div className="w-64">
-            <select 
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={filterType} 
-              onChange={handleFilterChange}
-              disabled={isLoading}
-            >
-              <option value="all">{t('networkEntities.filterAll')}</option>
-              <option value={EntityType.Supplier}>{t('networkEntities.filterSupplier')}</option>
-              <option value={EntityType.Site}>{t('networkEntities.filterSite')}</option>
-              <option value={EntityType.SubSupplier}>{t('networkEntities.filterSubSupplier')}</option>
-              <option value={EntityType.Person}>{t('networkEntities.filterPerson')}</option>
-              <option value={EntityType.CompanyGroup}>{t('networkEntities.filterCompanyGroup')}</option>
-            </select>
-          </div>
-        </div>
+        <Grid item xs={12}>
+          <Card title="Search & Filter">
+            <Box p={2}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={8}>
+                  <TextField
+                    fullWidth
+                    placeholder={t('networkEntities.searchPlaceholder')}
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    disabled={isLoading}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SearchIcon color="action" />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Select
+                    value={filterType}
+                    onChange={handleFilterTypeChange}
+                    options={[
+                      { value: 'all', label: t('networkEntities.filterAll') },
+                      { value: EntityType.Supplier, label: t('networkEntities.filterSupplier') },
+                      { value: EntityType.Site, label: t('networkEntities.filterSite') },
+                      { value: EntityType.SubSupplier, label: t('networkEntities.filterSubSupplier') },
+                      { value: EntityType.Person, label: t('networkEntities.filterPerson') },
+                      { value: EntityType.CompanyGroup, label: t('networkEntities.filterCompanyGroup') }
+                    ]}
+                    fullWidth
+                    disabled={isLoading}
+                  />
+                </Grid>
+              </Grid>
 
-        {/* Results count */}
-        {!isLoading && !error && (
-          <div className="text-sm text-gray-600 mb-4">
-            {t('networkEntities.resultsCount', { count: totalCount })}
-          </div>
-        )}
-      </div>
+              {/* Results count */}
+              {!isLoading && !error && (
+                <Box mt={2}>
+                  <Text variant="body2">
+                    {t('networkEntities.resultsCount', { count: totalCount })}
+                  </Text>
+                </Box>
+              )}
+            </Box>
+          </Card>
+        </Grid>
 
-      {/* Loading State */}
-      {isLoading && (
-        <div className="flex justify-center items-center py-12">
-          <div data-testid="loading-spinner" className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-        </div>
-      )}
-
-      {/* Error State */}
-      {error && !isLoading && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
-          {error}
-        </div>
-      )}
-
-      {/* No Results State */}
-      {!isLoading && !error && entities.length === 0 && (
-        <div className="text-center py-12 text-gray-500">
-          {t('networkEntities.noResults')}
-        </div>
-      )}
-
-      {/* Results List */}
-      {!isLoading && !error && entities.length > 0 && (
-        <>
-          <div className="bg-white shadow-md rounded-lg overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {t('networkEntities.table.name')}
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {t('networkEntities.table.code')}
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {t('networkEntities.table.type')}
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {t('networkEntities.table.location')}
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {t('networkEntities.table.status')}
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {entities.map((entity) => (
-                  <tr key={entity.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <Link 
-                        to={`/supply-network/entity/${entity.id}`}
-                        className="text-blue-600 hover:text-blue-900 font-medium"
-                      >
-                        {entity.legalName}
-                      </Link>
-                      {entity.shortName && entity.shortName !== entity.legalName && (
-                        <div className="text-sm text-gray-500">{entity.shortName}</div>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {entity.externalCode || '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                        {getEntityTypeDisplay(entity.entityType)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {entity.city}, {entity.country}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        entity.active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                      }`}>
-                        {entity.active ? t('networkEntities.status.active') : t('networkEntities.status.inactive')}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between mt-6">
-              <div className="flex-1 flex justify-between sm:hidden">
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {t('networkEntities.pagination.previous')}
-                </button>
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {t('networkEntities.pagination.next')}
-                </button>
-              </div>
-              <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                <div>
-                  <p className="text-sm text-gray-700">
-                    {t('networkEntities.pagination.showing', {
-                      from: (currentPage - 1) * pageSize + 1,
-                      to: Math.min(currentPage * pageSize, totalCount),
-                      total: totalCount
-                    })}
-                  </p>
-                </div>
-                <div>
-                  <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                    <button
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <span className="sr-only">{t('networkEntities.pagination.previous')}</span>
-                      <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </button>
-                    <span className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
-                      {t('networkEntities.pagination.page', { current: currentPage, total: totalPages })}
-                    </span>
-                    <button
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                      className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <span className="sr-only">{t('networkEntities.pagination.next')}</span>
-                      <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </button>
-                  </nav>
-                </div>
-              </div>
-            </div>
+        {/* Content Section */}
+        <Grid item xs={12}>
+          {/* Loading State */}
+          {isLoading && (
+            <Card>
+              <CardContent>
+                <Box display="flex" justifyContent="center" alignItems="center" py={8}>
+                  <CircularProgress data-testid="loading-spinner" />
+                  <Box ml={2}>
+                    <Text variant="body1">{t('networkEntities.loading', 'Loading...')}</Text>
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
           )}
-        </>
-      )}
-    </div>
+
+          {/* Error State */}
+          {error && !isLoading && (
+            <Alert severity="error" variant="filled">
+              {error}
+            </Alert>
+          )}
+
+          {/* No Results State */}
+          {!isLoading && !error && entities.length === 0 && (
+            <Card>
+              <CardContent>
+                <Box textAlign="center" py={8}>
+                  <BusinessIcon sx={{ fontSize: 64, color: 'text.disabled', mb: 2 }} />
+                  <Text variant="h6">
+                    {t('networkEntities.noResults')}
+                  </Text>
+                  <Text variant="body2">
+                    {t('networkEntities.noResultsDescription', 'Try adjusting your search criteria')}
+                  </Text>
+                </Box>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Results Table */}
+          {!isLoading && !error && entities.length > 0 && (
+            <Card>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>
+                        <strong>{t('networkEntities.table.name')}</strong>
+                      </TableCell>
+                      <TableCell>
+                        <strong>{t('networkEntities.table.code')}</strong>
+                      </TableCell>
+                      <TableCell>
+                        <strong>{t('networkEntities.table.type')}</strong>
+                      </TableCell>
+                      <TableCell>
+                        <strong>{t('networkEntities.table.location')}</strong>
+                      </TableCell>
+                      <TableCell>
+                        <strong>{t('networkEntities.table.status')}</strong>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {entities.map((entity) => (
+                      <TableRow 
+                        key={entity.id} 
+                        hover
+                        sx={{ 
+                          '&:hover': { 
+                            backgroundColor: 'action.hover',
+                            cursor: 'pointer'
+                          } 
+                        }}
+                      >
+                        <TableCell>
+                          <Box>
+                            <Link 
+                              to={`/supply-network/entity/${entity.id}`}
+                              style={{ textDecoration: 'none' }}
+                            >
+                              <Text 
+                                variant="body1" 
+                                color="primary"
+                                sx={{ 
+                                  fontWeight: 'medium',
+                                  '&:hover': { textDecoration: 'underline' } 
+                                }}
+                              >
+                                {entity.legalName}
+                              </Text>
+                            </Link>
+                            {entity.shortName && entity.shortName !== entity.legalName && (
+                              <Text variant="body2" color="textSecondary">
+                                {entity.shortName}
+                              </Text>
+                            )}
+                          </Box>
+                        </TableCell>
+                        <TableCell>
+                          <Text variant="body2" color="textSecondary">
+                            {entity.externalCode || '-'}
+                          </Text>
+                        </TableCell>
+                        <TableCell>
+                          <Chip 
+                            label={getEntityTypeDisplay(entity.entityType)}
+                            color="primary"
+                            variant="outlined"
+                            size="small"
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Box display="flex" alignItems="center" gap={1}>
+                            <LocationOnIcon fontSize="small" color="action" />
+                            <Text variant="body2">
+                              {entity.city}, {entity.country}
+                            </Text>
+                          </Box>
+                        </TableCell>
+                        <TableCell>
+                          <Chip 
+                            label={entity.active ? t('networkEntities.status.active') : t('networkEntities.status.inactive')}
+                            color={entity.active ? 'success' : 'default'}
+                            variant={entity.active ? 'filled' : 'outlined'}
+                            size="small"
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <CardContent>
+                  <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap={2}>
+                    <Text variant="body2" color="textSecondary">
+                      {t('networkEntities.pagination.showing', {
+                        from: (currentPage - 1) * pageSize + 1,
+                        to: Math.min(currentPage * pageSize, totalCount),
+                        total: totalCount
+                      })}
+                    </Text>
+                    <Pagination
+                      count={totalPages}
+                      page={currentPage}
+                      onChange={(event, page) => handlePageChange(page)}
+                      color="primary"
+                      showFirstButton
+                      showLastButton
+                      disabled={isLoading}
+                    />
+                  </Box>
+                </CardContent>
+              )}
+            </Card>
+          )}
+        </Grid>
+      </Grid>
+    </Container>
   );
 };
 

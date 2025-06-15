@@ -32,7 +32,7 @@ const EntityDetailPage: React.FC = () => {
     <div>
       <h2>{entity.legalName} ({entity.entityType})</h2>
       {/* Removed description field as it does not exist in SupplyNetworkEntityDto */}
-      <p>{t('entityDetails.otherInfo')} Other entity details here.</p> // Placeholder for actual fields
+      <p>{t('entityDetails.otherInfo')} Other entity details here.</p> {/* Placeholder for actual fields */}
       {/* Add more fields and navigation to related entities */}
     </div>
   );
