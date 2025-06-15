@@ -39,17 +39,17 @@
 
 ## 📋 **Phase 2: Structural Improvements (Priorità Alta)**
 
-### 2.1 **NetworkEntities.tsx Refactoring** [CSD, SF]
-- [ ] **Extract custom hooks** (427 → ~200 lines)
-  - [ ] Create `hooks/useNetworkEntitiesFilters.ts`
-  - [ ] Create `hooks/useNetworkEntitiesData.ts`
-  - [ ] Create `hooks/useNetworkEntitiesPagination.ts`
-
-- [ ] **Component decomposition**
-  - [ ] Extract `components/NetworkEntities/NetworkEntitiesSearch.tsx`
-  - [ ] Extract `components/NetworkEntities/NetworkEntitiesFilters.tsx`
-  - [ ] Extract `components/NetworkEntities/NetworkEntitiesTable.tsx`
-  - [ ] Extract `components/NetworkEntities/NetworkEntitiesPagination.tsx`
+### 2.1 **NetworkEntities.tsx Refactoring** [CSD, SF] - ✅ **COMPLETATO**
+- [x] **Extract custom hooks** 
+  - [x] Create `hooks/useNetworkEntitiesFilters.ts`
+  - [x] Create `hooks/useNetworkEntitiesData.ts`
+  - [x] Create `hooks/useNetworkEntitiesPagination.ts`
+- [x] **Component decomposition**
+  - [x] Extract `components/NetworkEntities/NetworkEntitiesSearch.tsx`
+  - [x] Extract `components/NetworkEntities/NetworkEntitiesFilters.tsx`
+  - [x] Extract `components/NetworkEntities/NetworkEntitiesTable.tsx`
+  - [x] Extract `components/NetworkEntities/NetworkEntitiesPagination.tsx`
+- [x] **RESULT**: 427 → 108 lines (**75% reduction**)
 
 ### 2.2 **NewSupplyNetworkEntity.tsx Refactoring** [CSD, CA]
 - [ ] **Extract business logic** (353 → ~150 lines)
@@ -175,7 +175,7 @@
 ## 🔄 **Current Status**
 
 **Phase 1**: ⏳ **IN PROGRESS**  
-**Phase 2**: 📋 **PLANNED**  
+**Phase 2**: 📋 **IN PROGRESS**  
 **Phase 3**: 📋 **PLANNED**  
 **Phase 4**: 📋 **PLANNED**  
 **Phase 5**: 📋 **PLANNED**
@@ -194,4 +194,4 @@
 
 ---
 
-**Next Action**: Continue Phase 1.2 - Type Safety Enhancement 
+**Next Action**: Continue Phase 2.2 - NewSupplyNetworkEntity.tsx Refactoring 
