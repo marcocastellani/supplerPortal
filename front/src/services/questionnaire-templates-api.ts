@@ -45,7 +45,10 @@ class QuestionnaireTemplatesApi {
   // Create a new questionnaire template
   async createTemplate(data: CreateTemplateRequest): Promise<QuestionnaireTemplateResponse> {
     try {
-      const response = await axios.post('/questionnaire-templates', data);
+      const params = new URLSearchParams();
+      params.append('api-version', '2025-06-01');
+      
+      const response = await axios.post('/api/questionnairetemplates', data, { params });
       return response.data;
     } catch (error: any) {
       throw this.handleError(error);
@@ -55,7 +58,10 @@ class QuestionnaireTemplatesApi {
   // Get a questionnaire template by ID
   async getTemplate(id: string): Promise<QuestionnaireTemplateResponse> {
     try {
-      const response = await axios.get(`/questionnaire-templates/${id}`);
+      const params = new URLSearchParams();
+      params.append('api-version', '2025-06-01');
+      
+      const response = await axios.get(`/api/questionnairetemplates/${id}`, { params });
       return response.data;
     } catch (error: any) {
       throw this.handleError(error);
@@ -76,21 +82,25 @@ class QuestionnaireTemplatesApi {
     try {
       const params: any = { page, pageSize };
       if (status) params.status = status;
+      params['api-version'] = '2025-06-01';
       
-      const response = await axios.get('/questionnaire-templates', { params });
+      const response = await axios.get('/api/questionnairetemplates', { params });
       return response.data;
     } catch (error: any) {
       throw this.handleError(error);
     }
   }
 
-  // Update a questionnaire template
+  // Update an existing questionnaire template
   async updateTemplate(
     id: string,
     data: Partial<CreateTemplateRequest>
   ): Promise<QuestionnaireTemplateResponse> {
     try {
-      const response = await axios.put(`/questionnaire-templates/${id}`, data);
+      const params = new URLSearchParams();
+      params.append('api-version', '2025-06-01');
+      
+      const response = await axios.put(`/api/questionnairetemplates/${id}`, data, { params });
       return response.data;
     } catch (error: any) {
       throw this.handleError(error);
@@ -100,7 +110,10 @@ class QuestionnaireTemplatesApi {
   // Delete a questionnaire template
   async deleteTemplate(id: string): Promise<void> {
     try {
-      await axios.delete(`/questionnaire-templates/${id}`);
+      const params = new URLSearchParams();
+      params.append('api-version', '2025-06-01');
+      
+      await axios.delete(`/api/questionnairetemplates/${id}`, { params });
     } catch (error: any) {
       throw this.handleError(error);
     }
@@ -109,7 +122,10 @@ class QuestionnaireTemplatesApi {
   // Save template as draft
   async saveDraft(data: SaveDraftRequest): Promise<QuestionnaireTemplateResponse> {
     try {
-      const response = await axios.post('/questionnaire-templates/draft', data);
+      const params = new URLSearchParams();
+      params.append('api-version', '2025-06-01');
+      
+      const response = await axios.post('/api/questionnairetemplates/draft', data, { params });
       return response.data;
     } catch (error: any) {
       throw this.handleError(error);
@@ -119,7 +135,10 @@ class QuestionnaireTemplatesApi {
   // Get draft template
   async getDraft(userId: string): Promise<QuestionnaireTemplateResponse | null> {
     try {
-      const response = await axios.get(`/questionnaire-templates/draft/${userId}`);
+      const params = new URLSearchParams();
+      params.append('api-version', '2025-06-01');
+      
+      const response = await axios.get(`/api/questionnairetemplates/draft/${userId}`, { params });
       return response.data;
     } catch (error: any) {
       if (error.response?.status === 404) {
@@ -132,43 +151,55 @@ class QuestionnaireTemplatesApi {
   // Clear draft template
   async clearDraft(userId: string): Promise<void> {
     try {
-      await axios.delete(`/questionnaire-templates/draft/${userId}`);
+      const params = new URLSearchParams();
+      params.append('api-version', '2025-06-01');
+      
+      await axios.delete(`/api/questionnairetemplates/draft/${userId}`, { params });
     } catch (error: any) {
       throw this.handleError(error);
     }
   }
 
-  // Add section to template
+  // Create a new section in a template
   async addSection(
     templateId: string,
     data: CreateSectionRequest
   ): Promise<SectionResponse> {
     try {
-      const response = await axios.post(`/questionnaire-templates/${templateId}/sections`, data);
+      const params = new URLSearchParams();
+      params.append('api-version', '2025-06-01');
+      
+      const response = await axios.post(`/api/questionnairetemplates/${templateId}/sections`, data, { params });
       return response.data;
     } catch (error: any) {
       throw this.handleError(error);
     }
   }
 
-  // Update section
+  // Update a section
   async updateSection(
     templateId: string,
     sectionId: string,
     data: Partial<CreateSectionRequest>
   ): Promise<SectionResponse> {
     try {
-      const response = await axios.put(`/questionnaire-templates/${templateId}/sections/${sectionId}`, data);
+      const params = new URLSearchParams();
+      params.append('api-version', '2025-06-01');
+      
+      const response = await axios.put(`/api/questionnairetemplates/${templateId}/sections/${sectionId}`, data, { params });
       return response.data;
     } catch (error: any) {
       throw this.handleError(error);
     }
   }
 
-  // Delete section
+  // Delete a section
   async deleteSection(templateId: string, sectionId: string): Promise<void> {
     try {
-      await axios.delete(`/questionnaire-templates/${templateId}/sections/${sectionId}`);
+      const params = new URLSearchParams();
+      params.append('api-version', '2025-06-01');
+      
+      await axios.delete(`/api/questionnairetemplates/${templateId}/sections/${sectionId}`, { params });
     } catch (error: any) {
       throw this.handleError(error);
     }
@@ -177,7 +208,10 @@ class QuestionnaireTemplatesApi {
   // Publish template
   async publishTemplate(id: string): Promise<QuestionnaireTemplateResponse> {
     try {
-      const response = await axios.post(`/questionnaire-templates/${id}/publish`);
+      const params = new URLSearchParams();
+      params.append('api-version', '2025-06-01');
+      
+      const response = await axios.post(`/api/questionnairetemplates/${id}/publish`, {}, { params });
       return response.data;
     } catch (error: any) {
       throw this.handleError(error);
@@ -187,7 +221,10 @@ class QuestionnaireTemplatesApi {
   // Archive template
   async archiveTemplate(id: string): Promise<QuestionnaireTemplateResponse> {
     try {
-      const response = await axios.post(`/questionnaire-templates/${id}/archive`);
+      const params = new URLSearchParams();
+      params.append('api-version', '2025-06-01');
+      
+      const response = await axios.post(`/api/questionnairetemplates/${id}/archive`, {}, { params });
       return response.data;
     } catch (error: any) {
       throw this.handleError(error);
@@ -197,7 +234,10 @@ class QuestionnaireTemplatesApi {
   // Clone template
   async cloneTemplate(id: string, newTitle: string): Promise<QuestionnaireTemplateResponse> {
     try {
-      const response = await axios.post(`/questionnaire-templates/${id}/clone`, { title: newTitle });
+      const params = new URLSearchParams();
+      params.append('api-version', '2025-06-01');
+      
+      const response = await axios.post(`/api/questionnairetemplates/${id}/clone`, { title: newTitle }, { params });
       return response.data;
     } catch (error: any) {
       throw this.handleError(error);
@@ -207,7 +247,10 @@ class QuestionnaireTemplatesApi {
   // Preview template
   async previewTemplate(id: string): Promise<QuestionnaireTemplateResponse> {
     try {
-      const response = await axios.get(`/questionnaire-templates/${id}/preview`);
+      const params = new URLSearchParams();
+      params.append('api-version', '2025-06-01');
+      
+      const response = await axios.get(`/api/questionnairetemplates/${id}/preview`, { params });
       return response.data;
     } catch (error: any) {
       throw this.handleError(error);
@@ -217,7 +260,10 @@ class QuestionnaireTemplatesApi {
   // Validate template
   async validateTemplate(data: CreateTemplateRequest): Promise<{ isValid: boolean; errors: string[] }> {
     try {
-      const response = await axios.post('/questionnaire-templates/validate', data);
+      const params = new URLSearchParams();
+      params.append('api-version', '2025-06-01');
+      
+      const response = await axios.post('/api/questionnairetemplates/validate', data, { params });
       return response.data;
     } catch (error: any) {
       throw this.handleError(error);
@@ -227,8 +273,12 @@ class QuestionnaireTemplatesApi {
   // Export template
   async exportTemplate(id: string, format: 'json' | 'pdf' | 'excel' = 'json'): Promise<Blob> {
     try {
-      const response = await axios.get(`/questionnaire-templates/${id}/export`, {
-        params: { format },
+      const params = new URLSearchParams();
+      params.append('api-version', '2025-06-01');
+      params.append('format', format);
+      
+      const response = await axios.get(`/api/questionnairetemplates/${id}/export`, {
+        params,
         responseType: 'blob'
       });
       return response.data;
@@ -243,10 +293,14 @@ class QuestionnaireTemplatesApi {
       const formData = new FormData();
       formData.append('file', file);
       
-      const response = await axios.post('/questionnaire-templates/import', formData, {
+      const params = new URLSearchParams();
+      params.append('api-version', '2025-06-01');
+      
+      const response = await axios.post('/api/questionnairetemplates/import', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        params
       });
       return response.data;
     } catch (error: any) {
@@ -262,7 +316,10 @@ class QuestionnaireTemplatesApi {
     lastUpdated: string;
   }> {
     try {
-      const response = await axios.get(`/questionnaire-templates/${id}/stats`);
+      const params = new URLSearchParams();
+      params.append('api-version', '2025-06-01');
+      
+      const response = await axios.get(`/api/questionnairetemplates/${id}/stats`, { params });
       return response.data;
     } catch (error: any) {
       throw this.handleError(error);
