@@ -14,22 +14,12 @@ import {
 } from "@mui/material";
 import { Text } from "@remira/unifiedui";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
-import BusinessIcon from "@mui/icons-material/Business";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import FactoryIcon from "@mui/icons-material/Factory";
-import PersonIcon from "@mui/icons-material/Person";
-import ApartmentIcon from "@mui/icons-material/Apartment";
-import AccountTreeIcon from "@mui/icons-material/AccountTree";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CancelIcon from "@mui/icons-material/Cancel";
 
-import {
-  SupplyNetworkEntityDto,
-  EntityType,
-} from "../../types/supplyNetworkEntities";
+import { SupplyNetworkEntityDto } from "../../types/supplyNetworkEntities";
 import { SupplyNetworkEntitiesService } from "../../services/supplyNetworkEntitiesService";
+import { EntityStatusChip, EntityTypeChip } from "../EntityChips";
 
 interface SubEntitiesListProps {
   parentEntityId: string;
@@ -67,46 +57,8 @@ export const SubEntitiesList: React.FC<SubEntitiesListProps> = ({
     }
   };
 
-  const getEntityTypeIcon = (type: EntityType) => {
-    switch (type) {
-      case EntityType.Supplier:
-        return <BusinessIcon />;
-      case EntityType.Site:
-        return <LocationOnIcon />;
-      case EntityType.SubSupplier:
-        return <FactoryIcon />;
-      case EntityType.Person:
-        return <PersonIcon />;
-      case EntityType.CompanyGroup:
-        return <ApartmentIcon />;
-      default:
-        return <AccountTreeIcon />;
-    }
-  };
-
-  const getEntityTypeDisplay = (type: EntityType): string => {
-    switch (type) {
-      case EntityType.Supplier:
-        return t("networkEntities.entityType.supplier");
-      case EntityType.Site:
-        return t("networkEntities.entityType.site");
-      case EntityType.SubSupplier:
-        return t("networkEntities.entityType.subSupplier");
-      case EntityType.Person:
-        return t("networkEntities.entityType.person");
-      case EntityType.CompanyGroup:
-        return t("networkEntities.entityType.companyGroup");
-      default:
-        return type;
-    }
-  };
-
   const handleViewEntity = (entityId: string) => {
-    navigate(`/supply-network/${entityId}`);
-  };
-
-  const handleEditEntity = (entityId: string) => {
-    navigate(`/supply-network/${entityId}/edit`);
+    navigate(`/supply-network/entity/${entityId}`);
   };
 
   if (isLoading) {
@@ -171,27 +123,10 @@ export const SubEntitiesList: React.FC<SubEntitiesListProps> = ({
                     mb={2}
                   >
                     <Box display="flex" alignItems="center" gap={1}>
-                      {getEntityTypeIcon(entity.entityType)}
-                      <Chip
-                        label={getEntityTypeDisplay(entity.entityType)}
-                        size="small"
-                        variant="outlined"
-                      />
+                      <EntityTypeChip entityType={entity.entityType} />
                     </Box>
 
-                    <Chip
-                      icon={
-                        entity.active ? <CheckCircleIcon /> : <CancelIcon />
-                      }
-                      label={
-                        entity.active
-                          ? t("networkEntities.status.active")
-                          : t("networkEntities.status.inactive")
-                      }
-                      color={entity.active ? "success" : "default"}
-                      size="small"
-                      variant={entity.active ? "filled" : "outlined"}
-                    />
+                    <EntityStatusChip active={entity.active} />
                   </Box>
 
                   {/* Entity Info */}
@@ -199,12 +134,12 @@ export const SubEntitiesList: React.FC<SubEntitiesListProps> = ({
                     <Text variant="subtitle2" sx={{ mb: 0.5 }}>
                       {entity.legalName}
                     </Text>
-                    {entity.shortName &&
-                      entity.shortName !== entity.legalName && (
-                        <Text variant="body2" color="textSecondary">
-                          {entity.shortName}
-                        </Text>
-                      )}
+                    <Text variant="body2" color="textSecondary">
+                      {entity.contactPersonName}
+                    </Text>
+                    <Text variant="body1" color="textSecondary">
+                      {entity.vatCode || entity.taxCode}
+                    </Text>
                     {entity.externalCode && (
                       <Text variant="body2" color="textSecondary">
                         Code: {entity.externalCode}
@@ -217,7 +152,7 @@ export const SubEntitiesList: React.FC<SubEntitiesListProps> = ({
                     <Box display="flex" alignItems="center" gap={0.5} mb={2}>
                       <LocationOnIcon fontSize="small" color="action" />
                       <Text variant="body2" color="textSecondary">
-                        {[entity.city, entity.country]
+                        {[entity.city, entity.country, entity.region]
                           .filter(Boolean)
                           .join(", ")}
                       </Text>
@@ -232,13 +167,6 @@ export const SubEntitiesList: React.FC<SubEntitiesListProps> = ({
                       title={t("common.view")}
                     >
                       <VisibilityIcon fontSize="small" />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      onClick={() => handleEditEntity(entity.id)}
-                      title={t("common.edit")}
-                    >
-                      <EditIcon fontSize="small" />
                     </IconButton>
                   </Box>
                 </CardContent>
