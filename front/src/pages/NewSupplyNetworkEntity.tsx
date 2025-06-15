@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { Container, Grid, Text } from "@remira/unifiedui";
+import React, { useEffect } from "react";
 import {
   FormWizard,
   WizardStep,
@@ -8,307 +7,84 @@ import { EntityTypeRoleStep } from "../components/SupplyNetworkEntities/FormStep
 import { GeneralInfoStep } from "../components/SupplyNetworkEntities/FormSteps/GeneralInfoStep";
 import { StatusContactStep } from "../components/SupplyNetworkEntities/FormSteps/StatusContactStep";
 import { ReviewSubmitStep } from "../components/SupplyNetworkEntities/FormSteps/ReviewSubmitStep";
-import { useErrorHandling } from "../hooks/useErrorHandling";
 import { useFormValidation } from "../hooks/useFormValidation";
-import { SupplyNetworkEntitiesService } from "../services/supplyNetworkEntitiesService";
-import {
-  EntityType,
-  RoleInSupplyChain,
-  AccreditationStatus,
-  SupplyNetworkEntityFormData,
-  EnumValues,
-  SupplyNetworkEntitySearchResultDto,
-} from "../types/supplyNetworkEntities";
+import { useEntityEnums } from "../hooks/useEntityEnums";
+import { useNewEntityForm } from "../hooks/useNewEntityForm";
+import { useEntitySubmission } from "../hooks/useEntitySubmission";
+import { LoadingState, SuccessState } from "../components/NewEntity";
 
 export const NewSupplyNetworkEntity = () => {
-  const [formData, setFormData] = useState<SupplyNetworkEntityFormData>({
-    entityType: "" as EntityType, // Start with empty string to avoid controlled/uncontrolled issues
-    roleInSupplyChain: "" as RoleInSupplyChain, // Start with empty string
-    isSubEntity: false,
-    legalName: "",
-    shortName: "",
-    externalCode: "",
-    country: "",
-    region: "",
-    city: "",
-    address: "",
-    zipCode: "",
-    email: "",
-    phoneNumber: "",
-    accreditationStatus: "" as AccreditationStatus, // Start with empty string
-    tags: [],
-    contactPersonName: "",
-    vatCode: "",
-    taxCode: "",
-    active: true,
-  });
-
-  const [enumValues, setEnumValues] = useState<EnumValues | null>(null);
-  const [selectedParent, setSelectedParent] =
-    useState<SupplyNetworkEntitySearchResultDto | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [tagsInputValue, setTagsInputValue] = useState<string>(""); // Local state for tags input
-
-  // Use custom hook for error handling
+  // Custom hooks for state management
+  const { enumValues, defaultValues, isLoading: enumsLoading, error: enumsError } = useEntityEnums();
+  const { fieldErrors, validationInProgress, handleFieldBlur, getInputStyle, getHelperText, setFieldErrors } = useFormValidation();
+  
   const {
-    error,
+    formData,
+    selectedParent,
+    tagsInputValue,
+    handleInputChange,
+    handleParentChange,
+    setTagsInputValue,
+    resetForm,
+    validateStep1,
+    validateStep2,
+    validateStep3,
+  } = useNewEntityForm(defaultValues || undefined, fieldErrors);
+
+  const {
+    isLoading: submissionLoading,
+    isSuccess,
+    error: submissionError,
     errorType,
-    handleError: hookHandleError,
+    submitEntity,
     clearError,
-  } = useErrorHandling();
+  } = useEntitySubmission();
 
-  // Use custom hook for form validation
-  const {
-    fieldErrors,
-    validationInProgress,
-    handleFieldBlur: hookHandleFieldBlur,
-    getInputStyle,
-    getHelperText,
-    setFieldErrors,
-  } = useFormValidation();
-
-  // Step validation functions
-  const validateStep1 = () => {
-    const isValid = !!(
-      formData.entityType &&
-      formData.roleInSupplyChain &&
-      (!formData.isSubEntity || formData.parentId)
-    );
-    return isValid;
-  };
-
-  const validateStep2 = () => {
-    const hasRequiredFields = !!(formData.legalName && formData.country);
-    // External Code is optional, so only check if required fields don't have errors
-    const hasNoRequiredFieldErrors =
-      !fieldErrors.legalName && !fieldErrors.email;
-    return hasRequiredFields && hasNoRequiredFieldErrors;
-  };
-
-  const validateStep3 = () => {
-    return !!formData.accreditationStatus;
-  };
-
+  // Initialize form with default values when they become available
   useEffect(() => {
-    const loadEnumValues = async () => {
-      try {
-        const enums = await SupplyNetworkEntitiesService.getEnumValues();
-        console.log("Loaded enum values:", enums);
-        setEnumValues(enums);
+    if (defaultValues) {
+      resetForm(defaultValues);
+    }
+  }, [defaultValues, resetForm]);
 
-        // Set default values after loading enums
-        if (
-          enums.entityTypes.length > 0 &&
-          enums.rolesInSupplyChain.length > 0 &&
-          enums.accreditationStatuses.length > 0
-        ) {
-          setFormData((prev) => ({
-            ...prev,
-            entityType: enums.entityTypes[0].value as EntityType,
-            roleInSupplyChain: enums.rolesInSupplyChain[0]
-              .value as RoleInSupplyChain,
-            accreditationStatus:
-              (enums.accreditationStatuses.find((s) => s.value === "Approved")
-                ?.value as AccreditationStatus) ||
-              (enums.accreditationStatuses[0].value as AccreditationStatus),
-          }));
-          // Initialize tags input value
-          setTagsInputValue("");
-        }
-      } catch (err) {
-        console.error("Error loading enum values:", err);
-        hookHandleError(err); // Use hook error handling
-      }
-    };
-
-    loadEnumValues();
-  }, []);
-
-  const handleInputChange = (
-    field: keyof SupplyNetworkEntityFormData,
-    value: any
-  ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-    clearError(); // Clear errors when user starts typing
-  };
-
+  // Handle form submission
   const handleSubmit = async () => {
-    console.log("🚀 handleSubmit started");
-    setIsLoading(true);
-    clearError(); // Use the hook clear error function
-
-    try {
-      console.log("📤 Sending request with data:", {
-        externalCode: formData.externalCode,
-        entityType: formData.entityType,
-        parentId: formData.isSubEntity ? formData.parentId : undefined,
-        legalName: formData.legalName,
-        shortName: formData.shortName,
-        vatCode: formData.vatCode,
-        taxCode: formData.taxCode,
-        country: formData.country,
-        region: formData.region,
-        city: formData.city,
-        address: formData.address,
-        zipCode: formData.zipCode,
-        email: formData.email,
-        phoneNumber: formData.phoneNumber,
-        contactPersonName: formData.contactPersonName,
-        roleInSupplyChain: formData.roleInSupplyChain,
-        tags: formData.tags,
-        active: formData.active,
-        accreditationStatus: formData.accreditationStatus,
-        accreditationDate: formData.accreditationDate,
-      });
-
-      const result =
-        await SupplyNetworkEntitiesService.createSupplyNetworkEntity({
-          externalCode: formData.externalCode,
-          entityType: formData.entityType,
-          parentId: formData.isSubEntity ? formData.parentId : undefined,
-          legalName: formData.legalName,
-          shortName: formData.shortName,
-          vatCode: formData.vatCode,
-          taxCode: formData.taxCode,
-          country: formData.country,
-          region: formData.region,
-          city: formData.city,
-          address: formData.address,
-          zipCode: formData.zipCode,
-          email: formData.email,
-          phoneNumber: formData.phoneNumber,
-          contactPersonName: formData.contactPersonName,
-          roleInSupplyChain: formData.roleInSupplyChain,
-          tags: formData.tags,
-          active: formData.active,
-          accreditationStatus: formData.accreditationStatus,
-          accreditationDate: formData.accreditationDate,
-        });
-
-      console.log("✅ Request successful:", result);
-      setSuccess(true);
-      // Reset form after successful creation
+    await submitEntity(formData);
+    // Reset form after successful submission
+    if (defaultValues) {
       setTimeout(() => {
-        setSuccess(false);
-        if (enumValues) {
-          setFormData({
-            entityType:
-              (enumValues.entityTypes[0]?.value as EntityType) ||
-              ("" as EntityType),
-            roleInSupplyChain:
-              (enumValues.rolesInSupplyChain[0]?.value as RoleInSupplyChain) ||
-              ("" as RoleInSupplyChain),
-            isSubEntity: false,
-            legalName: "",
-            shortName: "",
-            externalCode: "",
-            country: "",
-            region: "",
-            city: "",
-            address: "",
-            zipCode: "",
-            email: "",
-            phoneNumber: "",
-            accreditationStatus:
-              (enumValues.accreditationStatuses.find(
-                (s) => s.value === "Approved"
-              )?.value as AccreditationStatus) ||
-              (enumValues.accreditationStatuses[0]
-                ?.value as AccreditationStatus) ||
-              ("" as AccreditationStatus),
-            tags: [],
-            contactPersonName: "",
-            vatCode: "",
-            taxCode: "",
-            active: true,
-          });
-          // Reset tags input value
-          setTagsInputValue("");
-        }
+        resetForm(defaultValues);
       }, 3000);
-    } catch (err) {
-      console.error("❌ Request failed:", err);
-      console.log("📋 Error object details:", {
-        name: (err as any)?.name,
-        message: (err as any)?.message,
-        response: (err as any)?.response,
-        status: (err as any)?.response?.status,
-        data: (err as any)?.response?.data,
-        config: (err as any)?.config,
-      });
-      hookHandleError(err); // Use the hook error handling function
-    } finally {
-      console.log("🏁 handleSubmit finished");
-      setIsLoading(false);
     }
   };
 
-  if (!enumValues) {
-    return (
-      <Container type="page">
-        <Grid container rowSpacing={3} sx={{ paddingTop: 5 }}>
-          <Grid item xs={12}>
-            {error ? (
-              <div
-                style={{
-                  padding: "16px",
-                  backgroundColor: "#f8d7da",
-                  border: "1px solid #f5c6cb",
-                  borderRadius: "8px",
-                  color: "#721c24",
-                }}
-              >
-                <Text variant="h6">Error loading form</Text>
-                <Text variant="body2">{error}</Text>
-              </div>
-            ) : (
-              <Text variant="h3">Loading...</Text>
-            )}
-          </Grid>
-        </Grid>
-      </Container>
-    );
+  // Handle input changes with error clearing
+  const handleInputChangeWithErrorClear = (field: keyof typeof formData, value: any) => {
+    handleInputChange(field, value);
+    clearError(); // Clear submission errors when user starts typing
+  };
+
+  // Loading state
+  if (enumsLoading || !enumValues) {
+    return <LoadingState error={enumsError} />;
   }
 
-  if (success) {
-    return (
-      <Container type="page">
-        <Grid container rowSpacing={3} sx={{ paddingTop: 5 }}>
-          <Grid item xs={12}>
-            <div
-              style={{
-                padding: "16px",
-                backgroundColor: "#d4edda",
-                border: "1px solid #c3e6cb",
-                borderRadius: "8px",
-                color: "#155724",
-              }}
-            >
-              Supply Network Entity created successfully!
-            </div>
-          </Grid>
-        </Grid>
-      </Container>
-    );
+  // Success state
+  if (isSuccess) {
+    return <SuccessState />;
   }
 
+  // Main form
   return (
-    <FormWizard onComplete={handleSubmit} isLoading={isLoading}>
+    <FormWizard onComplete={handleSubmit} isLoading={submissionLoading}>
       {/* Step 1: Entity Type & Role */}
       <WizardStep title="Entity Type & Role" isValid={validateStep1()}>
         <EntityTypeRoleStep
           formData={formData}
           enumValues={enumValues}
-          onInputChange={handleInputChange}
+          onInputChange={handleInputChangeWithErrorClear}
           selectedParent={selectedParent}
-          onParentChange={(entity) => {
-            setSelectedParent(entity);
-            handleInputChange("parentId", entity?.id || "");
-          }}
+          onParentChange={handleParentChange}
         />
       </WizardStep>
 
@@ -318,8 +94,8 @@ export const NewSupplyNetworkEntity = () => {
           formData={formData}
           fieldErrors={fieldErrors}
           validationInProgress={validationInProgress}
-          onInputChange={handleInputChange}
-          onFieldBlur={hookHandleFieldBlur}
+          onInputChange={handleInputChangeWithErrorClear}
+          onFieldBlur={handleFieldBlur}
           getHelperText={getHelperText}
           getInputStyle={getInputStyle}
           setFieldErrors={setFieldErrors}
@@ -333,7 +109,7 @@ export const NewSupplyNetworkEntity = () => {
           enumValues={enumValues}
           tagsInputValue={tagsInputValue}
           setTagsInputValue={setTagsInputValue}
-          onInputChange={handleInputChange}
+          onInputChange={handleInputChangeWithErrorClear}
         />
       </WizardStep>
 
@@ -341,8 +117,8 @@ export const NewSupplyNetworkEntity = () => {
       <WizardStep title="Review & Submit" isValid={true}>
         <ReviewSubmitStep
           formData={formData}
-          isLoading={isLoading}
-          error={error}
+          isLoading={submissionLoading}
+          error={submissionError}
           errorType={errorType}
           onSubmit={handleSubmit}
           onClearError={clearError}
