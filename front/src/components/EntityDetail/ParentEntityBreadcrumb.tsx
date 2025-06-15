@@ -1,27 +1,30 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { 
-  Box, 
-  Breadcrumbs, 
-  Link, 
-  Chip, 
-  Card, 
-  CardContent, 
-  Fade, 
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  Box,
+  Breadcrumbs,
+  Link,
+  Chip,
+  Card,
+  CardContent,
+  Fade,
   Popper,
-  ClickAwayListener
-} from '@mui/material';
-import { Text } from '@remira/unifiedui';
-import HomeIcon from '@mui/icons-material/Home';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import BusinessIcon from '@mui/icons-material/Business';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import FactoryIcon from '@mui/icons-material/Factory';
-import PersonIcon from '@mui/icons-material/Person';
-import ApartmentIcon from '@mui/icons-material/Apartment';
-import AccountTreeIcon from '@mui/icons-material/AccountTree';
+  ClickAwayListener,
+} from "@mui/material";
+import { Text } from "@remira/unifiedui";
+import HomeIcon from "@mui/icons-material/Home";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import BusinessIcon from "@mui/icons-material/Business";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import FactoryIcon from "@mui/icons-material/Factory";
+import PersonIcon from "@mui/icons-material/Person";
+import ApartmentIcon from "@mui/icons-material/Apartment";
+import AccountTreeIcon from "@mui/icons-material/AccountTree";
 
-import { SupplyNetworkEntityDto, EntityType } from '../../types/supplyNetworkEntities';
+import {
+  SupplyNetworkEntityDto,
+  EntityType,
+} from "../../types/supplyNetworkEntities";
 
 interface ParentEntityBreadcrumbProps {
   currentEntity: SupplyNetworkEntityDto;
@@ -32,13 +35,16 @@ interface ParentEntityBreadcrumbProps {
 export const ParentEntityBreadcrumb: React.FC<ParentEntityBreadcrumbProps> = ({
   currentEntity,
   parentEntity,
-  onParentClick
+  onParentClick,
 }) => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [open, setOpen] = useState(false);
 
-  const getEntityTypeIcon = (type: EntityType, size: 'small' | 'medium' = 'small') => {
+  const getEntityTypeIcon = (
+    type: EntityType,
+    size: "small" | "medium" = "small"
+  ) => {
     const iconProps = { fontSize: size };
     switch (type) {
       case EntityType.Supplier:
@@ -76,7 +82,7 @@ export const ParentEntityBreadcrumb: React.FC<ParentEntityBreadcrumbProps> = ({
   };
 
   const handleHomeClick = () => {
-    navigate('/supply-network');
+    navigate("/supply-network");
   };
 
   return (
@@ -89,11 +95,11 @@ export const ParentEntityBreadcrumb: React.FC<ParentEntityBreadcrumbProps> = ({
         <Link
           color="inherit"
           onClick={handleHomeClick}
-          sx={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            cursor: 'pointer',
-            '&:hover': { textDecoration: 'underline' }
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+            "&:hover": { textDecoration: "underline" },
           }}
         >
           <HomeIcon sx={{ mr: 0.5 }} fontSize="small" />
@@ -109,11 +115,11 @@ export const ParentEntityBreadcrumb: React.FC<ParentEntityBreadcrumbProps> = ({
                 onClick={handleParentClick}
                 onMouseEnter={handleParentHover}
                 onMouseLeave={handleParentLeave}
-                sx={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  cursor: 'pointer',
-                  '&:hover': { textDecoration: 'underline' }
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  "&:hover": { textDecoration: "underline" },
                 }}
               >
                 {getEntityTypeIcon(parentEntity.entityType)}
@@ -135,12 +141,12 @@ export const ParentEntityBreadcrumb: React.FC<ParentEntityBreadcrumbProps> = ({
                     <Card sx={{ maxWidth: 300, mt: 1 }}>
                       <CardContent sx={{ p: 2 }}>
                         <Box display="flex" alignItems="center" gap={1} mb={1}>
-                          {getEntityTypeIcon(parentEntity.entityType, 'medium')}
+                          {getEntityTypeIcon(parentEntity.entityType, "medium")}
                           <Text variant="subtitle2">
                             {parentEntity.legalName}
                           </Text>
                         </Box>
-                        
+
                         <Box mb={1}>
                           <Chip
                             label={parentEntity.entityType}
@@ -148,15 +154,19 @@ export const ParentEntityBreadcrumb: React.FC<ParentEntityBreadcrumbProps> = ({
                             variant="outlined"
                           />
                         </Box>
-                        
+
                         {parentEntity.city && parentEntity.country && (
                           <Text variant="body2" color="textSecondary">
                             📍 {parentEntity.city}, {parentEntity.country}
                           </Text>
                         )}
-                        
+
                         {parentEntity.email && (
-                          <Text variant="body2" color="textSecondary" sx={{ display: 'block' }}>
+                          <Text
+                            variant="body2"
+                            color="textSecondary"
+                            sx={{ display: "block" }}
+                          >
                             ✉️ {parentEntity.email}
                           </Text>
                         )}

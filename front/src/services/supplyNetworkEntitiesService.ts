@@ -63,14 +63,27 @@ export class SupplyNetworkEntitiesService {
    * Get a single supply network entity by ID
    */
   static async getSupplyNetworkEntity(id: string): Promise<SupplyNetworkEntityDto> {
+    console.log('Service: fetching entity with ID:', id);
+    
     const params = new URLSearchParams();
     params.append('api-version', '2025-06-01');
     
-    const response = await axios.get(`/api/supplynetworkentities/${id}`, {
-      params
-    });
-
-    return response.data;
+    const url = `/api/supplynetworkentities/${encodeURIComponent(id)}`;
+    console.log('Service: requesting URL:', url);
+    
+    try {
+      const response = await axios.get(url, { params });
+      console.log('Service: response received:', response.status, response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error('Service: request failed:', {
+        url,
+        status: error?.response?.status,
+        data: error?.response?.data,
+        message: error?.message
+      });
+      throw error;
+    }
   }
 
   /**

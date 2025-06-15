@@ -37,10 +37,10 @@ import {
   EntityType,
 } from "../types/supplyNetworkEntities";
 import { SupplyNetworkEntitiesService } from "../services/supplyNetworkEntitiesService";
-import { 
-  EntityInfoField, 
-  ParentEntityBreadcrumb, 
-  SubEntitiesList 
+import {
+  EntityInfoField,
+  ParentEntityBreadcrumb,
+  SubEntitiesList,
 } from "../components/EntityDetail";
 
 const EntityDetailPage: React.FC = () => {
@@ -49,7 +49,8 @@ const EntityDetailPage: React.FC = () => {
   const { t } = useTranslation();
 
   const [entity, setEntity] = useState<SupplyNetworkEntityDto | null>(null);
-  const [parentEntity, setParentEntity] = useState<SupplyNetworkEntityDto | null>(null);
+  const [parentEntity, setParentEntity] =
+    useState<SupplyNetworkEntityDto | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState(0);
@@ -61,39 +62,65 @@ const EntityDetailPage: React.FC = () => {
       return;
     }
 
+    console.log("Fetching entity with ID:", id);
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await SupplyNetworkEntitiesService.getSupplyNetworkEntity(id);
+      const response =
+        await SupplyNetworkEntitiesService.getSupplyNetworkEntity(id);
+      console.log("Entity fetched successfully:", response);
       setEntity(response);
-      
+
       // Fetch parent entity if exists
       if (response.parentId) {
         try {
-          const parentResponse = await SupplyNetworkEntitiesService.getSupplyNetworkEntity(response.parentId);
+          const parentResponse =
+            await SupplyNetworkEntitiesService.getSupplyNetworkEntity(
+              response.parentId
+            );
           setParentEntity(parentResponse);
         } catch (parentError) {
           console.warn("Failed to fetch parent entity:", parentError);
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to fetch entity details:", error);
-      setError(t("entityDetail.error"));
+      console.error("Error details:", {
+        status: error?.response?.status,
+        statusText: error?.response?.statusText,
+        data: error?.response?.data,
+        message: error?.message
+      });
+      
+      // More specific error messages
+      if (error?.response?.status === 404) {
+        setError(t("entityDetail.notFound"));
+      } else if (error?.response?.status === 403) {
+        setError(t("forbidden"));
+      } else if (error?.response?.status >= 500) {
+        setError(t("serverError"));
+      } else {
+        setError(t("entityDetail.error"));
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleFieldUpdate = async (fieldName: string, fieldValue: string | boolean | null) => {
+  const handleFieldUpdate = async (
+    fieldName: string,
+    fieldValue: string | boolean | null
+  ) => {
     if (!entity) return;
-    
+
     try {
-      const updatedEntity = await SupplyNetworkEntitiesService.updateEntityField(
-        entity.id, 
-        fieldName, 
-        fieldValue
-      );
+      const updatedEntity =
+        await SupplyNetworkEntitiesService.updateEntityField(
+          entity.id,
+          fieldName,
+          fieldValue
+        );
       setEntity(updatedEntity);
     } catch (error) {
       console.error("Failed to update field:", error);
@@ -239,10 +266,15 @@ const EntityDetailPage: React.FC = () => {
 
   return (
     <Container type="page">
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         {/* Header with Breadcrumb */}
         <Grid item xs={12}>
-          <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            mb={2}
+          >
             <IconButton onClick={handleBackToList} sx={{ mr: 2 }}>
               <ArrowBackIcon />
             </IconButton>
@@ -260,21 +292,26 @@ const EntityDetailPage: React.FC = () => {
 
         {/* Hero Section */}
         <Grid item xs={12}>
-          <Paper elevation={2} sx={{ p: 3, mb: 2 }}>
-            <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Paper elevation={2} sx={{ p: 2, mb: 1 }}>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+            >
               <Box display="flex" alignItems="center" gap={2}>
-                <Box sx={{ fontSize: '3rem' }}>
+                <Box sx={{ fontSize: "3rem" }}>
                   {getEntityTypeIcon(entity.entityType)}
                 </Box>
                 <Box>
                   <Text variant="h4" sx={{ mb: 1 }}>
                     {entity.legalName || entity.shortName}
                   </Text>
-                  {entity.shortName && entity.shortName !== entity.legalName && (
-                    <Text variant="h6" color="textSecondary" sx={{ mb: 1 }}>
-                      {entity.shortName}
-                    </Text>
-                  )}
+                  {entity.shortName &&
+                    entity.shortName !== entity.legalName && (
+                      <Text variant="h6" color="textSecondary" sx={{ mb: 1 }}>
+                        {entity.shortName}
+                      </Text>
+                    )}
                   <Box display="flex" alignItems="center" gap={2}>
                     <Chip
                       icon={getEntityTypeIcon(entity.entityType)}
@@ -283,7 +320,9 @@ const EntityDetailPage: React.FC = () => {
                       size="medium"
                     />
                     <Chip
-                      icon={entity.active ? <CheckCircleIcon /> : <CancelIcon />}
+                      icon={
+                        entity.active ? <CheckCircleIcon /> : <CancelIcon />
+                      }
                       label={
                         entity.active
                           ? t("networkEntities.status.active")
@@ -309,29 +348,29 @@ const EntityDetailPage: React.FC = () => {
               variant="scrollable"
               scrollButtons="auto"
             >
-              <Tab 
-                icon={<InfoIcon />} 
-                label={t("entityDetail.tabs.overview")} 
+              <Tab
+                icon={<InfoIcon />}
+                label={t("entityDetail.tabs.overview")}
                 iconPosition="start"
               />
-              <Tab 
-                icon={<ContactsIcon />} 
-                label={t("entityDetail.tabs.contacts")} 
+              <Tab
+                icon={<ContactsIcon />}
+                label={t("entityDetail.tabs.contacts")}
                 iconPosition="start"
               />
-              <Tab 
-                icon={<BusinessCenterIcon />} 
-                label={t("entityDetail.tabs.business")} 
+              <Tab
+                icon={<BusinessCenterIcon />}
+                label={t("entityDetail.tabs.business")}
                 iconPosition="start"
               />
-              <Tab 
-                icon={<AccountTreeOutlinedIcon />} 
-                label={t("entityDetail.tabs.subEntities")} 
+              <Tab
+                icon={<AccountTreeOutlinedIcon />}
+                label={t("entityDetail.tabs.subEntities")}
                 iconPosition="start"
               />
-              <Tab 
-                icon={<SettingsIcon />} 
-                label={t("entityDetail.tabs.system")} 
+              <Tab
+                icon={<SettingsIcon />}
+                label={t("entityDetail.tabs.system")}
                 iconPosition="start"
               />
             </Tabs>
@@ -341,15 +380,15 @@ const EntityDetailPage: React.FC = () => {
         {/* Tab Content */}
         <Grid item xs={12}>
           {activeTab === 0 && (
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               {/* Overview - Essential Information */}
               <Grid item xs={12} md={6}>
                 <Card>
-                  <CardContent>
-                    <Text variant="h6" sx={{ mb: 2 }}>
+                  <CardContent sx={{ p: 2 }}>
+                    <Text variant="h6" sx={{ mb: 1 }}>
                       {t("entityDetail.sections.general")}
                     </Text>
-                    <Divider sx={{ mb: 2 }} />
+                    <Divider sx={{ mb: 1 }} />
 
                     <EntityInfoField
                       label={t("entityDetail.fields.legalName")}
@@ -393,14 +432,18 @@ const EntityDetailPage: React.FC = () => {
               {/* Quick Stats */}
               <Grid item xs={12} md={6}>
                 <Card>
-                  <CardContent>
-                    <Text variant="h6" sx={{ mb: 2 }}>
+                  <CardContent sx={{ p: 2 }}>
+                    <Text variant="h6" sx={{ mb: 1 }}>
                       {t("entityDetail.sections.quickStats")}
                     </Text>
-                    <Divider sx={{ mb: 2 }} />
+                    <Divider sx={{ mb: 1 }} />
 
                     <Box display="flex" flexDirection="column" gap={2}>
-                      <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Box
+                        display="flex"
+                        justifyContent="space-between"
+                        alignItems="center"
+                      >
                         <Text variant="body2" color="textSecondary">
                           {t("entityDetail.fields.entityType")}
                         </Text>
@@ -412,7 +455,11 @@ const EntityDetailPage: React.FC = () => {
                         />
                       </Box>
 
-                      <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Box
+                        display="flex"
+                        justifyContent="space-between"
+                        alignItems="center"
+                      >
                         <Text variant="body2" color="textSecondary">
                           {t("entityDetail.fields.accreditationStatus")}
                         </Text>
@@ -425,12 +472,18 @@ const EntityDetailPage: React.FC = () => {
                       </Box>
 
                       {entity.country && (
-                        <Box display="flex" justifyContent="space-between" alignItems="center">
+                        <Box
+                          display="flex"
+                          justifyContent="space-between"
+                          alignItems="center"
+                        >
                           <Text variant="body2" color="textSecondary">
                             {t("entityDetail.fields.location")}
                           </Text>
                           <Text variant="body2">
-                            {[entity.city, entity.country].filter(Boolean).join(", ")}
+                            {[entity.city, entity.country]
+                              .filter(Boolean)
+                              .join(", ")}
                           </Text>
                         </Box>
                       )}
@@ -442,15 +495,15 @@ const EntityDetailPage: React.FC = () => {
           )}
 
           {activeTab === 1 && (
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               {/* Contact Information */}
               <Grid item xs={12} md={6}>
                 <Card>
-                  <CardContent>
-                    <Text variant="h6" sx={{ mb: 2 }}>
+                  <CardContent sx={{ p: 2 }}>
+                    <Text variant="h6" sx={{ mb: 1 }}>
                       {t("entityDetail.sections.contact")}
                     </Text>
-                    <Divider sx={{ mb: 2 }} />
+                    <Divider sx={{ mb: 1 }} />
 
                     <EntityInfoField
                       label={t("entityDetail.fields.email")}
@@ -483,11 +536,11 @@ const EntityDetailPage: React.FC = () => {
               {/* Address Information */}
               <Grid item xs={12} md={6}>
                 <Card>
-                  <CardContent>
-                    <Text variant="h6" sx={{ mb: 2 }}>
+                  <CardContent sx={{ p: 2 }}>
+                    <Text variant="h6" sx={{ mb: 1 }}>
                       {t("entityDetail.sections.addresses")}
                     </Text>
-                    <Divider sx={{ mb: 2 }} />
+                    <Divider sx={{ mb: 1 }} />
 
                     <EntityInfoField
                       label={t("entityDetail.fields.country")}
@@ -532,15 +585,15 @@ const EntityDetailPage: React.FC = () => {
           )}
 
           {activeTab === 2 && (
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               {/* Business Details */}
               <Grid item xs={12} md={6}>
                 <Card>
-                  <CardContent>
-                    <Text variant="h6" sx={{ mb: 2 }}>
+                  <CardContent sx={{ p: 2 }}>
+                    <Text variant="h6" sx={{ mb: 1 }}>
                       {t("entityDetail.sections.business")}
                     </Text>
-                    <Divider sx={{ mb: 2 }} />
+                    <Divider sx={{ mb: 1 }} />
 
                     <EntityInfoField
                       label={t("entityDetail.fields.taxCode")}
@@ -587,11 +640,11 @@ const EntityDetailPage: React.FC = () => {
               {/* Tags */}
               <Grid item xs={12} md={6}>
                 <Card>
-                  <CardContent>
-                    <Text variant="h6" sx={{ mb: 2 }}>
+                  <CardContent sx={{ p: 2 }}>
+                    <Text variant="h6" sx={{ mb: 1 }}>
                       {t("entityDetail.sections.tags")}
                     </Text>
-                    <Divider sx={{ mb: 2 }} />
+                    <Divider sx={{ mb: 1 }} />
 
                     {entity.tags && entity.tags.length > 0 ? (
                       <Box display="flex" flexWrap="wrap" gap={1}>
@@ -619,21 +672,23 @@ const EntityDetailPage: React.FC = () => {
             <Box>
               <SubEntitiesList
                 parentEntityId={entity.id}
-                onAddNew={() => navigate(`/supply-network/create?parentId=${entity.id}`)}
+                onAddNew={() =>
+                  navigate(`/supply-network/create?parentId=${entity.id}`)
+                }
               />
             </Box>
           )}
 
           {activeTab === 4 && (
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               {/* System Information */}
               <Grid item xs={12} md={6}>
                 <Card>
-                  <CardContent>
-                    <Text variant="h6" sx={{ mb: 2 }}>
+                  <CardContent sx={{ p: 2 }}>
+                    <Text variant="h6" sx={{ mb: 1 }}>
                       {t("entityDetail.sections.metadata")}
                     </Text>
-                    <Divider sx={{ mb: 2 }} />
+                    <Divider sx={{ mb: 1 }} />
 
                     <EntityInfoField
                       label={t("entityDetail.fields.createdAt")}
@@ -669,11 +724,11 @@ const EntityDetailPage: React.FC = () => {
               {/* System Identifiers */}
               <Grid item xs={12} md={6}>
                 <Card>
-                  <CardContent>
-                    <Text variant="h6" sx={{ mb: 2 }}>
+                  <CardContent sx={{ p: 2 }}>
+                    <Text variant="h6" sx={{ mb: 1 }}>
                       {t("entityDetail.sections.identifiers")}
                     </Text>
-                    <Divider sx={{ mb: 2 }} />
+                    <Divider sx={{ mb: 1 }} />
 
                     <EntityInfoField
                       label={t("entityDetail.fields.id")}

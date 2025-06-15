@@ -207,6 +207,8 @@
     "loading": "Loading entity details...",
     "error": "Failed to load entity details",
     "notFound": "Entity not found",
+    "forbidden": "Access denied - You don't have permission to view this entity",
+    "serverError": "Server error - Please try again later",
     "tryAgain": "Try Again",
     "noTags": "No tags assigned",
     "tabs": {

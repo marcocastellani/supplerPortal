@@ -24,7 +24,7 @@ const WidgetContainer = ({
   colSpan,
 }: WidgetContainerProps) => {
   useEffect(() => {
-    setAxiosDefaultBaseUrl("hhttp://localhost:5257");
+    setAxiosDefaultBaseUrl("http://localhost:5257");
   }, []);
 
   return (
