@@ -196,4 +196,176 @@ public class SupplyNetworkEntitiesController : MediatrBaseController
         var result = await Mediator.Send(query);
         return Ok(result);
     }
+
+    /// <summary>
+    /// Get a paginated list of suppliers with optional filtering
+    /// </summary>
+    /// <param name="page">Page number (default: 1)</param>
+    /// <param name="pageSize">Page size (default: 20, max: 100)</param>
+    /// <param name="searchTerm">Search term for name, code, or email</param>
+    /// <param name="accreditationStatus">Filter by accreditation status</param>
+    /// <param name="active">Filter by active status</param>
+    /// <param name="country">Filter by country code</param>
+    /// <param name="tags">Filter by tags (comma-separated)</param>
+    /// <param name="sortBy">Sort field (default: LegalName)</param>
+    /// <param name="sortDescending">Sort direction (default: false)</param>
+    /// <returns>Paginated list of suppliers</returns>
+    [HttpGet("suppliers")]
+    [ProducesResponseType(typeof(GetSupplyNetworkEntitiesQueryResult), 200)]
+    public async Task<ActionResult<GetSupplyNetworkEntitiesQueryResult>> GetSuppliers(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        [FromQuery] string? searchTerm = null,
+        [FromQuery] AccreditationStatus? accreditationStatus = null,
+        [FromQuery] bool? active = null,
+        [FromQuery] string? country = null,
+        [FromQuery] string? tags = null,
+        [FromQuery] string sortBy = "LegalName",
+        [FromQuery] bool sortDescending = false)
+    {
+        var query = new GetSupplyNetworkEntitiesQuery
+        {
+            Page = page,
+            PageSize = pageSize,
+            SearchTerm = searchTerm,
+            EntityType = EntityType.Supplier,
+            AccreditationStatus = accreditationStatus,
+            Active = active,
+            Country = country,
+            Tags = string.IsNullOrEmpty(tags) ? null : tags.Split(',', StringSplitOptions.RemoveEmptyEntries),
+            SortBy = sortBy,
+            SortDescending = sortDescending
+        };
+        var result = await Mediator.Send(query);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get a paginated list of locations with optional filtering
+    /// </summary>
+    /// <param name="page">Page number (default: 1)</param>
+    /// <param name="pageSize">Page size (default: 20, max: 100)</param>
+    /// <param name="searchTerm">Search term for name, code, or email</param>
+    /// <param name="accreditationStatus">Filter by accreditation status</param>
+    /// <param name="active">Filter by active status</param>
+    /// <param name="country">Filter by country code</param>
+    /// <param name="tags">Filter by tags (comma-separated)</param>
+    /// <param name="sortBy">Sort field (default: LegalName)</param>
+    /// <param name="sortDescending">Sort direction (default: false)</param>
+    /// <returns>Paginated list of locations</returns>
+    [HttpGet("locations")]
+    [ProducesResponseType(typeof(GetSupplyNetworkEntitiesQueryResult), 200)]
+    public async Task<ActionResult<GetSupplyNetworkEntitiesQueryResult>> GetLocations(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        [FromQuery] string? searchTerm = null,
+        [FromQuery] AccreditationStatus? accreditationStatus = null,
+        [FromQuery] bool? active = null,
+        [FromQuery] string? country = null,
+        [FromQuery] string? tags = null,
+        [FromQuery] string sortBy = "LegalName",
+        [FromQuery] bool sortDescending = false)
+    {
+        var query = new GetSupplyNetworkEntitiesQuery
+        {
+            Page = page,
+            PageSize = pageSize,
+            SearchTerm = searchTerm,
+            EntityType = EntityType.Site,
+            AccreditationStatus = accreditationStatus,
+            Active = active,
+            Country = country,
+            Tags = string.IsNullOrEmpty(tags) ? null : tags.Split(',', StringSplitOptions.RemoveEmptyEntries),
+            SortBy = sortBy,
+            SortDescending = sortDescending
+        };
+        var result = await Mediator.Send(query);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get a paginated list of subsuppliers with optional filtering
+    /// </summary>
+    /// <param name="page">Page number (default: 1)</param>
+    /// <param name="pageSize">Page size (default: 20, max: 100)</param>
+    /// <param name="searchTerm">Search term for name, code, or email</param>
+    /// <param name="accreditationStatus">Filter by accreditation status</param>
+    /// <param name="active">Filter by active status</param>
+    /// <param name="country">Filter by country code</param>
+    /// <param name="tags">Filter by tags (comma-separated)</param>
+    /// <param name="sortBy">Sort field (default: LegalName)</param>
+    /// <param name="sortDescending">Sort direction (default: false)</param>
+    /// <returns>Paginated list of subsuppliers</returns>
+    [HttpGet("subsuppliers")]
+    [ProducesResponseType(typeof(GetSupplyNetworkEntitiesQueryResult), 200)]
+    public async Task<ActionResult<GetSupplyNetworkEntitiesQueryResult>> GetSubSuppliers(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        [FromQuery] string? searchTerm = null,
+        [FromQuery] AccreditationStatus? accreditationStatus = null,
+        [FromQuery] bool? active = null,
+        [FromQuery] string? country = null,
+        [FromQuery] string? tags = null,
+        [FromQuery] string sortBy = "LegalName",
+        [FromQuery] bool sortDescending = false)
+    {
+        var query = new GetSupplyNetworkEntitiesQuery
+        {
+            Page = page,
+            PageSize = pageSize,
+            SearchTerm = searchTerm,
+            EntityType = EntityType.SubSupplier,
+            AccreditationStatus = accreditationStatus,
+            Active = active,
+            Country = country,
+            Tags = string.IsNullOrEmpty(tags) ? null : tags.Split(',', StringSplitOptions.RemoveEmptyEntries),
+            SortBy = sortBy,
+            SortDescending = sortDescending
+        };
+        var result = await Mediator.Send(query);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get a paginated list of contacts with optional filtering
+    /// </summary>
+    /// <param name="page">Page number (default: 1)</param>
+    /// <param name="pageSize">Page size (default: 20, max: 100)</param>
+    /// <param name="searchTerm">Search term for name, code, or email</param>
+    /// <param name="accreditationStatus">Filter by accreditation status</param>
+    /// <param name="active">Filter by active status</param>
+    /// <param name="country">Filter by country code</param>
+    /// <param name="tags">Filter by tags (comma-separated)</param>
+    /// <param name="sortBy">Sort field (default: LegalName)</param>
+    /// <param name="sortDescending">Sort direction (default: false)</param>
+    /// <returns>Paginated list of contacts</returns>
+    [HttpGet("contacts")]
+    [ProducesResponseType(typeof(GetSupplyNetworkEntitiesQueryResult), 200)]
+    public async Task<ActionResult<GetSupplyNetworkEntitiesQueryResult>> GetContacts(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        [FromQuery] string? searchTerm = null,
+        [FromQuery] AccreditationStatus? accreditationStatus = null,
+        [FromQuery] bool? active = null,
+        [FromQuery] string? country = null,
+        [FromQuery] string? tags = null,
+        [FromQuery] string sortBy = "LegalName",
+        [FromQuery] bool sortDescending = false)
+    {
+        var query = new GetSupplyNetworkEntitiesQuery
+        {
+            Page = page,
+            PageSize = pageSize,
+            SearchTerm = searchTerm,
+            EntityType = EntityType.Person,
+            AccreditationStatus = accreditationStatus,
+            Active = active,
+            Country = country,
+            Tags = string.IsNullOrEmpty(tags) ? null : tags.Split(',', StringSplitOptions.RemoveEmptyEntries),
+            SortBy = sortBy,
+            SortDescending = sortDescending
+        };
+        var result = await Mediator.Send(query);
+        return Ok(result);
+    }
 }
