@@ -13,6 +13,37 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/**',
+        'src/test/**',
+        '**/*.d.ts',
+        '**/*.config.*',
+        'src/assets/**',
+        'src/locales/**',
+        'dist/**',
+        'build/**'
+      ],
+      thresholds: {
+        global: {
+          branches: 70,
+          functions: 70,
+          lines: 70,
+          statements: 70
+        }
+      }
+    },
+    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    exclude: [
+      'node_modules/**',
+      'dist/**',
+      'build/**',
+      'src/assets/**'
+    ],
+    testTimeout: 10000,
+    hookTimeout: 10000
   },
   server: {
     port: 4280,

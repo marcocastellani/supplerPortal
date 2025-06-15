@@ -6,8 +6,7 @@ import { PageHeader } from "./LayoutComponents";
 import { FormInputChangeEvent } from "../types/ui";
 import { EntityType } from "../types/supplyNetworkEntities";
 import { useNetworkEntities } from "../hooks/useNetworkEntities";
-import { DEFAULT_PAGE_SIZE } from "../constants/networkEntitiesFilters";
-import { ICON_SIZES } from "../constants/ui";
+import { ICON_SIZES, DATA_CONSTANTS } from "../constants/ui";
 import {
   EntityFilters,
   EntityTable,
@@ -37,10 +36,10 @@ const NetworkEntities: React.FC = () => {
     setSearchQuery(e.target.value);
   }, [setSearchQuery]);
 
-  const handleFilterTypeChange = useCallback((event: any, option: any) => {
-    const newValue = option?.value || event?.target?.value || "all";
-    setFilterType(newValue as EntityType | "all");
-  }, [setFilterType]);
+  const handleFilterTypeChange = useCallback((type: string | 'all') => {
+    setFilterType(type as EntityType | 'all');
+    setCurrentPage(DATA_CONSTANTS.FIRST_PAGE);
+  }, [setFilterType, setCurrentPage]);
 
   const handleFilterStatusChange = useCallback((event: any, option: any) => {
     const newValue = option?.value || event?.target?.value || "all";
@@ -114,7 +113,7 @@ const NetworkEntities: React.FC = () => {
               currentPage={filters.currentPage}
               totalPages={totalPages}
               totalCount={totalCount}
-              pageSize={DEFAULT_PAGE_SIZE}
+              pageSize={DATA_CONSTANTS.DEFAULT_PAGE_SIZE}
               isLoading={isLoading}
               onPageChange={handlePageChange}
             />

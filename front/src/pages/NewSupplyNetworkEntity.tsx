@@ -14,6 +14,7 @@ import { useEntitySubmission } from "../hooks/useEntitySubmission";
 import { LoadingState, SuccessState } from "../components/NewEntity";
 import { ErrorNotification } from "../components/ErrorNotification";
 import { TIMING } from "../constants/ui";
+import { ErrorType } from "../utils/errorHandling";
 
 const NewSupplyNetworkEntity: React.FC = () => {
   // Custom hooks for state management
@@ -31,7 +32,7 @@ const NewSupplyNetworkEntity: React.FC = () => {
     validateStep1,
     validateStep2,
     validateStep3,
-  } = useNewEntityForm(defaultValues || undefined, fieldErrors);
+  } = useNewEntityForm(defaultValues || undefined, fieldErrors as { [key: string]: string });
 
   const {
     isLoading: submissionLoading,
@@ -123,7 +124,12 @@ const NewSupplyNetworkEntity: React.FC = () => {
           formData={formData}
           isLoading={submissionLoading}
           error={submissionError}
-          errorType={errorType}
+          errorType={errorType ? (
+            errorType === ErrorType.NETWORK ? 'network' :
+            errorType === ErrorType.VALIDATION ? 'validation' :
+            errorType === ErrorType.SERVER ? 'server' :
+            'unknown'
+          ) : 'unknown'}
           onSubmit={handleSubmit}
           onClearError={clearError}
         />

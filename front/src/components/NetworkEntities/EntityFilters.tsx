@@ -71,6 +71,7 @@ const EntityFilters: React.FC<EntityFiltersProps> = ({
             options={entityTypeOptions}
             disabled={isLoading}
             fullWidth
+            data-testid="entity-type-filter"
           />
         </Grid>
 
@@ -83,6 +84,7 @@ const EntityFilters: React.FC<EntityFiltersProps> = ({
             options={statusOptions}
             disabled={isLoading}
             fullWidth
+            data-testid="status-filter"
           />
         </Grid>
 

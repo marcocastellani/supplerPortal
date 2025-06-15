@@ -1,39 +1,59 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SupplyNetworkEntitiesService } from '@/services/supplyNetworkEntitiesService';
-import { SupplyNetworkEntityDto, GetSupplyNetworkEntitiesQueryResult } from '@/types/supplyNetworkEntities';
+import { SupplyNetworkEntityDto, EntityType } from '@/types/supplyNetworkEntities';
 import { logger as log } from '@/utils/logger';
-import { DATA_CONSTANTS, TIMING } from '@/constants/ui';
 import { useApiErrorHandler } from '@/hooks/useErrorHandler';
+import { TIMING, DATA_CONSTANTS } from '@/constants/ui';
 
-export interface NetworkEntitiesFilters {
+// Simple debounce utility function
+function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  delay: number
+): T & { cancel: () => void } {
+  let timeoutId: NodeJS.Timeout;
+  
+  const debouncedFunction = ((...args: Parameters<T>) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func(...args), delay);
+  }) as T & { cancel: () => void };
+  
+  debouncedFunction.cancel = () => {
+    clearTimeout(timeoutId);
+  };
+  
+  return debouncedFunction;
+}
+
+interface UseNetworkEntitiesFilters {
   searchQuery: string;
-  filterType: string | 'all';
+  filterType: EntityType | 'all';
   filterStatus: 'all' | 'active' | 'inactive';
   currentPage: number;
 }
 
-export interface NetworkEntitiesState {
+interface UseNetworkEntitiesReturn {
   entities: SupplyNetworkEntityDto[];
   isLoading: boolean;
   error: string | null;
   totalPages: number;
   totalCount: number;
-  filters: NetworkEntitiesFilters;
-}
-
-export interface NetworkEntitiesActions {
+  filters: UseNetworkEntitiesFilters;
   setSearchQuery: (query: string) => void;
-  setFilterType: (type: string | 'all') => void;
+  setFilterType: (type: EntityType | 'all') => void;
   setFilterStatus: (status: 'all' | 'active' | 'inactive') => void;
   setCurrentPage: (page: number) => void;
   refetch: () => void;
 }
 
-export const useNetworkEntities = (): NetworkEntitiesState & NetworkEntitiesActions => {
+/**
+ * Custom hook for managing network entities data with search, filtering, and pagination [DRY]
+ */
+export function useNetworkEntities(): UseNetworkEntitiesReturn {
   const { t } = useTranslation();
+  const { handleApiError } = useApiErrorHandler('useNetworkEntities');
   
-  // State management
+  // State
   const [entities, setEntities] = useState<SupplyNetworkEntityDto[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +61,7 @@ export const useNetworkEntities = (): NetworkEntitiesState & NetworkEntitiesActi
   const [totalCount, setTotalCount] = useState(0);
   
   // Filters state
-  const [filters, setFilters] = useState<NetworkEntitiesFilters>({
+  const [filters, setFilters] = useState<UseNetworkEntitiesFilters>({
     searchQuery: '',
     filterType: 'all',
     filterStatus: 'all',
@@ -52,59 +72,61 @@ export const useNetworkEntities = (): NetworkEntitiesState & NetworkEntitiesActi
   const fetchEntities = useCallback(
     async (
       search: string,
-      type: string | 'all',
+      type: EntityType | 'all',
       status: 'all' | 'active' | 'inactive',
       page: number
     ) => {
       setIsLoading(true);
       setError(null);
 
-      log.info('Fetching network entities', {
-        component: 'useNetworkEntities',
-        search,
-        type,
-        status,
-        page,
-        pageSize: DATA_CONSTANTS.DEFAULT_PAGE_SIZE
-      });
-
       try {
-        const response = await SupplyNetworkEntitiesService.getSupplyNetworkEntities({
+        log.info('Fetching network entities', {
+          component: 'useNetworkEntities',
+          search,
+          type,
+          status,
+          page,
+        });
+
+        const entityType = type === 'all' ? undefined : (type as EntityType);
+        const activeFilter = status === 'all' ? undefined : status === 'active';
+
+        const result = await SupplyNetworkEntitiesService.getSupplyNetworkEntities({
           searchTerm: search || undefined,
-          entityType: type !== 'all' ? type : undefined,
-          active: status === 'all' ? undefined : status === 'active',
-          page: page,
+          entityType,
+          active: activeFilter,
+          page,
           pageSize: DATA_CONSTANTS.DEFAULT_PAGE_SIZE,
           sortBy: 'legalName',
           sortDescending: false,
         });
 
-        setEntities(response.items || []);
-        setTotalPages(response.totalPages || 1);
-        setTotalCount(response.totalCount || 0);
-        
+        setEntities(result.items || []);
+        setTotalPages(result.totalPages || 1);
+        setTotalCount(result.totalCount || 0);
+
         log.info('Network entities fetched successfully', {
           component: 'useNetworkEntities',
-          count: response.items?.length || 0,
-          totalCount: response.totalCount || 0
+          count: result.items?.length || 0,
+          totalCount: result.totalCount || 0,
         });
-      } catch (error) {
-        const errorMessage = t('networkEntities.errorFetching');
+      } catch (err) {
+        handleApiError(err, '/supply-network-entities', 'GET');
         log.error('Failed to fetch network entities', {
           component: 'useNetworkEntities',
-          error,
+          error: err,
           search,
           type,
           status,
-          page
+          page,
         });
-        setError(errorMessage);
+        setError(t('networkEntities.errorFetching'));
         setEntities([]);
       } finally {
         setIsLoading(false);
       }
     },
-    [t]
+    [t, handleApiError]
   );
 
   // Debounced search function
@@ -112,7 +134,7 @@ export const useNetworkEntities = (): NetworkEntitiesState & NetworkEntitiesActi
     debounce(
       (
         search: string,
-        type: string | 'all',
+        type: EntityType | 'all',
         status: 'all' | 'active' | 'inactive',
         page: number
       ) => {
@@ -147,7 +169,7 @@ export const useNetworkEntities = (): NetworkEntitiesState & NetworkEntitiesActi
     }));
   }, []);
 
-  const setFilterType = useCallback((type: string | 'all') => {
+  const setFilterType = useCallback((type: EntityType | 'all') => {
     setFilters(prev => ({
       ...prev,
       filterType: type,

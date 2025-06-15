@@ -67,7 +67,7 @@ export const useEntityEnums = (): UseEntityEnumsReturn => {
           component: 'useEntityEnums',
           error: err
         });
-        handleError(err);
+        handleError(err as Error);
       } finally {
         setIsLoading(false);
       }
