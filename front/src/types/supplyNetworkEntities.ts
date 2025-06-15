@@ -158,4 +158,23 @@ export interface SupplyNetworkEntitySearchResultDto {
   displayText: string;  // Computed field from backend
 }
 
+// Field Update DTO for inline editing
+export interface UpdateEntityFieldRequest {
+  fieldName: string;
+  fieldValue: string | boolean | null;
+}
+
+// Document DTO for documents section
+export interface EntityDocumentDto {
+  id: string;
+  entityId: string;
+  fileName: string;
+  fileSize: number;
+  contentType: string;
+  uploadedAt: string;
+  uploadedBy: string;
+  description?: string;
+  documentType?: string;
+}
+
 // Query & Command DTOs

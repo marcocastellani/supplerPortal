@@ -10,6 +10,9 @@ import {
   Divider,
   CardContent,
   IconButton,
+  Tabs,
+  Tab,
+  Paper,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -23,19 +26,33 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
-import WebIcon from "@mui/icons-material/Web";
+import InfoIcon from "@mui/icons-material/Info";
+import ContactsIcon from "@mui/icons-material/Contacts";
+import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
+import AccountTreeOutlinedIcon from "@mui/icons-material/AccountTreeOutlined";
+import SettingsIcon from "@mui/icons-material/Settings";
 
-import { SupplyNetworkEntityDto, EntityType } from "../types/supplyNetworkEntities";
+import {
+  SupplyNetworkEntityDto,
+  EntityType,
+} from "../types/supplyNetworkEntities";
 import { SupplyNetworkEntitiesService } from "../services/supplyNetworkEntitiesService";
+import { 
+  EntityInfoField, 
+  ParentEntityBreadcrumb, 
+  SubEntitiesList 
+} from "../components/EntityDetail";
 
 const EntityDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  
+
   const [entity, setEntity] = useState<SupplyNetworkEntityDto | null>(null);
+  const [parentEntity, setParentEntity] = useState<SupplyNetworkEntityDto | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState(0);
 
   const fetchEntity = async () => {
     if (!id) {
@@ -50,11 +67,37 @@ const EntityDetailPage: React.FC = () => {
     try {
       const response = await SupplyNetworkEntitiesService.getSupplyNetworkEntity(id);
       setEntity(response);
+      
+      // Fetch parent entity if exists
+      if (response.parentId) {
+        try {
+          const parentResponse = await SupplyNetworkEntitiesService.getSupplyNetworkEntity(response.parentId);
+          setParentEntity(parentResponse);
+        } catch (parentError) {
+          console.warn("Failed to fetch parent entity:", parentError);
+        }
+      }
     } catch (error) {
       console.error("Failed to fetch entity details:", error);
       setError(t("entityDetail.error"));
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleFieldUpdate = async (fieldName: string, fieldValue: string | boolean | null) => {
+    if (!entity) return;
+    
+    try {
+      const updatedEntity = await SupplyNetworkEntitiesService.updateEntityField(
+        entity.id, 
+        fieldName, 
+        fieldValue
+      );
+      setEntity(updatedEntity);
+    } catch (error) {
+      console.error("Failed to update field:", error);
+      throw error;
     }
   };
 
@@ -68,6 +111,10 @@ const EntityDetailPage: React.FC = () => {
 
   const handleRefresh = () => {
     fetchEntity();
+  };
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setActiveTab(newValue);
   };
 
   // Get entity type icon
@@ -115,7 +162,12 @@ const EntityDetailPage: React.FC = () => {
   if (isLoading) {
     return (
       <Container type="page">
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="400px"
+        >
           <Box textAlign="center">
             <CircularProgress size={48} />
             <Text variant="body1" sx={{ mt: 2 }}>
@@ -138,19 +190,19 @@ const EntityDetailPage: React.FC = () => {
               </IconButton>
               <Text variant="h4">{t("entityDetail.title")}</Text>
             </Box>
-            
-            <Alert 
-              severity="error" 
+
+            <Alert
+              severity="error"
               action={
-                <button 
+                <button
                   onClick={handleRefresh}
-                  style={{ 
-                    background: 'none', 
-                    border: 'none', 
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
                   }}
                 >
                   <RefreshIcon />
@@ -177,10 +229,8 @@ const EntityDetailPage: React.FC = () => {
               </IconButton>
               <Text variant="h4">{t("entityDetail.title")}</Text>
             </Box>
-            
-            <Alert severity="warning">
-              {t("entityDetail.notFound")}
-            </Alert>
+
+            <Alert severity="warning">{t("entityDetail.notFound")}</Alert>
           </Grid>
         </Grid>
       </Container>
@@ -190,228 +240,461 @@ const EntityDetailPage: React.FC = () => {
   return (
     <Container type="page">
       <Grid container spacing={3}>
-        {/* Header */}
+        {/* Header with Breadcrumb */}
         <Grid item xs={12}>
-          <Box display="flex" alignItems="center" justifyContent="space-between" mb={3}>
-            <Box display="flex" alignItems="center">
-              <IconButton onClick={handleBackToList} sx={{ mr: 2 }}>
-                <ArrowBackIcon />
-              </IconButton>
-              <Box>
-                <Text variant="h4">{entity.legalName || entity.shortName}</Text>
-                <Box display="flex" alignItems="center" mt={1} gap={2}>
-                  <Chip
-                    icon={getEntityTypeIcon(entity.entityType)}
-                    label={getEntityTypeDisplay(entity.entityType)}
-                    variant="outlined"
-                    size="medium"
-                    sx={{
-                      borderRadius: "20px",
-                      "& .MuiChip-icon": { marginLeft: "4px", marginRight: "8px" },
-                    }}
-                  />
-                  <Chip
-                    icon={entity.active ? <CheckCircleIcon /> : <CancelIcon />}
-                    label={entity.active ? t("networkEntities.status.active") : t("networkEntities.status.inactive")}
-                    color={entity.active ? "success" : "default"}
-                    variant={entity.active ? "filled" : "outlined"}
-                    size="medium"
-                    sx={{
-                      borderRadius: "20px",
-                      "& .MuiChip-icon": { marginLeft: "4px", marginRight: "8px" },
-                    }}
-                  />
-                </Box>
-              </Box>
+          <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+            <IconButton onClick={handleBackToList} sx={{ mr: 2 }}>
+              <ArrowBackIcon />
+            </IconButton>
+            <Box sx={{ flexGrow: 1 }}>
+              <ParentEntityBreadcrumb
+                currentEntity={entity}
+                parentEntity={parentEntity || undefined}
+              />
             </Box>
-            
-            <button
-              onClick={handleRefresh}
-              style={{
-                padding: '8px 16px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                background: 'white',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}
-            >
+            <IconButton onClick={handleRefresh}>
               <RefreshIcon />
-              {t("common.refresh")}
-            </button>
+            </IconButton>
           </Box>
         </Grid>
 
-        {/* General Information */}
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Text variant="h6" sx={{ mb: 1 }}>
-                {t("entityDetail.sections.general")}
-              </Text>
-              <Divider sx={{ mb: 2 }} />
-              
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Text variant="body2" color="textSecondary">
-                    {t("entityDetail.fields.legalName")}
+        {/* Hero Section */}
+        <Grid item xs={12}>
+          <Paper elevation={2} sx={{ p: 3, mb: 2 }}>
+            <Box display="flex" alignItems="center" justifyContent="space-between">
+              <Box display="flex" alignItems="center" gap={2}>
+                <Box sx={{ fontSize: '3rem' }}>
+                  {getEntityTypeIcon(entity.entityType)}
+                </Box>
+                <Box>
+                  <Text variant="h4" sx={{ mb: 1 }}>
+                    {entity.legalName || entity.shortName}
                   </Text>
-                  <Text variant="body1">{entity.legalName || "-"}</Text>
-                </Grid>
-                
-                <Grid item xs={12}>
-                  <Text variant="body2" color="textSecondary">
-                    {t("entityDetail.fields.displayName")}
-                  </Text>
-                  <Text variant="body1">{entity.shortName || "-"}</Text>
-                </Grid>
-                
-                <Grid item xs={12}>
-                  <Text variant="body2" color="textSecondary">
-                    {t("entityDetail.fields.externalCode")}
-                  </Text>
-                  <Text variant="body1">{entity.externalCode || "-"}</Text>
-                </Grid>
-                
-                <Grid item xs={12}>
-                  <Text variant="body2" color="textSecondary">
-                    {t("entityDetail.fields.vatNumber")}
-                  </Text>
-                  <Text variant="body1">{entity.vatCode || "-"}</Text>
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
+                  {entity.shortName && entity.shortName !== entity.legalName && (
+                    <Text variant="h6" color="textSecondary" sx={{ mb: 1 }}>
+                      {entity.shortName}
+                    </Text>
+                  )}
+                  <Box display="flex" alignItems="center" gap={2}>
+                    <Chip
+                      icon={getEntityTypeIcon(entity.entityType)}
+                      label={getEntityTypeDisplay(entity.entityType)}
+                      variant="outlined"
+                      size="medium"
+                    />
+                    <Chip
+                      icon={entity.active ? <CheckCircleIcon /> : <CancelIcon />}
+                      label={
+                        entity.active
+                          ? t("networkEntities.status.active")
+                          : t("networkEntities.status.inactive")
+                      }
+                      color={entity.active ? "success" : "default"}
+                      variant={entity.active ? "filled" : "outlined"}
+                      size="medium"
+                    />
+                  </Box>
+                </Box>
+              </Box>
+            </Box>
+          </Paper>
         </Grid>
 
-        {/* Contact Information */}
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Text variant="h6" sx={{ mb: 1 }}>
-                {t("entityDetail.sections.contact")}
-              </Text>
-              <Divider sx={{ mb: 2 }} />
-              
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <EmailIcon color="action" fontSize="small" />
-                    <Text variant="body2" color="textSecondary">
-                      {t("entityDetail.fields.email")}
-                    </Text>
-                  </Box>
-                  <Text variant="body1">{entity.email || "-"}</Text>
-                </Grid>
-                
-                <Grid item xs={12}>
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <PhoneIcon color="action" fontSize="small" />
-                    <Text variant="body2" color="textSecondary">
-                      {t("entityDetail.fields.phone")}
-                    </Text>
-                  </Box>
-                  <Text variant="body1">{entity.phoneNumber || "-"}</Text>
-                </Grid>
-                
-                <Grid item xs={12}>
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <WebIcon color="action" fontSize="small" />
-                    <Text variant="body2" color="textSecondary">
-                      {t("entityDetail.fields.website")}
-                    </Text>
-                  </Box>
-                  <Text variant="body1">-</Text>
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
+        {/* Tabs Navigation */}
+        <Grid item xs={12}>
+          <Paper elevation={1}>
+            <Tabs
+              value={activeTab}
+              onChange={handleTabChange}
+              variant="scrollable"
+              scrollButtons="auto"
+            >
+              <Tab 
+                icon={<InfoIcon />} 
+                label={t("entityDetail.tabs.overview")} 
+                iconPosition="start"
+              />
+              <Tab 
+                icon={<ContactsIcon />} 
+                label={t("entityDetail.tabs.contacts")} 
+                iconPosition="start"
+              />
+              <Tab 
+                icon={<BusinessCenterIcon />} 
+                label={t("entityDetail.tabs.business")} 
+                iconPosition="start"
+              />
+              <Tab 
+                icon={<AccountTreeOutlinedIcon />} 
+                label={t("entityDetail.tabs.subEntities")} 
+                iconPosition="start"
+              />
+              <Tab 
+                icon={<SettingsIcon />} 
+                label={t("entityDetail.tabs.system")} 
+                iconPosition="start"
+              />
+            </Tabs>
+          </Paper>
         </Grid>
 
-        {/* Address Information */}
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Text variant="h6" sx={{ mb: 1 }}>
-                {t("entityDetail.sections.addresses")}
-              </Text>
-              <Divider sx={{ mb: 2 }} />
-              
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Text variant="body2" color="textSecondary">
-                    {t("entityDetail.fields.country")}
-                  </Text>
-                  <Text variant="body1">{entity.country || "-"}</Text>
-                </Grid>
-                
-                <Grid item xs={12}>
-                  <Text variant="body2" color="textSecondary">
-                    {t("entityDetail.fields.city")}
-                  </Text>
-                  <Text variant="body1">{entity.city || "-"}</Text>
-                </Grid>
-                
-                <Grid item xs={12}>
-                  <Text variant="body2" color="textSecondary">
-                    {t("entityDetail.fields.address")}
-                  </Text>
-                  <Text variant="body1">{entity.address || "-"}</Text>
-                </Grid>
-                
-                <Grid item xs={12}>
-                  <Text variant="body2" color="textSecondary">
-                    {t("entityDetail.fields.postalCode")}
-                  </Text>
-                  <Text variant="body1">{entity.zipCode || "-"}</Text>
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
+        {/* Tab Content */}
+        <Grid item xs={12}>
+          {activeTab === 0 && (
+            <Grid container spacing={3}>
+              {/* Overview - Essential Information */}
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardContent>
+                    <Text variant="h6" sx={{ mb: 2 }}>
+                      {t("entityDetail.sections.general")}
+                    </Text>
+                    <Divider sx={{ mb: 2 }} />
 
-        {/* Metadata */}
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Text variant="h6" sx={{ mb: 1 }}>
-                {t("entityDetail.sections.metadata")}
-              </Text>
-              <Divider sx={{ mb: 2 }} />
-              
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Text variant="body2" color="textSecondary">
-                    {t("entityDetail.fields.createdAt")}
-                  </Text>
-                  <Text variant="body1">{formatDate(entity.created)}</Text>
-                </Grid>
-                
-                <Grid item xs={12}>
-                  <Text variant="body2" color="textSecondary">
-                    {t("entityDetail.fields.updatedAt")}
-                  </Text>
-                  <Text variant="body1">{formatDate(entity.lastModified)}</Text>
-                </Grid>
-                
-                <Grid item xs={12}>
-                  <Text variant="body2" color="textSecondary">
-                    {t("entityDetail.fields.createdBy")}
-                  </Text>
-                  <Text variant="body1">{entity.createdBy || "-"}</Text>
-                </Grid>
-                
-                <Grid item xs={12}>
-                  <Text variant="body2" color="textSecondary">
-                    {t("entityDetail.fields.updatedBy")}
-                  </Text>
-                  <Text variant="body1">{entity.lastModifiedBy || "-"}</Text>
-                </Grid>
+                    <EntityInfoField
+                      label={t("entityDetail.fields.legalName")}
+                      value={entity.legalName}
+                      fieldName="legalName"
+                      onUpdate={handleFieldUpdate}
+                    />
+
+                    <EntityInfoField
+                      label={t("entityDetail.fields.displayName")}
+                      value={entity.shortName}
+                      fieldName="shortName"
+                      onUpdate={handleFieldUpdate}
+                    />
+
+                    <EntityInfoField
+                      label={t("entityDetail.fields.externalCode")}
+                      value={entity.externalCode}
+                      fieldName="externalCode"
+                      onUpdate={handleFieldUpdate}
+                    />
+
+                    <EntityInfoField
+                      label={t("entityDetail.fields.vatNumber")}
+                      value={entity.vatCode}
+                      fieldName="vatCode"
+                      onUpdate={handleFieldUpdate}
+                    />
+
+                    <EntityInfoField
+                      label={t("entityDetail.fields.active")}
+                      value={entity.active}
+                      fieldName="active"
+                      type="boolean"
+                      onUpdate={handleFieldUpdate}
+                    />
+                  </CardContent>
+                </Card>
               </Grid>
-            </CardContent>
-          </Card>
+
+              {/* Quick Stats */}
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardContent>
+                    <Text variant="h6" sx={{ mb: 2 }}>
+                      {t("entityDetail.sections.quickStats")}
+                    </Text>
+                    <Divider sx={{ mb: 2 }} />
+
+                    <Box display="flex" flexDirection="column" gap={2}>
+                      <Box display="flex" justifyContent="space-between" alignItems="center">
+                        <Text variant="body2" color="textSecondary">
+                          {t("entityDetail.fields.entityType")}
+                        </Text>
+                        <Chip
+                          icon={getEntityTypeIcon(entity.entityType)}
+                          label={getEntityTypeDisplay(entity.entityType)}
+                          variant="outlined"
+                          size="small"
+                        />
+                      </Box>
+
+                      <Box display="flex" justifyContent="space-between" alignItems="center">
+                        <Text variant="body2" color="textSecondary">
+                          {t("entityDetail.fields.accreditationStatus")}
+                        </Text>
+                        <Chip
+                          label={entity.accreditationStatus}
+                          size="small"
+                          color="primary"
+                          variant="outlined"
+                        />
+                      </Box>
+
+                      {entity.country && (
+                        <Box display="flex" justifyContent="space-between" alignItems="center">
+                          <Text variant="body2" color="textSecondary">
+                            {t("entityDetail.fields.location")}
+                          </Text>
+                          <Text variant="body2">
+                            {[entity.city, entity.country].filter(Boolean).join(", ")}
+                          </Text>
+                        </Box>
+                      )}
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+          )}
+
+          {activeTab === 1 && (
+            <Grid container spacing={3}>
+              {/* Contact Information */}
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardContent>
+                    <Text variant="h6" sx={{ mb: 2 }}>
+                      {t("entityDetail.sections.contact")}
+                    </Text>
+                    <Divider sx={{ mb: 2 }} />
+
+                    <EntityInfoField
+                      label={t("entityDetail.fields.email")}
+                      value={entity.email}
+                      fieldName="email"
+                      type="email"
+                      icon={<EmailIcon fontSize="small" />}
+                      onUpdate={handleFieldUpdate}
+                    />
+
+                    <EntityInfoField
+                      label={t("entityDetail.fields.phone")}
+                      value={entity.phoneNumber}
+                      fieldName="phoneNumber"
+                      icon={<PhoneIcon fontSize="small" />}
+                      onUpdate={handleFieldUpdate}
+                    />
+
+                    <EntityInfoField
+                      label={t("entityDetail.fields.contactPerson")}
+                      value={entity.contactPersonName}
+                      fieldName="contactPersonName"
+                      icon={<PersonIcon fontSize="small" />}
+                      onUpdate={handleFieldUpdate}
+                    />
+                  </CardContent>
+                </Card>
+              </Grid>
+
+              {/* Address Information */}
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardContent>
+                    <Text variant="h6" sx={{ mb: 2 }}>
+                      {t("entityDetail.sections.addresses")}
+                    </Text>
+                    <Divider sx={{ mb: 2 }} />
+
+                    <EntityInfoField
+                      label={t("entityDetail.fields.country")}
+                      value={entity.country}
+                      fieldName="country"
+                      icon={<LocationOnIcon fontSize="small" />}
+                      onUpdate={handleFieldUpdate}
+                    />
+
+                    <EntityInfoField
+                      label={t("entityDetail.fields.region")}
+                      value={entity.region}
+                      fieldName="region"
+                      onUpdate={handleFieldUpdate}
+                    />
+
+                    <EntityInfoField
+                      label={t("entityDetail.fields.city")}
+                      value={entity.city}
+                      fieldName="city"
+                      onUpdate={handleFieldUpdate}
+                    />
+
+                    <EntityInfoField
+                      label={t("entityDetail.fields.address")}
+                      value={entity.address}
+                      fieldName="address"
+                      type="textarea"
+                      onUpdate={handleFieldUpdate}
+                    />
+
+                    <EntityInfoField
+                      label={t("entityDetail.fields.postalCode")}
+                      value={entity.zipCode}
+                      fieldName="zipCode"
+                      onUpdate={handleFieldUpdate}
+                    />
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+          )}
+
+          {activeTab === 2 && (
+            <Grid container spacing={3}>
+              {/* Business Details */}
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardContent>
+                    <Text variant="h6" sx={{ mb: 2 }}>
+                      {t("entityDetail.sections.business")}
+                    </Text>
+                    <Divider sx={{ mb: 2 }} />
+
+                    <EntityInfoField
+                      label={t("entityDetail.fields.taxCode")}
+                      value={entity.taxCode}
+                      fieldName="taxCode"
+                      onUpdate={handleFieldUpdate}
+                    />
+
+                    <EntityInfoField
+                      label={t("entityDetail.fields.roleInSupplyChain")}
+                      value={entity.roleInSupplyChain}
+                      fieldName="roleInSupplyChain"
+                      editable={false}
+                    />
+
+                    <EntityInfoField
+                      label={t("entityDetail.fields.accreditationStatus")}
+                      value={entity.accreditationStatus}
+                      fieldName="accreditationStatus"
+                      editable={false}
+                    />
+
+                    {entity.accreditationDate && (
+                      <EntityInfoField
+                        label={t("entityDetail.fields.accreditationDate")}
+                        value={formatDate(entity.accreditationDate)}
+                        fieldName="accreditationDate"
+                        editable={false}
+                      />
+                    )}
+
+                    {entity.deactivationDate && (
+                      <EntityInfoField
+                        label={t("entityDetail.fields.deactivationDate")}
+                        value={formatDate(entity.deactivationDate)}
+                        fieldName="deactivationDate"
+                        editable={false}
+                      />
+                    )}
+                  </CardContent>
+                </Card>
+              </Grid>
+
+              {/* Tags */}
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardContent>
+                    <Text variant="h6" sx={{ mb: 2 }}>
+                      {t("entityDetail.sections.tags")}
+                    </Text>
+                    <Divider sx={{ mb: 2 }} />
+
+                    {entity.tags && entity.tags.length > 0 ? (
+                      <Box display="flex" flexWrap="wrap" gap={1}>
+                        {entity.tags.map((tag, index) => (
+                          <Chip
+                            key={index}
+                            label={tag}
+                            size="small"
+                            variant="outlined"
+                          />
+                        ))}
+                      </Box>
+                    ) : (
+                      <Text variant="body2" color="textSecondary">
+                        {t("entityDetail.noTags")}
+                      </Text>
+                    )}
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+          )}
+
+          {activeTab === 3 && (
+            <Box>
+              <SubEntitiesList
+                parentEntityId={entity.id}
+                onAddNew={() => navigate(`/supply-network/create?parentId=${entity.id}`)}
+              />
+            </Box>
+          )}
+
+          {activeTab === 4 && (
+            <Grid container spacing={3}>
+              {/* System Information */}
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardContent>
+                    <Text variant="h6" sx={{ mb: 2 }}>
+                      {t("entityDetail.sections.metadata")}
+                    </Text>
+                    <Divider sx={{ mb: 2 }} />
+
+                    <EntityInfoField
+                      label={t("entityDetail.fields.createdAt")}
+                      value={formatDate(entity.created)}
+                      fieldName="created"
+                      editable={false}
+                    />
+
+                    <EntityInfoField
+                      label={t("entityDetail.fields.updatedAt")}
+                      value={formatDate(entity.lastModified)}
+                      fieldName="lastModified"
+                      editable={false}
+                    />
+
+                    <EntityInfoField
+                      label={t("entityDetail.fields.createdBy")}
+                      value={entity.createdBy}
+                      fieldName="createdBy"
+                      editable={false}
+                    />
+
+                    <EntityInfoField
+                      label={t("entityDetail.fields.updatedBy")}
+                      value={entity.lastModifiedBy}
+                      fieldName="lastModifiedBy"
+                      editable={false}
+                    />
+                  </CardContent>
+                </Card>
+              </Grid>
+
+              {/* System Identifiers */}
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardContent>
+                    <Text variant="h6" sx={{ mb: 2 }}>
+                      {t("entityDetail.sections.identifiers")}
+                    </Text>
+                    <Divider sx={{ mb: 2 }} />
+
+                    <EntityInfoField
+                      label={t("entityDetail.fields.id")}
+                      value={entity.id}
+                      fieldName="id"
+                      editable={false}
+                    />
+
+                    {entity.parentId && (
+                      <EntityInfoField
+                        label={t("entityDetail.fields.parentId")}
+                        value={entity.parentId}
+                        fieldName="parentId"
+                        editable={false}
+                      />
+                    )}
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+          )}
         </Grid>
       </Grid>
     </Container>

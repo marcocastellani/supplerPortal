@@ -157,4 +157,41 @@ export class SupplyNetworkEntitiesService {
 
     return response.data;
   }
+
+  /**
+   * Get child entities of a parent entity
+   */
+  static async getEntityChildren(parentId: string): Promise<SupplyNetworkEntityDto[]> {
+    const params = new URLSearchParams();
+    params.append('api-version', '2025-06-01');
+    
+    const response = await axios.get(`/api/supplynetworkentities/${parentId}/children`, {
+      params
+    });
+
+    return response.data;
+  }
+
+  /**
+   * Update a single field of an entity (for inline editing)
+   */
+  static async updateEntityField(
+    entityId: string, 
+    fieldName: string, 
+    fieldValue: string | boolean | null
+  ): Promise<SupplyNetworkEntityDto> {
+    const params = new URLSearchParams();
+    params.append('api-version', '2025-06-01');
+    
+    const response = await axios.patch(
+      `/api/supplynetworkentities/${entityId}/field`, 
+      {
+        fieldName,
+        fieldValue
+      },
+      { params }
+    );
+
+    return response.data;
+  }
 }

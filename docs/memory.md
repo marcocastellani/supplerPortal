@@ -20,6 +20,10 @@ Questo documento descrive lo scopo e l'utilizzo dei file principali nel progetto
 - **Error Handling**: Sistema avanzato con categorizzazione errori (network/validation/server), feedback UX migliorato con pulsanti dismiss/retry
 - **Server-side Filtering**: Implementare filtri complessi lato server utilizzando parametri API dedicati (es: `active: boolean` per filtro status)
 - **Detail Page Navigation**: Gestire pagine di dettaglio attraverso il componente Home per mantenere la navigazione principale visibile
+- **Refactoring UI**: Struttura modulare con tab navigation, componenti riutilizzabili per inline editing, breadcrumb intelligenti con preview hover, hero section con informazioni chiave
+- **Inline Editing**: Componente EntityInfoField per editing inline con ottimistic updates e gestione errori
+- **Parent Entity UX**: Smart breadcrumb con hover preview card per navigation migliorata nelle gerarchie
+- **Service Extension**: Estendere servizi esistenti senza breaking changes aggiungendo metodi per children entities e field updates
 
 ### 🏗️ **Architettura**
 - **Clean Architecture**: Domain → Application → Infrastructure → API
@@ -27,6 +31,8 @@ Questo documento descrive lo scopo e l'utilizzo dei file principali nel progetto
 - **DTOs**: DTO specializzati per ricerca (es: `SearchResultDto` vs `EntityDto`)
 - **Mapping**: AutoMapper per trasformazioni Entity → DTO
 - **Background Compatibility**: Mantenere proprietà obsolete con `[Obsolete]` per non rompere DB
+- **Atomic Changes**: Modifiche piccole e self-contained per migliorare tracciabilità e rollback
+- **Component Reusability**: Struttura modulare con index.ts per export organizzati, componenti specializzati per funzionalità specifiche
 
 ### 🔍 **Debugging & Development**
 - **Logging**: Console.log dettagliato per debugging onChange events
@@ -153,6 +159,13 @@ Questo documento descrive lo scopo e l'utilizzo dei file principali nel progetto
 | `src/pages/Documents.tsx`                                     | 📄 Placeholder - Gestione documenti                                        |
 | `src/pages/Taxonomies.tsx`                                    | 📄 Placeholder - Tag e tassonomie                                          |
 | `src/pages/Roles.tsx`                                         | 📄 Placeholder - Ruoli e permessi                                          |
+| `src/components/EntityDetail/EntityInfoField.tsx`           | ⭐ Componente per inline editing di campi entity con validation e ottimistic updates |
+| `src/components/EntityDetail/ParentEntityBreadcrumb.tsx`     | ⭐ Smart breadcrumb con hover preview per navigation gerarchica entities |
+| `src/components/EntityDetail/SubEntitiesList.tsx`            | ⭐ Lista/grid per sub-entities con actions (view/edit) e FAB per aggiunta |
+| `src/components/EntityDetail/index.ts`                       | ⭐ Export organizzati per componenti EntityDetail |
+| `src/pages/EntityDetailPage.tsx`                             | ⭐ **REFACTORATO** - Pagina dettaglio con tabs, hero section, inline editing |
+| `src/services/supplyNetworkEntitiesService.ts`               | ⭐ **ESTESO** - Aggiunti metodi getEntityChildren() e updateEntityField() |
+| `src/types/supplyNetworkEntities.ts`                         | ⭐ **ESTESO** - Aggiunti tipi UpdateEntityFieldRequest e EntityDocumentDto |
 
 ### 🔧 **Architettura Frontend**
 

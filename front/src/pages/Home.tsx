@@ -155,13 +155,17 @@ export const Home = () => {
   }, [t, i18n.language, navigate]);
 
   // Verifica se siamo su una pagina di dettaglio entità
-  const isEntityDetailPage = location.pathname.match(/^\/supply-network\/entity\/(.+)$/);
-  
+  const isEntityDetailPage = location.pathname.match(
+    /^\/supply-network\/entity\/(.+)$/
+  );
+
   // Se siamo su dettaglio entità, ritorna il componente direttamente con il menu
   if (isEntityDetailPage) {
     // Trova il tab della supply network per mantenerlo selezionato
-    const supplyNetworkTabIndex = flattenedTabs.findIndex(tab => tab.path === "/supply-network");
-    
+    const supplyNetworkTabIndex = flattenedTabs.findIndex(
+      (tab) => tab.path === "/supply-network"
+    );
+
     return (
       <Container type="page" maxWidth={false}>
         <RoutingTabs
@@ -170,7 +174,9 @@ export const Home = () => {
             value: tab.value,
             call: tab.call,
           }))}
-          selectedTab={supplyNetworkTabIndex >= 0 ? supplyNetworkTabIndex : selectedTab}
+          selectedTab={
+            supplyNetworkTabIndex >= 0 ? supplyNetworkTabIndex : selectedTab
+          }
           setSelectedTab={setSelectedTab}
         />
         <Grid container rowSpacing={3} sx={{ paddingTop: 5 }}>

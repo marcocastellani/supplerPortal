@@ -208,33 +208,59 @@
     "error": "Failed to load entity details",
     "notFound": "Entity not found",
     "tryAgain": "Try Again",
+    "noTags": "No tags assigned",
+    "tabs": {
+      "overview": "Overview",
+      "contacts": "Contacts & Address",
+      "business": "Business Details", 
+      "subEntities": "Sub-Entities",
+      "system": "System Info"
+    },
     "sections": {
       "general": "General Information",
       "contact": "Contact Information",
       "addresses": "Addresses",
       "accreditation": "Accreditation",
-      "metadata": "Metadata"
+      "metadata": "System Information",
+      "business": "Business Details",
+      "tags": "Tags",
+      "quickStats": "Quick Overview",
+      "identifiers": "System Identifiers"
     },
     "fields": {
       "legalName": "Legal Name",
       "displayName": "Display Name",
       "externalCode": "External Code",
       "vatNumber": "VAT Number",
+      "taxCode": "Tax Code",
       "entityType": "Entity Type",
       "status": "Status",
-      "isActive": "Active",
+      "active": "Active",
       "email": "Email",
-      "phone": "Phone",
+      "phone": "Phone Number",
+      "contactPerson": "Contact Person",
       "website": "Website",
       "country": "Country",
+      "region": "Region",
       "city": "City",
       "address": "Address",
       "postalCode": "Postal Code",
       "accreditationStatus": "Accreditation Status",
+      "accreditationDate": "Accreditation Date",
+      "deactivationDate": "Deactivation Date",
+      "roleInSupplyChain": "Role in Supply Chain",
+      "location": "Location",
       "createdAt": "Created At",
       "updatedAt": "Updated At",
       "createdBy": "Created By",
-      "updatedBy": "Updated By"
+      "updatedBy": "Updated By",
+      "id": "System ID",
+      "parentId": "Parent ID"
+    },
+    "subEntities": {
+      "empty": "No sub-entities found",
+      "emptyDescription": "This entity doesn't have any sub-entities yet.",
+      "loadError": "Failed to load sub-entities"
     }
   }
 }

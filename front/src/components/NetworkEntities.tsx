@@ -40,7 +40,9 @@ const NetworkEntities: React.FC = () => {
   const [entities, setEntities] = useState<SupplyNetworkEntityDto[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState<EntityType | "all">("all");
-  const [filterStatus, setFilterStatus] = useState<"all" | "active" | "inactive">("all");
+  const [filterStatus, setFilterStatus] = useState<
+    "all" | "active" | "inactive"
+  >("all");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -50,7 +52,12 @@ const NetworkEntities: React.FC = () => {
 
   // Fetch entities function
   const fetchEntities = useCallback(
-    async (search: string, type: EntityType | "all", status: "all" | "active" | "inactive", page: number) => {
+    async (
+      search: string,
+      type: EntityType | "all",
+      status: "all" | "active" | "inactive",
+      page: number
+    ) => {
       setIsLoading(true);
       setError(null);
 
@@ -82,9 +89,17 @@ const NetworkEntities: React.FC = () => {
 
   // Debounced search function
   const debouncedFetch = useCallback(
-    debounce((search: string, type: EntityType | "all", status: "all" | "active" | "inactive", page: number) => {
-      fetchEntities(search, type, status, page);
-    }, 500),
+    debounce(
+      (
+        search: string,
+        type: EntityType | "all",
+        status: "all" | "active" | "inactive",
+        page: number
+      ) => {
+        fetchEntities(search, type, status, page);
+      },
+      500
+    ),
     [fetchEntities]
   );
 
@@ -271,9 +286,18 @@ const NetworkEntities: React.FC = () => {
                     value={filterStatus}
                     onChange={handleFilterStatusChange}
                     options={[
-                      { value: "all", label: t("networkEntities.filterAllStatus") },
-                      { value: "active", label: t("networkEntities.filterActive") },
-                      { value: "inactive", label: t("networkEntities.filterInactive") },
+                      {
+                        value: "all",
+                        label: t("networkEntities.filterAllStatus"),
+                      },
+                      {
+                        value: "active",
+                        label: t("networkEntities.filterActive"),
+                      },
+                      {
+                        value: "inactive",
+                        label: t("networkEntities.filterInactive"),
+                      },
                     ]}
                     fullWidth
                     disabled={isLoading}
