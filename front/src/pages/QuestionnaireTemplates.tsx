@@ -1,12 +1,17 @@
-import { Container, Grid, Text } from "@remira/unifiedui";
+import { Container, Grid } from "@remira/unifiedui";
+import { PageHeader } from "../components/LayoutComponents";
+import ListAltIcon from "@mui/icons-material/ListAlt";
 
 export const QuestionnaireTemplates = () => {
   return (
     <Container type="page">
       <Grid container rowSpacing={3} sx={{ paddingTop: 5 }}>
         <Grid item xs={12}>
-          <Text variant="h3">Gestione Template</Text>
-          <Text variant="body1">Gestione template questionari</Text>
+          <PageHeader
+            title="Gestione Template"
+            subtitle="Gestione template questionari"
+            icon={<ListAltIcon color="primary" />}
+          />
         </Grid>
       </Grid>
     </Container>

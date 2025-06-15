@@ -1,12 +1,17 @@
-import { Container, Grid, Text } from "@remira/unifiedui";
+import { Container, Grid } from "@remira/unifiedui";
+import { PageHeader } from "../components/LayoutComponents";
+import AnalyticsIcon from "@mui/icons-material/Analytics";
 
 export const KPIDashboard = () => {
   return (
     <Container type="page">
       <Grid container rowSpacing={3} sx={{ paddingTop: 5 }}>
         <Grid item xs={12}>
-          <Text variant="h3">Cruscotto KPI</Text>
-          <Text variant="body1">Dashboard KPI e metriche di performance</Text>
+          <PageHeader
+            title="Cruscotto KPI"
+            subtitle="Dashboard KPI e metriche di performance"
+            icon={<AnalyticsIcon color="primary" />}
+          />
         </Grid>
       </Grid>
     </Container>

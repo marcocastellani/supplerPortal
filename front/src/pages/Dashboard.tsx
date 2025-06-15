@@ -1,21 +1,23 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { DashboardQuestionnaires } from "../components/Dashboard/DashboardQuestionnaires";
-import { Container, Grid, Text } from "@remira/unifiedui";
+import { Container, Grid } from "@remira/unifiedui";
+import { PageHeader } from "../components/LayoutComponents";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 
 const Dashboard: React.FC = () => {
   const { t } = useTranslation();
 
   return (
     <Container type="page">
-      <Grid item xs={12}>
-        <Text variant="h3">
-          {t(
-            "dashboard.subtitle",
-            "Monitor your supplier questionnaires and compliance status"
-          )}
-        </Text>
-      </Grid>
+      <PageHeader
+        title={t("dashboard.title", "Dashboard")}
+        subtitle={t(
+          "dashboard.subtitle",
+          "Monitor your supplier questionnaires and compliance status"
+        )}
+        icon={<DashboardIcon color="primary" />}
+      />
 
       <Grid item xs={12}>
         <DashboardQuestionnaires />

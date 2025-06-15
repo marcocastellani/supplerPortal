@@ -8,6 +8,7 @@ import {
 } from "../types/supplyNetworkEntities";
 import { Link } from "react-router-dom";
 import { Container, Grid, Text, Select, Card } from "@remira/unifiedui";
+import { PageHeader } from "./LayoutComponents";
 import {
   TextField,
   InputAdornment,
@@ -139,10 +140,11 @@ const NetworkEntities: React.FC = () => {
       <Grid container spacing={3}>
         {/* Header Section */}
         <Grid item xs={12}>
-          <Box display="flex" alignItems="center" gap={2} mb={2}>
-            <BusinessIcon color="primary" sx={{ fontSize: 32 }} />
-            <Text variant="h4">{t("networkEntities.title")}</Text>
-          </Box>
+          <PageHeader
+            title={t("networkEntities.title")}
+            subtitle={t("networkEntities.subtitle", "Gestione entità della rete di fornitura")}
+            icon={<BusinessIcon color="primary" sx={{ fontSize: 32 }} />}
+          />
         </Grid>
 
         {/* Search and Filter Controls */}

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Container, Grid, Text, Card } from "@remira/unifiedui";
+import { PageHeader } from "../LayoutComponents";
+import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 
 interface WizardStepProps {
   title: string;
@@ -45,11 +47,11 @@ export const FormWizard: React.FC<FormWizardProps> = ({
     <Container type="page">
       <Grid container rowSpacing={3} sx={{ paddingTop: 2 }}>
         <Grid item xs={12}>
-          <Text variant="h3">Create Supply Network Entity</Text>
-          <Text variant="body1" sx={{ color: "text.secondary", mb: 3 }}>
-            Add a new supplier, sub-supplier, site, person, or company group to
-            your network
-          </Text>
+          <PageHeader
+            title="Create Supply Network Entity"
+            subtitle="Add a new supplier, sub-supplier, site, person, or company group to your network"
+            icon={<AddBusinessIcon color="primary" />}
+          />
         </Grid>
 
         <Grid item xs={12}>
