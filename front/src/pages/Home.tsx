@@ -16,7 +16,7 @@ import { Audits } from "./Audits";
 import { Documents } from "./Documents";
 import { Taxonomies } from "./Taxonomies";
 import { Roles } from "./Roles";
-import NetworkEntities from '../components/NetworkEntities';
+import NetworkEntities from "../components/NetworkEntities";
 
 interface TabDefinition {
   title: string;

@@ -154,6 +154,9 @@
     "filterSubSupplier": "Sub-Fornitori", 
     "filterPerson": "Persone",
     "filterCompanyGroup": "Gruppi Aziendali",
+    "filterAllStatus": "Tutti gli Stati",
+    "filterActive": "Attivi",
+    "filterInactive": "Inattivi",
     "entityType": {
       "supplier": "Fornitore",
       "site": "Sito",

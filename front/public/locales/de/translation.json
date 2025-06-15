@@ -116,6 +116,9 @@
     "filterSubSupplier": "Unterlieferanten",
     "filterPerson": "Personen",
     "filterCompanyGroup": "Unternehmensgruppen",
+    "filterAllStatus": "Alle Status",
+    "filterActive": "Aktiv",
+    "filterInactive": "Inaktiv",
     "entityType": {
       "supplier": "Lieferant",
       "site": "Standort",

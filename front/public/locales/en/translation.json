@@ -172,6 +172,9 @@
     "filterSubSupplier": "Sub-Suppliers",
     "filterPerson": "Persons",
     "filterCompanyGroup": "Company Groups",
+    "filterAllStatus": "All Status",
+    "filterActive": "Active",
+    "filterInactive": "Inactive",
     "entityType": {
       "supplier": "Supplier",
       "site": "Site",
