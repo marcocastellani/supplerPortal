@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, IconButton, TextField, Chip } from "@mui/material";
 import { Text } from "@remira/unifiedui";
 import EditIcon from "@mui/icons-material/Edit";
@@ -32,9 +32,15 @@ export const EntityInfoField: React.FC<EntityInfoFieldProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(value?.toString() || "");
   const [isUpdating, setIsUpdating] = useState(false);
+  const [currentValue, setCurrentValue] = useState(value);
+
+  // Sync with prop changes [SF]
+  useEffect(() => {
+    setCurrentValue(value);
+  }, [value]);
 
   const handleStartEdit = () => {
-    setEditValue(value?.toString() || "");
+    setEditValue(currentValue?.toString() || "");
     setIsEditing(true);
   };
 
@@ -52,6 +58,9 @@ export const EntityInfoField: React.FC<EntityInfoFieldProps> = ({
       }
 
       await onUpdate(fieldName, finalValue);
+      
+      // Update local state immediately for optimistic UI [SF]
+      setCurrentValue(finalValue);
       setIsEditing(false);
     } catch (error) {
       console.error("Failed to update field:", error);
@@ -61,17 +70,17 @@ export const EntityInfoField: React.FC<EntityInfoFieldProps> = ({
   };
 
   const handleCancel = () => {
-    setEditValue(value?.toString() || "");
+    setEditValue(currentValue?.toString() || "");
     setIsEditing(false);
   };
 
   const displayValue = () => {
-    if (value === null || value === undefined) return "-";
+    if (currentValue === null || currentValue === undefined) return "-";
     if (type === "boolean") {
       return (
         <Chip
-          label={value ? "True" : "False"}
-          color={value ? "success" : "default"}
+          label={currentValue ? "True" : "False"}
+          color={currentValue ? "success" : "default"}
           size="small"
           variant="outlined"
           sx={{
@@ -84,7 +93,7 @@ export const EntityInfoField: React.FC<EntityInfoFieldProps> = ({
         />
       );
     }
-    return value.toString();
+    return currentValue.toString();
   };
 
   return (
