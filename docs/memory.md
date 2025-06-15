@@ -26,6 +26,10 @@ Questo documento descrive lo scopo e l'utilizzo dei file principali nel progetto
 - **Inline Editing**: Componente EntityInfoField per editing inline con ottimistic updates e gestione errori
 - **Parent Entity UX**: Smart breadcrumb con hover preview card per navigation migliorata nelle gerarchie
 - **Service Extension**: Estendere servizi esistenti senza breaking changes aggiungendo metodi per children entities e field updates
+- **UI Layout Professional**: Usare CSS Grid con proporzioni bilanciate (30% label / 70% valore) per layout compatti e leggibili
+- **Typography Hierarchy**: Ottimizzare font-weight e colors per gerarchia visiva chiara (label: 500/text.primary, value: body1)
+- **Component Spacing**: Spaziature ridotte ma bilanciate (py: 1.25, minHeight: 44px) per design compatto senza perdere usabilità
+- **Chip Components**: Componenti riutilizzabili per status/type con sizing appropriato (small chips: height 24px, fontSize 0.8125rem)
 
 ### 🏗️ **Architettura**
 - **Clean Architecture**: Domain → Application → Infrastructure → API
@@ -163,7 +167,7 @@ Questo documento descrive lo scopo e l'utilizzo dei file principali nel progetto
 | `src/pages/Documents.tsx`                                     | 📄 Placeholder - Gestione documenti                                        |
 | `src/pages/Taxonomies.tsx`                                    | 📄 Placeholder - Tag e tassonomie                                          |
 | `src/pages/Roles.tsx`                                         | 📄 Placeholder - Ruoli e permessi                                          |
-| `src/components/EntityDetail/EntityInfoField.tsx`           | ⭐ Componente per inline editing di campi entity con validation e ottimistic updates |
+| `src/components/EntityDetail/EntityInfoField.tsx`           | ⭐ **AGGIORNATO** - Layout professionale CSS Grid (30%/70%) con design compatto |
 | `src/components/EntityDetail/ParentEntityBreadcrumb.tsx`     | ⭐ Smart breadcrumb con hover preview per navigation gerarchica entities |
 | `src/components/EntityDetail/SubEntitiesList.tsx`            | ⭐ Lista/grid per sub-entities con actions (view/edit) e FAB per aggiunta |
 | `src/components/EntityDetail/index.ts`                       | ⭐ Export organizzati per componenti EntityDetail |
@@ -172,7 +176,8 @@ Questo documento descrive lo scopo e l'utilizzo dei file principali nel progetto
 | `src/types/supplyNetworkEntities.ts`                         | ⭐ **ESTESO** - Aggiunti tipi UpdateEntityFieldRequest e EntityDocumentDto |
 | `src/components/EntityChips/EntityTypeChip.tsx`             | ⭐ Componente riutilizzabile per chip tipo entità (DRY)                     |
 | `src/components/EntityChips/EntityStatusChip.tsx             | ⭐ Componente riutilizzabile per chip status attivo/inattivo (DRY)         |
-| `src/components/EntityChips/index.ts`                       | ⭐ Barrel export per componenti EntityChips |
+| `src/components/EntityChips/AccreditationStatusChip.tsx`     | ⭐ Componente riutilizzabile per chip status accreditamento (DRY)          |
+| `src/components/EntityChips/index.ts`                       | ⭐ Barrel export per componenti EntityChips                                |
 
 ### 🔧 **Architettura Frontend**
 
@@ -380,6 +385,10 @@ src/components/Dashboard/
 - **Validation**: validazione per step nei wizard
 - **UX**: Material-UI con rendering personalizzato per typeahead
 - **State**: calcolo automatico di proprietà derivate
+- **UI Layout Professional**: Usare CSS Grid con proporzioni bilanciate (30% label / 70% valore) per layout compatti e leggibili
+- **Typography Hierarchy**: Ottimizzare font-weight e colors per gerarchia visiva chiara (label: 500/text.primary, value: body1)
+- **Component Spacing**: Spaziature ridotte ma bilanciate (py: 1.25, minHeight: 44px) per design compatto senza perdere usabilità
+- **Chip Components**: Componenti riutilizzabili per status/type con sizing appropriato (small chips: height 24px, fontSize 0.8125rem)
 
 #### Architettura
 - **Clean Architecture**: Domain → Application → Infrastructure → API

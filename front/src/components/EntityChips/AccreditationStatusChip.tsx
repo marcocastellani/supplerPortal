@@ -16,7 +16,9 @@ interface AccreditationStatusChipProps {
   style?: "default" | "colorful";
 }
 
-export const AccreditationStatusChip: React.FC<AccreditationStatusChipProps> = ({
+export const AccreditationStatusChip: React.FC<
+  AccreditationStatusChipProps
+> = ({
   accreditationStatus,
   size = "small",
   variant = "outlined",

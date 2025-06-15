@@ -16,12 +16,8 @@ import {
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import BusinessIcon from "@mui/icons-material/Business";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import FactoryIcon from "@mui/icons-material/Factory";
 import PersonIcon from "@mui/icons-material/Person";
-import AccountTreeIcon from "@mui/icons-material/AccountTree";
-import ApartmentIcon from "@mui/icons-material/Apartment";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
 import InfoIcon from "@mui/icons-material/Info";
@@ -37,7 +33,11 @@ import {
   ParentEntityBreadcrumb,
   SubEntitiesList,
 } from "../components/EntityDetail";
-import { EntityTypeChip, EntityStatusChip, AccreditationStatusChip } from "../components/EntityChips";
+import {
+  EntityTypeChip,
+  EntityStatusChip,
+  AccreditationStatusChip,
+} from "../components/EntityChips";
 
 const EntityDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();

@@ -72,9 +72,15 @@ export const EntityInfoField: React.FC<EntityInfoFieldProps> = ({
         <Chip
           label={value ? "True" : "False"}
           color={value ? "success" : "default"}
-          size="medium"
+          size="small"
           variant="outlined"
-          style={{ padding: "0 8px", fontSize: "0.875rem" }}
+          sx={{ 
+            fontSize: "0.8125rem",
+            height: "24px",
+            "& .MuiChip-label": {
+              px: 1.5,
+            }
+          }}
         />
       );
     }
@@ -82,77 +88,133 @@ export const EntityInfoField: React.FC<EntityInfoFieldProps> = ({
   };
 
   return (
-    <Box sx={{ mb: 1 }}>
-      <Box display="flex" alignItems="center" gap={1} mb={0.5}>
-        {icon}
-        <Text variant="body2" color="textSecondary">
+    <Box
+      display="grid"
+      gridTemplateColumns="1fr 2.3fr"
+      gap={2}
+      sx={{
+        py: 1.25,
+        px: 2,
+        borderBottom: "1px solid",
+        borderBottomColor: "divider",
+        "&:last-child": {
+          borderBottom: "none",
+        },
+        "&:hover": {
+          backgroundColor: "action.hover",
+        },
+        transition: "background-color 0.2s ease",
+        minHeight: "44px",
+        alignItems: "start",
+      }}
+    >
+      {/* Label Section */}
+      <Box
+        display="flex"
+        alignItems="center"
+        gap={1}
+        sx={{
+          pt: 0.25,
+        }}
+      >
+        {icon && (
+          <Box
+            sx={{
+              color: "text.secondary",
+              display: "flex",
+              alignItems: "center",
+              mr: 0.5,
+            }}
+          >
+            {icon}
+          </Box>
+        )}
+        <Text
+          variant="body2"
+          sx={{
+            fontWeight: 500,
+            color: "text.primary",
+            fontSize: "0.875rem",
+            lineHeight: 1.3,
+          }}
+        >
           {label}
         </Text>
       </Box>
 
-      {isEditing ? (
-        <Box display="flex" alignItems="center" gap={1}>
-          {type === "boolean" ? (
-            <TextField
-              select
-              value={editValue}
-              onChange={(e) => setEditValue(e.target.value)}
-              size="small"
-              SelectProps={{
-                native: true,
-              }}
-              disabled={isUpdating}
-            >
-              <option value="true">Active</option>
-              <option value="false">Inactive</option>
-            </TextField>
-          ) : (
-            <TextField
-              value={editValue}
-              onChange={(e) => setEditValue(e.target.value)}
-              size="small"
-              multiline={type === "textarea"}
-              rows={type === "textarea" ? 3 : 1}
-              type={type === "email" ? "email" : "text"}
-              disabled={isUpdating}
-              sx={{ minWidth: 200 }}
-            />
-          )}
+      {/* Value Section */}
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        sx={{
+          minHeight: "32px",
+        }}
+      >
+        {isEditing ? (
+          <Box display="flex" alignItems="center" gap={1}>
+            {type === "boolean" ? (
+              <TextField
+                select
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                size="small"
+                SelectProps={{
+                  native: true,
+                }}
+                disabled={isUpdating}
+              >
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+              </TextField>
+            ) : (
+              <TextField
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                size="small"
+                multiline={type === "textarea"}
+                rows={type === "textarea" ? 3 : 1}
+                type={type === "email" ? "email" : "text"}
+                disabled={isUpdating}
+                sx={{ minWidth: 200 }}
+              />
+            )}
 
-          <IconButton
-            size="small"
-            onClick={handleSave}
-            disabled={isUpdating}
-            color="primary"
-          >
-            <CheckIcon />
-          </IconButton>
-
-          <IconButton size="small" onClick={handleCancel} disabled={isUpdating}>
-            <CloseIcon />
-          </IconButton>
-        </Box>
-      ) : (
-        <Box display="flex" alignItems="center" gap={1}>
-          <Text variant="body1" sx={{ minHeight: "24px" }}>
-            {displayValue()}
-          </Text>
-
-          {editable && onUpdate && (
             <IconButton
               size="small"
-              onClick={handleStartEdit}
-              disabled={isLoading}
-              sx={{
-                opacity: 0.7,
-                "&:hover": { opacity: 1 },
-              }}
+              onClick={handleSave}
+              disabled={isUpdating}
+              color="primary"
             >
-              <EditIcon fontSize="small" />
+              <CheckIcon />
             </IconButton>
-          )}
-        </Box>
-      )}
+
+            <IconButton size="small" onClick={handleCancel} disabled={isUpdating}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        ) : (
+          <Box display="flex" alignItems="center" gap={1}>
+            <Text variant="body1" sx={{ minHeight: "24px" }}>
+              {displayValue()}
+            </Text>
+
+            {editable && onUpdate && (
+              <IconButton
+                size="small"
+                onClick={handleStartEdit}
+                disabled={isLoading}
+                sx={{
+                  opacity: 0.7,
+                  "&:hover": { opacity: 1 },
+                }}
+              >
+                <EditIcon fontSize="small" />
+              </IconButton>
+            )}
+          </Box>
+        )}
+      </Box>
     </Box>
   );
 };
