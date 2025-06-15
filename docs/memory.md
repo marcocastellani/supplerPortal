@@ -728,51 +728,16 @@ public class CreateSupplyNetworkEntityCommandValidator : AbstractValidator<Creat
 }
 ```
 
-## 📋 **MANUAL SUPPLIER ENTRY WIZARD - IMPLEMENTAZIONE FINALE**
+### 🎨 **Improved Chip Spacing & Layout**
+- **Enhanced Chip Internal Spacing**: Height 36px, padding 0 12px, borderRadius 20px per aspetto moderno
+- **Icon-Text Separation**: marginLeft 4px, marginRight 8px per separazione ottimale tra icona e testo
+- **Label Padding**: paddingLeft 0px, paddingRight 8px per allineamento perfetto del testo
+- **Table Cell Padding**: 16px su tutte le celle per respiro generale della tabella
+- **Typography Optimization**: fontSize 0.875rem per leggibilità ottimale nei chip
 
-### 🎯 **Epic A #4 - COMPLETATO ✅**
-
-**File principale**: `front/src/pages/NewSupplyNetworkEntity.tsx`
-
-**Wizard Steps**:
-1. **Entity Type & Role** - Configurazione base entità
-2. **General Information** - Dati anagrafici + indirizzo (con VAT/Tax Code)
-3. **Status & Contact** - Stato accreditamento + contatti
-4. **Review & Submit** - Riepilogo + salvataggio (con error handling)
-
-**Caratteristiche implementate**:
-- ✅ **4-step wizard** con validazione per step
-- ✅ **Async field validation** (legal name, external code, email)
-- ✅ **External Code opzionale** (senza asterisco, no validazione blocking)
-- ✅ **Country ISO select** (dropdown con codici ISO 3166-1 alpha-2)
-- ✅ **VAT Code e Tax Code** integrati nello Step 2
-- ✅ **Advanced error handling** con categorizzazione e retry/dismiss
-- ✅ **Real-time UX** con indicatori loading e styling errori
-- ✅ **End-to-end testing** (happy path + error scenarios)
-
-### 🔧 **File Utilities Creati** (RIUTILIZZARE!):
-- `front/src/utils/countries.ts` - Lista completa ISO countries per select
-- `front/src/components/SupplyNetworkEntities/EntitySelector.tsx` - Typeahead component
-- `front/src/services/supplyNetworkEntitiesService.ts` - Service layer con validation API
-
-### 🚨 **Problemi Risolti**:
-1. **AutoMapper MappingProfile** - Aggiunto costruttore senza parametri
-2. **Error display positioning** - Spostato componente errore nello step corretto
-3. **Field validation logic** - Separata validazione required vs optional
-4. **Country validation** - Sostituito input libero con ISO select
-5. **External Code** - Reso completamente opzionale senza bloccare wizard
-
-### 📊 **Testing Status**:
-- ✅ **Happy path**: Entity creation con 201 Created
-- ✅ **Validation errors**: 400 errors con field details
-- ✅ **Server errors**: 500 errors con graceful handling  
-- ✅ **Network errors**: Connection issues con retry mechanism
-- ✅ **Field validation**: Real-time uniqueness checking
-- ✅ **Build verification**: Frontend + Backend successful
-
-### 🎨 **UI/UX Improvements**
-- **NetworkEntities Redesign**: Trasformazione completa da CSS/Tailwind a UnifiedUI + MUI per esperienza professionale
-- **Modern Layout**: Grid system responsive, Cards strutturate, componenti UnifiedUI coerenti
-- **Enhanced UX**: Loading states con CircularProgress, Error handling con Alert, Empty states informativi  
-- **Accessibility**: Icone semantiche, hover states, navigation links migliorati
-- **Professional Design**: Tabelle moderne, Chip per status, Pagination avanzata con controlli completi
+### 📊 **Table Structure & Data Organization**
+- **VAT Column Added**: Nuova colonna P.IVA/VAT/USt-IdNr. per informazioni fiscali complete
+- **Column Reordering**: Ordine ottimizzato (Name → VAT → Code → Location → Type → Status)
+- **Multilingual VAT Labels**: Traduzioni appropriate EN: "VAT", IT: "P.IVA", DE: "USt-IdNr."
+- **Data Completeness**: Gestione valori null per VAT code con fallback '-'
+- **Business Logic**: Ordine colonne allineato ai requisiti business per identificazione entità

@@ -101,5 +101,45 @@
         "retry": "Wiederholen"
       }
     }
+  },
+  "networkEntities": {
+    "title": "Liefernetzwerk-Entitäten",
+    "searchPlaceholder": "Entitäten nach Name, Code oder Standort suchen...",
+    "loading": "Entitäten werden geladen...",
+    "errorFetching": "Entitäten konnten nicht geladen werden. Bitte versuchen Sie es erneut.",
+    "noResults": "Keine Entitäten gefunden",
+    "noResultsDescription": "Versuchen Sie, Ihre Suchkriterien oder Filter anzupassen",
+    "resultsCount": "{{count}} Entitäten gefunden",
+    "filterAll": "Alle Typen",
+    "filterSupplier": "Lieferanten",
+    "filterSite": "Standorte",
+    "filterSubSupplier": "Unterlieferanten",
+    "filterPerson": "Personen",
+    "filterCompanyGroup": "Unternehmensgruppen",
+    "entityType": {
+      "supplier": "Lieferant",
+      "site": "Standort",
+      "subSupplier": "Unterlieferant",
+      "person": "Person",
+      "companyGroup": "Unternehmensgruppe"
+    },
+    "table": {
+      "name": "Name",
+      "vat": "USt-IdNr.",
+      "code": "Code",
+      "type": "Typ",
+      "location": "Standort",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Aktiv",
+      "inactive": "Inaktiv"
+    },
+    "pagination": {
+      "showing": "Zeige {{from}} bis {{to}} von {{total}} Ergebnissen",
+      "previous": "Zurück",
+      "next": "Weiter",
+      "page": "Seite {{current}} von {{total}}"
+    }
   }
 }

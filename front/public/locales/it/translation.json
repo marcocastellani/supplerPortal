@@ -139,5 +139,45 @@
         "retry": "Riprova"
       }
     }
+  },
+  "networkEntities": {
+    "title": "Entità della Rete di Fornitura",
+    "searchPlaceholder": "Cerca entità per nome, codice o località...",
+    "loading": "Caricamento entità...",
+    "errorFetching": "Impossibile caricare le entità. Riprova.",
+    "noResults": "Nessuna entità trovata",
+    "noResultsDescription": "Prova a modificare i criteri di ricerca o i filtri",
+    "resultsCount": "{{count}} entità trovate",
+    "filterAll": "Tutti i Tipi",
+    "filterSupplier": "Fornitori",
+    "filterSite": "Siti",
+    "filterSubSupplier": "Sub-Fornitori", 
+    "filterPerson": "Persone",
+    "filterCompanyGroup": "Gruppi Aziendali",
+    "entityType": {
+      "supplier": "Fornitore",
+      "site": "Sito",
+      "subSupplier": "Sub-Fornitore",
+      "person": "Persona", 
+      "companyGroup": "Gruppo Aziendale"
+    },
+    "table": {
+      "name": "Nome",
+      "vat": "P.IVA",
+      "code": "Codice",
+      "type": "Tipo", 
+      "location": "Località",
+      "status": "Stato"
+    },
+    "status": {
+      "active": "Attivo",
+      "inactive": "Inattivo"
+    },
+    "pagination": {
+      "showing": "Mostra da {{from}} a {{to}} di {{total}} risultati",
+      "previous": "Precedente",
+      "next": "Successivo", 
+      "page": "Pagina {{current}} di {{total}}"
+    }
   }
 }

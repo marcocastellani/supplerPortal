@@ -25,6 +25,12 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import BusinessIcon from '@mui/icons-material/Business';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import FactoryIcon from '@mui/icons-material/Factory';
+import PersonIcon from '@mui/icons-material/Person';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import ApartmentIcon from '@mui/icons-material/Apartment';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const NetworkEntities: React.FC = () => {
   const { t } = useTranslation();
@@ -118,6 +124,66 @@ const NetworkEntities: React.FC = () => {
         return t('networkEntities.entityType.companyGroup');
       default:
         return type;
+    }
+  };
+
+  // Get entity type icon
+  const getEntityTypeIcon = (type: EntityType) => {
+    switch (type) {
+      case EntityType.Supplier:
+        return <BusinessIcon fontSize="small" />;
+      case EntityType.Site:
+        return <FactoryIcon fontSize="small" />;
+      case EntityType.SubSupplier:
+        return <AccountTreeIcon fontSize="small" />;
+      case EntityType.Person:
+        return <PersonIcon fontSize="small" />;
+      case EntityType.CompanyGroup:
+        return <ApartmentIcon fontSize="small" />;
+      default:
+        return <BusinessIcon fontSize="small" />;
+    }
+  };
+
+  // Get entity type color scheme
+  const getEntityTypeColor = (type: EntityType) => {
+    switch (type) {
+      case EntityType.Supplier:
+        return { 
+          color: '#1976d2', 
+          backgroundColor: '#e3f2fd',
+          borderColor: '#1976d2'
+        };
+      case EntityType.Site:
+        return { 
+          color: '#f57c00', 
+          backgroundColor: '#fff3e0',
+          borderColor: '#f57c00'
+        };
+      case EntityType.SubSupplier:
+        return { 
+          color: '#7b1fa2', 
+          backgroundColor: '#f3e5f5',
+          borderColor: '#7b1fa2'
+        };
+      case EntityType.Person:
+        return { 
+          color: '#388e3c', 
+          backgroundColor: '#e8f5e8',
+          borderColor: '#388e3c'
+        };
+      case EntityType.CompanyGroup:
+        return { 
+          color: '#d32f2f', 
+          backgroundColor: '#ffebee',
+          borderColor: '#d32f2f'
+        };
+      default:
+        return { 
+          color: '#757575', 
+          backgroundColor: '#f5f5f5',
+          borderColor: '#757575'
+        };
     }
   };
 
@@ -229,20 +295,23 @@ const NetworkEntities: React.FC = () => {
           {!isLoading && !error && entities.length > 0 && (
             <Card>
               <TableContainer component={Paper}>
-                <Table>
+                <Table sx={{ '& .MuiTableCell-root': { padding: '16px' } }}>
                   <TableHead>
                     <TableRow>
                       <TableCell>
                         <strong>{t('networkEntities.table.name')}</strong>
                       </TableCell>
                       <TableCell>
+                        <strong>{t('networkEntities.table.vat')}</strong>
+                      </TableCell>
+                      <TableCell>
                         <strong>{t('networkEntities.table.code')}</strong>
                       </TableCell>
                       <TableCell>
-                        <strong>{t('networkEntities.table.type')}</strong>
+                        <strong>{t('networkEntities.table.location')}</strong>
                       </TableCell>
                       <TableCell>
-                        <strong>{t('networkEntities.table.location')}</strong>
+                        <strong>{t('networkEntities.table.type')}</strong>
                       </TableCell>
                       <TableCell>
                         <strong>{t('networkEntities.table.status')}</strong>
@@ -287,16 +356,13 @@ const NetworkEntities: React.FC = () => {
                         </TableCell>
                         <TableCell>
                           <Text variant="body2" color="textSecondary">
-                            {entity.externalCode || '-'}
+                            {entity.vatCode || '-'}
                           </Text>
                         </TableCell>
                         <TableCell>
-                          <Chip 
-                            label={getEntityTypeDisplay(entity.entityType)}
-                            color="primary"
-                            variant="outlined"
-                            size="small"
-                          />
+                          <Text variant="body2" color="textSecondary">
+                            {entity.externalCode || '-'}
+                          </Text>
                         </TableCell>
                         <TableCell>
                           <Box display="flex" alignItems="center" gap={1}>
@@ -308,10 +374,66 @@ const NetworkEntities: React.FC = () => {
                         </TableCell>
                         <TableCell>
                           <Chip 
-                            label={entity.active ? t('networkEntities.status.active') : t('networkEntities.status.inactive')}
-                            color={entity.active ? 'success' : 'default'}
-                            variant={entity.active ? 'filled' : 'outlined'}
+                            icon={getEntityTypeIcon(entity.entityType)}
+                            label={getEntityTypeDisplay(entity.entityType)}
                             size="small"
+                            sx={{
+                              ...getEntityTypeColor(entity.entityType),
+                              fontWeight: 'medium',
+                              borderRadius: '20px',
+                              height: '36px',
+                              padding: '0 12px',
+                              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                              border: `1px solid ${getEntityTypeColor(entity.entityType).borderColor}`,
+                              '& .MuiChip-icon': {
+                                color: getEntityTypeColor(entity.entityType).color,
+                                marginLeft: '4px',
+                                marginRight: '8px'
+                              },
+                              '& .MuiChip-label': {
+                                paddingLeft: '0px',
+                                paddingRight: '8px',
+                                fontSize: '0.875rem'
+                              }
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Chip 
+                            icon={entity.active ? <CheckCircleIcon fontSize="small" /> : <CancelIcon fontSize="small" />}
+                            label={entity.active ? t('networkEntities.status.active') : t('networkEntities.status.inactive')}
+                            size="small"
+                            sx={{
+                              fontWeight: 'medium',
+                              borderRadius: '20px',
+                              height: '36px',
+                              padding: '0 12px',
+                              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                              '& .MuiChip-label': {
+                                paddingLeft: '0px',
+                                paddingRight: '8px',
+                                fontSize: '0.875rem'
+                              },
+                              ...(entity.active ? {
+                                color: '#2e7d32',
+                                backgroundColor: '#e8f5e8',
+                                border: '1px solid #4caf50',
+                                '& .MuiChip-icon': { 
+                                  color: '#2e7d32',
+                                  marginLeft: '4px',
+                                  marginRight: '8px'
+                                }
+                              } : {
+                                color: '#d32f2f',
+                                backgroundColor: '#ffebee',
+                                border: '1px solid #f44336',
+                                '& .MuiChip-icon': { 
+                                  color: '#d32f2f',
+                                  marginLeft: '4px',
+                                  marginRight: '8px'
+                                }
+                              })
+                            }}
                           />
                         </TableCell>
                       </TableRow>

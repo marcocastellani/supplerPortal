@@ -157,5 +157,45 @@
       "forbidden": "Access denied. Contact your administrator.",
       "generic": "An unexpected error occurred. Please try again."
     }
+  },
+  "networkEntities": {
+    "title": "Supply Network Entities",
+    "searchPlaceholder": "Search entities by name, code, or location...",
+    "loading": "Loading entities...",
+    "errorFetching": "Failed to load entities. Please try again.",
+    "noResults": "No entities found",
+    "noResultsDescription": "Try adjusting your search criteria or filters",
+    "resultsCount": "{{count}} entities found",
+    "filterAll": "All Types",
+    "filterSupplier": "Suppliers",
+    "filterSite": "Sites", 
+    "filterSubSupplier": "Sub-Suppliers",
+    "filterPerson": "Persons",
+    "filterCompanyGroup": "Company Groups",
+    "entityType": {
+      "supplier": "Supplier",
+      "site": "Site",
+      "subSupplier": "Sub-Supplier", 
+      "person": "Person",
+      "companyGroup": "Company Group"
+    },
+    "table": {
+      "name": "Name",
+      "vat": "VAT",
+      "code": "Code", 
+      "type": "Type",
+      "location": "Location",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "pagination": {
+      "showing": "Showing {{from}} to {{to}} of {{total}} results",
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {{current}} of {{total}}"
+    }
   }
 }
