@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using Remira.UCP.SupplierPortal.Application.Interfaces;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.CreateTemplate;
+using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Common;
 using Remira.UCP.SupplierPortal.Domain.Entities;
 using Remira.UCP.SupplierPortal.Domain.Enums;
 
@@ -13,23 +14,34 @@ namespace Remira.UCP.SupplierPortal.Application.UnitTests.QuestionnaireTemplates
 [TestFixture]
 public class CreateQuestionnaireTemplateCommandHandlerTests
 {
-    private Mock<IApplicationDbContext> _mockContext;
-    private Mock<DbSet<QuestionnaireTemplate>> _mockDbSet;
-    private Mock<IMapper> _mockMapper;
-    private Mock<ICurrentUserService> _mockCurrentUserService;
-    private Mock<IDateTime> _mockDateTime;
-    private CreateQuestionnaireTemplateCommandHandler _handler;
+    private Mock<IApplicationDbContext> _mockContext = null!;
+    private Mock<DbSet<QuestionnaireTemplate>> _mockDbSet = null!;
+    private Mock<DbSet<QuestionnaireSection>> _mockSectionDbSet = null!;
+    private Mock<IMapper> _mockMapper = null!;
+    private Mock<ICurrentUserService> _mockCurrentUserService = null!;
+    private Mock<IDateTime> _mockDateTime = null!;
+    private CreateQuestionnaireTemplateCommandHandler _handler = null!;
 
     [SetUp]
     public void Setup()
     {
         _mockContext = new Mock<IApplicationDbContext>();
         _mockDbSet = new Mock<DbSet<QuestionnaireTemplate>>();
+        _mockSectionDbSet = new Mock<DbSet<QuestionnaireSection>>();
         _mockMapper = new Mock<IMapper>();
         _mockCurrentUserService = new Mock<ICurrentUserService>();
         _mockDateTime = new Mock<IDateTime>();
         
         _mockContext.Setup(x => x.QuestionnaireTemplates).Returns(_mockDbSet.Object);
+        _mockContext.Setup(x => x.QuestionnaireSections).Returns(_mockSectionDbSet.Object);
+        
+        // Setup mock for QuestionnaireSections to return empty list for queries
+        var emptySections = new List<QuestionnaireSection>().AsQueryable();
+        _mockSectionDbSet.As<IQueryable<QuestionnaireSection>>().Setup(m => m.Provider).Returns(emptySections.Provider);
+        _mockSectionDbSet.As<IQueryable<QuestionnaireSection>>().Setup(m => m.Expression).Returns(emptySections.Expression);
+        _mockSectionDbSet.As<IQueryable<QuestionnaireSection>>().Setup(m => m.ElementType).Returns(emptySections.ElementType);
+        _mockSectionDbSet.As<IQueryable<QuestionnaireSection>>().Setup(m => m.GetEnumerator()).Returns(emptySections.GetEnumerator());
+        
         _mockCurrentUserService.Setup(x => x.UserId).Returns("test-user-id");
         _mockDateTime.Setup(x => x.Now).Returns(new DateTime(2024, 1, 1, 10, 0, 0, DateTimeKind.Utc));
         
@@ -83,7 +95,7 @@ public class CreateQuestionnaireTemplateCommandHandlerTests
     public async Task Handle_NullCommand_ShouldThrowArgumentNullException()
     {
         // Arrange
-        CreateQuestionnaireTemplateCommand command = null;
+        CreateQuestionnaireTemplateCommand? command = null;
 
         // Act & Assert
         await FluentActions.Invoking(() => _handler.Handle(command!, CancellationToken.None))
@@ -146,9 +158,13 @@ public class CreateQuestionnaireTemplateCommandHandlerTests
         _mockMapper.Setup(x => x.Map<QuestionnaireTemplateResponse>(It.IsAny<QuestionnaireTemplate>()))
             .Returns(expectedResponse);
 
-        QuestionnaireTemplate capturedTemplate = null;
+        QuestionnaireTemplate? capturedTemplate = null;
         _mockDbSet.Setup(x => x.Add(It.IsAny<QuestionnaireTemplate>()))
             .Callback<QuestionnaireTemplate>(template => capturedTemplate = template);
+
+        var capturedSections = new List<QuestionnaireSection>();
+        _mockSectionDbSet.Setup(x => x.Add(It.IsAny<QuestionnaireSection>()))
+            .Callback<QuestionnaireSection>(section => capturedSections.Add(section));
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -156,9 +172,9 @@ public class CreateQuestionnaireTemplateCommandHandlerTests
         // Assert
         result.Should().NotBeNull();
         capturedTemplate.Should().NotBeNull();
-        capturedTemplate.Sections.Should().HaveCount(2);
-        capturedTemplate.Sections.Should().Contain(s => s.Title == "Section 1");
-        capturedTemplate.Sections.Should().Contain(s => s.Title == "Section 2");
+        capturedSections.Should().HaveCount(2);
+        capturedSections.Should().Contain(s => s.Title == "Section 1");
+        capturedSections.Should().Contain(s => s.Title == "Section 2");
     }
 
     [Test]
@@ -184,7 +200,7 @@ public class CreateQuestionnaireTemplateCommandHandlerTests
         _mockMapper.Setup(x => x.Map<QuestionnaireTemplateResponse>(It.IsAny<QuestionnaireTemplate>()))
             .Returns(expectedResponse);
 
-        QuestionnaireTemplate capturedTemplate = null;
+        QuestionnaireTemplate? capturedTemplate = null;
         _mockDbSet.Setup(x => x.Add(It.IsAny<QuestionnaireTemplate>()))
             .Callback<QuestionnaireTemplate>(template => capturedTemplate = template);
 
@@ -193,10 +209,10 @@ public class CreateQuestionnaireTemplateCommandHandlerTests
 
         // Assert
         capturedTemplate.Should().NotBeNull();
-        capturedTemplate.Status.Should().Be(TemplateStatus.Draft);
-        capturedTemplate.Version.Should().Be("1.0");
-        capturedTemplate.PrimaryLanguage.Should().Be("en");
-        capturedTemplate.Created.Should().Be(_mockDateTime.Object.Now);
-        capturedTemplate.CreatedBy.Should().Be("test-user-id");
+        capturedTemplate!.Status.Should().Be(TemplateStatus.Draft);
+        capturedTemplate!.Version.Should().Be("1.0");
+        capturedTemplate!.PrimaryLanguage.Should().Be("en");
+        capturedTemplate!.Created.Should().Be(_mockDateTime.Object.Now);
+        capturedTemplate!.CreatedBy.Should().Be("test-user-id");
     }
 }

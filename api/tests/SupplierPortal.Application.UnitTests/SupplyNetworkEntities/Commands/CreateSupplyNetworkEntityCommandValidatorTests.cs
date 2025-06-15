@@ -28,7 +28,7 @@ public class CreateSupplyNetworkEntityCommandValidatorTests
         mockSuppliers.As<IQueryable<Domain.Entities.SupplyNetworkEntities>>().Setup(m => m.Expression).Returns(emptySuppliers.Expression);
         mockSuppliers.As<IQueryable<Domain.Entities.SupplyNetworkEntities>>().Setup(m => m.ElementType).Returns(emptySuppliers.ElementType);
         mockSuppliers.As<IQueryable<Domain.Entities.SupplyNetworkEntities>>().Setup(m => m.GetEnumerator()).Returns(emptySuppliers.GetEnumerator());
-        _mockContext.Setup(x => x.Suppliers).Returns(mockSuppliers.Object);
+        _mockContext.Setup(x => x.SupplyNetworkEntities).Returns(mockSuppliers.Object);
         
         _validator = new CreateSupplyNetworkEntityCommandValidator(_mockContext.Object);
     }

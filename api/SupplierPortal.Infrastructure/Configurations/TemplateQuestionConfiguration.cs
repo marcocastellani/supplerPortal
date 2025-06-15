@@ -46,7 +46,7 @@ public class TemplateQuestionConfiguration : IEntityTypeConfiguration<TemplateQu
         builder.HasOne(q => q.QuestionnaireTemplate)
             .WithMany(t => t.Questions)
             .HasForeignKey(q => q.QuestionnaireTemplateId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction); // Prevent cascade cycles
             
         builder.HasOne(q => q.Section)
             .WithMany(s => s.Questions)

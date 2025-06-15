@@ -33,7 +33,7 @@ public class GetSupplyNetworkEntityChildrenQueryHandler
     {
         _logger.LogInformation("Getting children for parent entity {ParentId}", request.ParentId);
 
-        var query = _context.Suppliers
+        var query = _context.SupplyNetworkEntities
             .Where(e => e.ParentId == request.ParentId);
 
         // Apply active filter if specified

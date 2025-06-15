@@ -12,8 +12,8 @@ using Remira.UCP.SupplierPortal.Infrastructure.Persistence;
 namespace Remira.UCP.SupplierPortal.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250614133430_RenameSupplierToSupplyNetworkEntities")]
-    partial class RenameSupplierToSupplyNetworkEntities
+    [Migration("20250615220742_InitialCreateWithTemplates")]
+    partial class InitialCreateWithTemplates
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,6 +59,64 @@ namespace Remira.UCP.SupplierPortal.Infrastructure.Migrations
                     b.ToTable("AgentAssignments");
                 });
 
+            modelBuilder.Entity("Remira.UCP.SupplierPortal.Domain.Entities.QuestionCondition", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("ConditionType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("QuestionnaireTemplateId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TargetQuestionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TriggerQuestionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TriggerValue")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConditionType");
+
+                    b.HasIndex("QuestionnaireTemplateId");
+
+                    b.HasIndex("TargetQuestionId");
+
+                    b.HasIndex("TriggerQuestionId");
+
+                    b.ToTable("QuestionConditions");
+                });
+
             modelBuilder.Entity("Remira.UCP.SupplierPortal.Domain.Entities.Questionnaire", b =>
                 {
                     b.Property<Guid>("Id")
@@ -102,6 +160,9 @@ namespace Remira.UCP.SupplierPortal.Infrastructure.Migrations
                     b.Property<Guid>("SupplierId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("TemplateId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -124,7 +185,113 @@ namespace Remira.UCP.SupplierPortal.Infrastructure.Migrations
 
                     b.HasIndex("SupplierId");
 
+                    b.HasIndex("TemplateId");
+
                     b.ToTable("Questionnaires");
+                });
+
+            modelBuilder.Entity("Remira.UCP.SupplierPortal.Domain.Entities.QuestionnaireSection", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("QuestionnaireTemplateId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("TranslationsJson")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionnaireTemplateId", "Order");
+
+                    b.ToTable("QuestionnaireSections");
+                });
+
+            modelBuilder.Entity("Remira.UCP.SupplierPortal.Domain.Entities.QuestionnaireTemplate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("CertificateType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("ExpirationMonths")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PrimaryLanguage")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TargetEntityTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Version")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Created");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("Title", "Status");
+
+                    b.ToTable("QuestionnaireTemplates");
                 });
 
             modelBuilder.Entity("Remira.UCP.SupplierPortal.Domain.Entities.Remediation", b =>
@@ -192,10 +359,32 @@ namespace Remira.UCP.SupplierPortal.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Code")
+                    b.Property<DateTime?>("AccreditationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("AccreditationStatus")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("City")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("ContactPersonName")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Country")
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
@@ -203,12 +392,110 @@ namespace Remira.UCP.SupplierPortal.Infrastructure.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("DeactivationDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<string>("EntityType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ExternalCode")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LegalName")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Region")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("RoleInSupplyChain")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ShortName")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Tags")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("TaxCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("VatCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ZipCode")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccreditationStatus");
+
+                    b.HasIndex("EntityType");
+
+                    b.HasIndex("ExternalCode");
+
+                    b.HasIndex("LegalName")
+                        .HasDatabaseName("IX_Suppliers_Name");
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("VatCode");
+
+                    b.ToTable("SupplyNetworkEntities");
+                });
+
+            modelBuilder.Entity("Remira.UCP.SupplierPortal.Domain.Entities.TemplateQuestion", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("AllowDocumentUpload")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ConfigurationJson")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HelpText")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<bool>("IsRequired")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModified")
@@ -217,17 +504,41 @@ namespace Remira.UCP.SupplierPortal.Infrastructure.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<int>("MaxDocuments")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("QuestionnaireTemplateId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("RequireDocuments")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("SectionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Text")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("TranslationsJson")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code")
-                        .IsUnique();
+                    b.HasIndex("Type");
 
-                    b.ToTable("Suppliers");
+                    b.HasIndex("QuestionnaireTemplateId", "Order");
+
+                    b.HasIndex("SectionId", "Order");
+
+                    b.ToTable("TemplateQuestions");
                 });
 
             modelBuilder.Entity("Remira.UCP.SupplierPortal.Domain.Entities.Test", b =>
@@ -363,6 +674,29 @@ namespace Remira.UCP.SupplierPortal.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Remira.UCP.SupplierPortal.Domain.Entities.QuestionCondition", b =>
+                {
+                    b.HasOne("Remira.UCP.SupplierPortal.Domain.Entities.QuestionnaireTemplate", null)
+                        .WithMany("Conditions")
+                        .HasForeignKey("QuestionnaireTemplateId");
+
+                    b.HasOne("Remira.UCP.SupplierPortal.Domain.Entities.TemplateQuestion", "TargetQuestion")
+                        .WithMany("TargetConditions")
+                        .HasForeignKey("TargetQuestionId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Remira.UCP.SupplierPortal.Domain.Entities.TemplateQuestion", "TriggerQuestion")
+                        .WithMany("TriggeredConditions")
+                        .HasForeignKey("TriggerQuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TargetQuestion");
+
+                    b.Navigation("TriggerQuestion");
+                });
+
             modelBuilder.Entity("Remira.UCP.SupplierPortal.Domain.Entities.Questionnaire", b =>
                 {
                     b.HasOne("Remira.UCP.SupplierPortal.Domain.Entities.User", "AssignedAgent")
@@ -381,11 +715,29 @@ namespace Remira.UCP.SupplierPortal.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Remira.UCP.SupplierPortal.Domain.Entities.QuestionnaireTemplate", "Template")
+                        .WithMany("QuestionnaireInstances")
+                        .HasForeignKey("TemplateId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("AssignedAgent");
 
                     b.Navigation("AssignedUser");
 
                     b.Navigation("Supplier");
+
+                    b.Navigation("Template");
+                });
+
+            modelBuilder.Entity("Remira.UCP.SupplierPortal.Domain.Entities.QuestionnaireSection", b =>
+                {
+                    b.HasOne("Remira.UCP.SupplierPortal.Domain.Entities.QuestionnaireTemplate", "QuestionnaireTemplate")
+                        .WithMany("Sections")
+                        .HasForeignKey("QuestionnaireTemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("QuestionnaireTemplate");
                 });
 
             modelBuilder.Entity("Remira.UCP.SupplierPortal.Domain.Entities.Remediation", b =>
@@ -413,6 +765,34 @@ namespace Remira.UCP.SupplierPortal.Infrastructure.Migrations
                     b.Navigation("ResponsibleUser");
                 });
 
+            modelBuilder.Entity("Remira.UCP.SupplierPortal.Domain.Entities.SupplyNetworkEntities", b =>
+                {
+                    b.HasOne("Remira.UCP.SupplierPortal.Domain.Entities.SupplyNetworkEntities", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("Remira.UCP.SupplierPortal.Domain.Entities.TemplateQuestion", b =>
+                {
+                    b.HasOne("Remira.UCP.SupplierPortal.Domain.Entities.QuestionnaireTemplate", "QuestionnaireTemplate")
+                        .WithMany("Questions")
+                        .HasForeignKey("QuestionnaireTemplateId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Remira.UCP.SupplierPortal.Domain.Entities.QuestionnaireSection", "Section")
+                        .WithMany("Questions")
+                        .HasForeignKey("SectionId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("QuestionnaireTemplate");
+
+                    b.Navigation("Section");
+                });
+
             modelBuilder.Entity("Remira.UCP.SupplierPortal.Domain.Entities.UserSupplier", b =>
                 {
                     b.HasOne("Remira.UCP.SupplierPortal.Domain.Entities.SupplyNetworkEntities", "Supplier")
@@ -437,11 +817,36 @@ namespace Remira.UCP.SupplierPortal.Infrastructure.Migrations
                     b.Navigation("Remediations");
                 });
 
+            modelBuilder.Entity("Remira.UCP.SupplierPortal.Domain.Entities.QuestionnaireSection", b =>
+                {
+                    b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("Remira.UCP.SupplierPortal.Domain.Entities.QuestionnaireTemplate", b =>
+                {
+                    b.Navigation("Conditions");
+
+                    b.Navigation("QuestionnaireInstances");
+
+                    b.Navigation("Questions");
+
+                    b.Navigation("Sections");
+                });
+
             modelBuilder.Entity("Remira.UCP.SupplierPortal.Domain.Entities.SupplyNetworkEntities", b =>
                 {
+                    b.Navigation("Children");
+
                     b.Navigation("Questionnaires");
 
                     b.Navigation("UserSuppliers");
+                });
+
+            modelBuilder.Entity("Remira.UCP.SupplierPortal.Domain.Entities.TemplateQuestion", b =>
+                {
+                    b.Navigation("TargetConditions");
+
+                    b.Navigation("TriggeredConditions");
                 });
 
             modelBuilder.Entity("Remira.UCP.SupplierPortal.Domain.Entities.User", b =>
