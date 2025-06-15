@@ -90,9 +90,9 @@ const EntityDetailPage: React.FC = () => {
         status: error?.response?.status,
         statusText: error?.response?.statusText,
         data: error?.response?.data,
-        message: error?.message
+        message: error?.message,
       });
-      
+
       // More specific error messages
       if (error?.response?.status === 404) {
         setError(t("entityDetail.notFound"));

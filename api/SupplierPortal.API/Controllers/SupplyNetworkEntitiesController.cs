@@ -7,7 +7,8 @@ using Remira.UCP.SupplierPortal.Domain.Enums;
 using Asp.Versioning;
 
 namespace Remira.UCP.SupplierPortal.API.Controllers;
-[ApiVersion("2025-06-01")]
+
+[ApiVersion("2025-06-01")] 
 public class SupplyNetworkEntitiesController : MediatrBaseController
 {
     /// <summary>
@@ -95,14 +96,8 @@ public class SupplyNetworkEntitiesController : MediatrBaseController
     [ProducesResponseType(404)]
     public async Task<ActionResult<SupplyNetworkEntityDto>> GetSupplyNetworkEntity(Guid id)
     {
-        var query = new GetSupplyNetworkEntitiesQuery
-        {
-            Page = 1,
-            PageSize = 1
-        };
-
-        var result = await Mediator.Send(query);
-        var entity = result.Items.FirstOrDefault(x => x.Id == id);
+        var query = new GetSupplyNetworkEntityByIdQuery(id);
+        var entity = await Mediator.Send(query);
 
         if (entity == null)
             return NotFound();
