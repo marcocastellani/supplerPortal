@@ -170,6 +170,9 @@ Questo documento descrive lo scopo e l'utilizzo dei file principali nel progetto
 | `src/pages/EntityDetailPage.tsx`                             | ⭐ **REFACTORATO** - Pagina dettaglio con tabs, hero section, inline editing |
 | `src/services/supplyNetworkEntitiesService.ts`               | ⭐ **ESTESO** - Aggiunti metodi getEntityChildren() e updateEntityField() |
 | `src/types/supplyNetworkEntities.ts`                         | ⭐ **ESTESO** - Aggiunti tipi UpdateEntityFieldRequest e EntityDocumentDto |
+| `src/components/EntityChips/EntityTypeChip.tsx`             | ⭐ Componente riutilizzabile per chip tipo entità (DRY)                     |
+| `src/components/EntityChips/EntityStatusChip.tsx             | ⭐ Componente riutilizzabile per chip status attivo/inattivo (DRY)         |
+| `src/components/EntityChips/index.ts`                       | ⭐ Barrel export per componenti EntityChips |
 
 ### 🔧 **Architettura Frontend**
 
@@ -529,8 +532,10 @@ front/src/services/
 front/src/components/SupplyNetworkEntities/
 └── FormWizard.tsx
 
-front/src/pages/
-└── NewSupplyNetworkEntity.tsx (wizard completo)
+front/src/components/EntityChips/
+└── EntityTypeChip.tsx
+└── EntityStatusChip.tsx
+└── index.ts
 ```
 
 **Edge case gestiti**:

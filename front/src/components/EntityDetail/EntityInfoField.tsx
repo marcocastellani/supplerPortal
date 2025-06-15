@@ -70,10 +70,11 @@ export const EntityInfoField: React.FC<EntityInfoFieldProps> = ({
     if (type === "boolean") {
       return (
         <Chip
-          label={value ? "Active" : "Inactive"}
+          label={value ? "True" : "False"}
           color={value ? "success" : "default"}
-          size="small"
-          variant={value ? "filled" : "outlined"}
+          size="medium"
+          variant="outlined"
+          style={{ padding: "0 8px", fontSize: "0.875rem" }}
         />
       );
     }

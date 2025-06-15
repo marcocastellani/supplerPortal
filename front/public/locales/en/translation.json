@@ -194,6 +194,13 @@
       "active": "Active",
       "inactive": "Inactive"
     },
+    "accreditationStatus": {
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "submitted": "Submitted",
+      "suspended": "Suspended",
+      "draft": "Draft"
+    },
     "pagination": {
       "showing": "Showing {{from}} to {{to}} of {{total}} results",
       "previous": "Previous",

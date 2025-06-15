@@ -22,8 +22,6 @@ import FactoryIcon from "@mui/icons-material/Factory";
 import PersonIcon from "@mui/icons-material/Person";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import ApartmentIcon from "@mui/icons-material/Apartment";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CancelIcon from "@mui/icons-material/Cancel";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
 import InfoIcon from "@mui/icons-material/Info";
@@ -32,16 +30,14 @@ import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import AccountTreeOutlinedIcon from "@mui/icons-material/AccountTreeOutlined";
 import SettingsIcon from "@mui/icons-material/Settings";
 
-import {
-  SupplyNetworkEntityDto,
-  EntityType,
-} from "../types/supplyNetworkEntities";
+import { SupplyNetworkEntityDto } from "../types/supplyNetworkEntities";
 import { SupplyNetworkEntitiesService } from "../services/supplyNetworkEntitiesService";
 import {
   EntityInfoField,
   ParentEntityBreadcrumb,
   SubEntitiesList,
 } from "../components/EntityDetail";
+import { EntityTypeChip, EntityStatusChip, AccreditationStatusChip } from "../components/EntityChips";
 
 const EntityDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -142,42 +138,6 @@ const EntityDetailPage: React.FC = () => {
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
-  };
-
-  // Get entity type icon
-  const getEntityTypeIcon = (type: EntityType) => {
-    switch (type) {
-      case EntityType.Supplier:
-        return <BusinessIcon />;
-      case EntityType.Site:
-        return <LocationOnIcon />;
-      case EntityType.SubSupplier:
-        return <FactoryIcon />;
-      case EntityType.Person:
-        return <PersonIcon />;
-      case EntityType.CompanyGroup:
-        return <ApartmentIcon />;
-      default:
-        return <AccountTreeIcon />;
-    }
-  };
-
-  // Get entity type display name
-  const getEntityTypeDisplay = (type: EntityType): string => {
-    switch (type) {
-      case EntityType.Supplier:
-        return t("networkEntities.entityType.supplier");
-      case EntityType.Site:
-        return t("networkEntities.entityType.site");
-      case EntityType.SubSupplier:
-        return t("networkEntities.entityType.subSupplier");
-      case EntityType.Person:
-        return t("networkEntities.entityType.person");
-      case EntityType.CompanyGroup:
-        return t("networkEntities.entityType.companyGroup");
-      default:
-        return type;
-    }
   };
 
   // Format date for display
@@ -299,9 +259,6 @@ const EntityDetailPage: React.FC = () => {
               justifyContent="space-between"
             >
               <Box display="flex" alignItems="center" gap={2}>
-                <Box sx={{ fontSize: "3rem" }}>
-                  {getEntityTypeIcon(entity.entityType)}
-                </Box>
                 <Box>
                   <Text variant="h4" sx={{ mb: 1 }}>
                     {entity.legalName || entity.shortName}
@@ -313,25 +270,8 @@ const EntityDetailPage: React.FC = () => {
                       </Text>
                     )}
                   <Box display="flex" alignItems="center" gap={2}>
-                    <Chip
-                      icon={getEntityTypeIcon(entity.entityType)}
-                      label={getEntityTypeDisplay(entity.entityType)}
-                      variant="outlined"
-                      size="medium"
-                    />
-                    <Chip
-                      icon={
-                        entity.active ? <CheckCircleIcon /> : <CancelIcon />
-                      }
-                      label={
-                        entity.active
-                          ? t("networkEntities.status.active")
-                          : t("networkEntities.status.inactive")
-                      }
-                      color={entity.active ? "success" : "default"}
-                      variant={entity.active ? "filled" : "outlined"}
-                      size="medium"
-                    />
+                    <EntityTypeChip entityType={entity.entityType} />
+                    <EntityStatusChip active={entity.active} />
                   </Box>
                 </Box>
               </Box>
@@ -447,12 +387,7 @@ const EntityDetailPage: React.FC = () => {
                         <Text variant="body2" color="textSecondary">
                           {t("entityDetail.fields.entityType")}
                         </Text>
-                        <Chip
-                          icon={getEntityTypeIcon(entity.entityType)}
-                          label={getEntityTypeDisplay(entity.entityType)}
-                          variant="outlined"
-                          size="small"
-                        />
+                        <EntityTypeChip entityType={entity.entityType} />
                       </Box>
 
                       <Box
@@ -463,11 +398,8 @@ const EntityDetailPage: React.FC = () => {
                         <Text variant="body2" color="textSecondary">
                           {t("entityDetail.fields.accreditationStatus")}
                         </Text>
-                        <Chip
-                          label={entity.accreditationStatus}
-                          size="small"
-                          color="primary"
-                          variant="outlined"
+                        <AccreditationStatusChip
+                          accreditationStatus={entity.accreditationStatus}
                         />
                       </Box>
 
