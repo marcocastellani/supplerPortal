@@ -172,7 +172,10 @@ const EntityDetailPage: React.FC = () => {
 
         {/* Hero Section */}
         <Grid item xs={12}>
-          <EntityHeroSection entity={entity} parentEntity={parentEntity || undefined} />
+          <EntityHeroSection
+            entity={entity}
+            parentEntity={parentEntity || undefined}
+          />
         </Grid>
 
         {/* Tab Navigation */}

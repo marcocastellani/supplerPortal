@@ -115,12 +115,12 @@ export const EntityTypeChip: React.FC<EntityTypeChipProps> = ({
       sx={{
         fontWeight: "medium",
         borderRadius: minimal ? "16px" : "20px",
-        height: minimal ? "auto" : (size === "small" ? "32px" : "36px"),
-        padding: minimal ? "0" : (size === "small" ? "0 8px" : "0 12px"),
+        height: minimal ? "auto" : size === "small" ? "32px" : "36px",
+        padding: minimal ? "0" : size === "small" ? "0 8px" : "0 12px",
         border: minimal ? "none" : undefined,
         minHeight: minimal ? "24px" : undefined,
         "& .MuiChip-label": {
-          paddingLeft: minimal ? "4px" : (showIcon ? "0px" : "8px"),
+          paddingLeft: minimal ? "4px" : showIcon ? "0px" : "8px",
           paddingRight: minimal ? "4px" : "8px",
           fontSize: size === "small" ? "0.75rem" : "0.875rem",
         },
@@ -138,17 +138,19 @@ export const EntityTypeChip: React.FC<EntityTypeChipProps> = ({
             marginRight: "2px",
           },
         }),
-        ...(!minimal && style === "colorful" && {
-          ...colorScheme,
-          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-          border: `1px solid ${colorScheme.borderColor} !important`,
-          "& .MuiChip-icon": {
-            color: `${colorScheme.color} !important`,
-            marginLeft: "4px",
-            marginRight: "8px",
-          },
-        }),
-        ...(!minimal && style === "default" &&
+        ...(!minimal &&
+          style === "colorful" && {
+            ...colorScheme,
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            border: `1px solid ${colorScheme.borderColor} !important`,
+            "& .MuiChip-icon": {
+              color: `${colorScheme.color} !important`,
+              marginLeft: "4px",
+              marginRight: "8px",
+            },
+          }),
+        ...(!minimal &&
+          style === "default" &&
           variant === "outlined" && {
             borderColor: "rgba(0, 0, 0, 0.23)",
           }),
