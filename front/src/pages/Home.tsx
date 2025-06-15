@@ -17,6 +17,7 @@ import { Audits } from "./Audits";
 import { Documents } from "./Documents";
 import { Taxonomies } from "./Taxonomies";
 import { Roles } from "./Roles";
+import NetworkEntities from '../components/NetworkEntities';
 
 interface TabDefinition {
   title: string;
@@ -64,7 +65,7 @@ export const Home = () => {
   // Mappa path -> componente
   const componentMap: Record<string, React.ComponentType> = {
     "/dashboard": Dashboard,
-    "/supply-network": SupplyNetwork,
+    "/supply-network": NetworkEntities,
     "/supply-network/new": NewSupplyNetworkEntity,
     "/questionnaires/templates": QuestionnaireTemplates,
     "/questionnaires/assignments": QuestionnaireAssignments,

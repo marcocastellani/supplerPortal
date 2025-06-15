@@ -17,6 +17,7 @@ import { AuthenticatedRoutes } from "@/routes/AuthenticatedRoutes";
 import { Loader } from "@remira/unifiedui";
 import { Suspense } from "react";
 import { Route, Routes as Router } from "react-router-dom";
+import EntityDetailPage from "@/pages/EntityDetailPage";
 
 interface RoutesProps {
   isMicrofrontend: boolean;
@@ -39,6 +40,10 @@ export const Routes = ({ isMicrofrontend }: RoutesProps) => {
             <Route
               path="supply-network/new"
               element={<NewSupplyNetworkEntity />}
+            />
+            <Route
+              path="supply-network/entity/:id"
+              element={<EntityDetailPage />}
             />
             <Route
               path="questionnaires/templates"
