@@ -390,4 +390,36 @@ public class SupplyNetworkEntitiesController : MediatrBaseController
         var result = await Mediator.Send(query);
         return Ok(result);
     }
+
+    /// <summary>
+    /// Update a single field of a supply network entity
+    /// </summary>
+    /// <param name="id">Entity ID</param>
+    /// <param name="request">Field update request</param>
+    /// <returns>Updated entity</returns>
+    [HttpPatch("{id:guid}/field")]
+    [ProducesResponseType(typeof(SupplyNetworkEntityDto), 200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    public async Task<ActionResult<SupplyNetworkEntityDto>> UpdateEntityField(
+        Guid id,
+        [FromBody] UpdateEntityFieldRequest request)
+    {
+        try
+        {
+            var command = new UpdateSupplyNetworkEntityFieldCommand
+            {
+                EntityId = id,
+                FieldName = request.FieldName,
+                FieldValue = request.FieldValue
+            };
+
+            var result = await Mediator.Send(command);
+            return Ok(result);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
 }

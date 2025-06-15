@@ -3,6 +3,7 @@
 ## 🎯 **CRITICAL PATTERNS**
 
 ### API (.NET Core)
+- **🔥 PORT**: API runs on port **5257** (localhost:5257)
 - **Versioning**: Always use `api-version=2025-06-01` as query parameter
 - **MediatR**: Required for all Command/Query
 - **DbSet**: Use correct names (`SupplyNetworkEntities` not `Suppliers`)
