@@ -144,5 +144,41 @@
       "next": "Weiter",
       "page": "Seite {{current}} von {{total}}"
     }
+  },
+  "entityDetail": {
+    "title": "Entitätsdetails",
+    "backToList": "Zurück zur Liste",
+    "loading": "Lade Entitätsdetails...",
+    "error": "Fehler beim Laden der Entitätsdetails",
+    "notFound": "Entität nicht gefunden",
+    "tryAgain": "Erneut versuchen",
+    "sections": {
+      "general": "Allgemeine Informationen",
+      "contact": "Kontaktinformationen",
+      "addresses": "Adressen",
+      "accreditation": "Akkreditierung",
+      "metadata": "Metadaten"
+    },
+    "fields": {
+      "legalName": "Firmenname",
+      "displayName": "Anzeigename",
+      "externalCode": "Externe Kennung",
+      "vatNumber": "USt-IdNr.",
+      "entityType": "Entitätstyp",
+      "status": "Status",
+      "isActive": "Aktiv",
+      "email": "E-Mail",
+      "phone": "Telefon",
+      "website": "Website",
+      "country": "Land",
+      "city": "Stadt",
+      "address": "Adresse",
+      "postalCode": "PLZ",
+      "accreditationStatus": "Akkreditierungsstatus",
+      "createdAt": "Erstellt am",
+      "updatedAt": "Aktualisiert am",
+      "createdBy": "Erstellt von",
+      "updatedBy": "Aktualisiert von"
+    }
   }
 }

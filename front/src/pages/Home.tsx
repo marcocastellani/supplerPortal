@@ -2,7 +2,7 @@ import { Container, Grid, RoutingTabs, Table, Text } from "@remira/unifiedui";
 import { TFunction } from "i18next";
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { appMenu } from "../configs/menu";
 import Dashboard from "./Dashboard";
 import { RBACExample } from "./RBACExample";
@@ -17,6 +17,7 @@ import { Documents } from "./Documents";
 import { Taxonomies } from "./Taxonomies";
 import { Roles } from "./Roles";
 import NetworkEntities from "../components/NetworkEntities";
+import EntityDetailPage from "./EntityDetailPage";
 
 interface TabDefinition {
   title: string;
@@ -59,6 +60,7 @@ const getColumns = (t: TFunction<"translation", undefined>) => [
 export const Home = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const [selectedTab, setSelectedTab] = useState<number>(0);
 
   // Mappa path -> componente
@@ -152,7 +154,33 @@ export const Home = () => {
     return tabs;
   }, [t, i18n.language, navigate]);
 
-  // Trova il componente corrente da renderizzare
+  // Verifica se siamo su una pagina di dettaglio entità
+  const isEntityDetailPage = location.pathname.match(/^\/supply-network\/entity\/(.+)$/);
+  
+  // Se siamo su dettaglio entità, ritorna il componente direttamente con il menu
+  if (isEntityDetailPage) {
+    // Trova il tab della supply network per mantenerlo selezionato
+    const supplyNetworkTabIndex = flattenedTabs.findIndex(tab => tab.path === "/supply-network");
+    
+    return (
+      <Container type="page" maxWidth={false}>
+        <RoutingTabs
+          tabs={flattenedTabs.map((tab) => ({
+            title: tab.title,
+            value: tab.value,
+            call: tab.call,
+          }))}
+          selectedTab={supplyNetworkTabIndex >= 0 ? supplyNetworkTabIndex : selectedTab}
+          setSelectedTab={setSelectedTab}
+        />
+        <Grid container rowSpacing={3} sx={{ paddingTop: 5 }}>
+          <EntityDetailPage />
+        </Grid>
+      </Container>
+    );
+  }
+
+  // Trova il componente corrente da renderizzare per le altre pagine
   const currentTab = flattenedTabs.find((tab) => tab.value === selectedTab);
   const CurrentComponent = currentTab?.component;
 

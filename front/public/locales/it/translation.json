@@ -182,5 +182,41 @@
       "next": "Successivo", 
       "page": "Pagina {{current}} di {{total}}"
     }
+  },
+  "entityDetail": {
+    "title": "Dettagli Entità",
+    "backToList": "Torna all'Elenco",
+    "loading": "Caricamento dettagli entità...",
+    "error": "Impossibile caricare i dettagli dell'entità",
+    "notFound": "Entità non trovata",
+    "tryAgain": "Riprova",
+    "sections": {
+      "general": "Informazioni Generali",
+      "contact": "Informazioni di Contatto",
+      "addresses": "Indirizzi",
+      "accreditation": "Accreditamento",
+      "metadata": "Metadati"
+    },
+    "fields": {
+      "legalName": "Ragione Sociale",
+      "displayName": "Nome Visualizzato",
+      "externalCode": "Codice Esterno",
+      "vatNumber": "Partita IVA",
+      "entityType": "Tipo Entità",
+      "status": "Stato",
+      "isActive": "Attivo",
+      "email": "Email",
+      "phone": "Telefono",
+      "website": "Sito Web",
+      "country": "Paese",
+      "city": "Città",
+      "address": "Indirizzo",
+      "postalCode": "CAP",
+      "accreditationStatus": "Stato Accreditamento",
+      "createdAt": "Creato il",
+      "updatedAt": "Aggiornato il",
+      "createdBy": "Creato da",
+      "updatedBy": "Aggiornato da"
+    }
   }
 }

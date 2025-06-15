@@ -200,5 +200,41 @@
       "next": "Next",
       "page": "Page {{current}} of {{total}}"
     }
+  },
+  "entityDetail": {
+    "title": "Entity Details",
+    "backToList": "Back to List",
+    "loading": "Loading entity details...",
+    "error": "Failed to load entity details",
+    "notFound": "Entity not found",
+    "tryAgain": "Try Again",
+    "sections": {
+      "general": "General Information",
+      "contact": "Contact Information",
+      "addresses": "Addresses",
+      "accreditation": "Accreditation",
+      "metadata": "Metadata"
+    },
+    "fields": {
+      "legalName": "Legal Name",
+      "displayName": "Display Name",
+      "externalCode": "External Code",
+      "vatNumber": "VAT Number",
+      "entityType": "Entity Type",
+      "status": "Status",
+      "isActive": "Active",
+      "email": "Email",
+      "phone": "Phone",
+      "website": "Website",
+      "country": "Country",
+      "city": "City",
+      "address": "Address",
+      "postalCode": "Postal Code",
+      "accreditationStatus": "Accreditation Status",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "createdBy": "Created By",
+      "updatedBy": "Updated By"
+    }
   }
 }
