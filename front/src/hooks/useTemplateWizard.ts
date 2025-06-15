@@ -1,0 +1,668 @@
+import { useState, useEffect, useCallback, useRef } from 'react';
+import {
+  TemplateWizardState,
+  WizardStep,
+  QuestionnaireTemplate,
+  QuestionnaireSection,
+  TemplateQuestion,
+  QuestionCondition,
+  ValidationErrors,
+  SaveDraftRequest,
+  AutoSaveConfig,
+  TemplateStatus,
+  QuestionnaireTemplateResponse,
+  SectionResponse,
+  QuestionResponse,
+  QuestionConditionResponse
+} from '../types/questionnaire-templates';
+import { questionnaireTemplatesApi, ApiError } from '../services/questionnaire-templates-api';
+
+// Mapping functions to convert API responses to domain types
+const mapResponseToTemplate = (response: QuestionnaireTemplateResponse): Partial<QuestionnaireTemplate> => ({
+  id: response.id,
+  title: response.title,
+  description: response.description,
+  targetEntityTypeId: response.targetEntityTypeId,
+  primaryLanguage: response.primaryLanguage,
+  expirationMonths: response.expirationMonths,
+  certificateType: response.certificateType,
+  status: response.status,
+  version: response.version,
+  createdAt: response.createdAt,
+  lastModified: response.lastModified,
+  createdBy: response.createdBy,
+});
+
+const mapResponseToSection = (response: SectionResponse): QuestionnaireSection => ({
+  id: response.id,
+  title: response.title,
+  description: response.description,
+  order: response.order,
+  questionnaireTemplateId: response.questionnaireTemplateId,
+  translations: response.translations,
+  createdAt: new Date().toISOString(), // Use current time as fallback
+  questions: response.questions?.map(mapResponseToQuestion) || [],
+});
+
+const mapResponseToQuestion = (response: QuestionResponse): TemplateQuestion => ({
+  id: response.id,
+  title: response.title,
+  description: response.description,
+  questionType: response.questionType,
+  isRequired: response.isRequired,
+  order: response.order,
+  sectionId: response.sectionId,
+  questionnaireTemplateId: response.questionnaireTemplateId,
+  translations: response.translations,
+  configuration: response.configuration,
+  createdAt: new Date().toISOString(), // Use current time as fallback
+  conditions: response.conditions?.map(mapResponseToCondition) || [],
+});
+
+const mapResponseToCondition = (response: QuestionConditionResponse): QuestionCondition => ({
+  id: response.id,
+  sourceQuestionId: response.sourceQuestionId,
+  targetQuestionId: response.targetQuestionId,
+  conditionType: response.conditionType,
+  expectedValue: response.expectedValue,
+  questionnaireTemplateId: response.questionnaireTemplateId,
+  createdAt: new Date().toISOString(), // Use current time as fallback
+});
+
+// Default auto-save configuration
+const DEFAULT_AUTO_SAVE_CONFIG: AutoSaveConfig = {
+  enabled: true,
+  intervalMs: 30000, // 30 seconds
+  debounceMs: 2000,  // 2 seconds debounce
+};
+
+// Initial state
+const INITIAL_STATE: TemplateWizardState = {
+  currentStep: WizardStep.BasicInfo,
+  templateData: {
+    title: '',
+    description: '',
+    primaryLanguage: 'en',
+    expirationMonths: 12,
+    targetEntityTypeId: 1,
+  },
+  sections: [],
+  questions: [],
+  conditions: [],
+  isDirty: false,
+  isAutoSaving: false,
+  validationErrors: {},
+};
+
+export interface UseTemplateWizardOptions {
+  templateId?: string;
+  autoSave?: Partial<AutoSaveConfig>;
+  onSave?: (templateId: string) => void;
+  onError?: (error: ApiError) => void;
+}
+
+export interface UseTemplateWizardReturn {
+  // State
+  state: TemplateWizardState;
+  isLoading: boolean;
+  
+  // Navigation
+  currentStep: WizardStep;
+  canGoNext: boolean;
+  canGoPrevious: boolean;
+  goToStep: (step: WizardStep) => void;
+  nextStep: () => void;
+  previousStep: () => void;
+  
+  // Template data management
+  updateTemplateData: (data: Partial<QuestionnaireTemplate>) => void;
+  
+  // Section management
+  addSection: (section: Omit<QuestionnaireSection, 'id' | 'createdAt' | 'questionnaireTemplateId'>) => void;
+  updateSection: (id: string, data: Partial<QuestionnaireSection>) => void;
+  deleteSection: (id: string) => void;
+  reorderSections: (fromIndex: number, toIndex: number) => void;
+  
+  // Question management
+  addQuestion: (question: Omit<TemplateQuestion, 'id' | 'createdAt' | 'questionnaireTemplateId'>) => void;
+  updateQuestion: (id: string, data: Partial<TemplateQuestion>) => void;
+  deleteQuestion: (id: string) => void;
+  reorderQuestions: (sectionId: string, fromIndex: number, toIndex: number) => void;
+  
+  // Condition management
+  addCondition: (condition: Omit<QuestionCondition, 'id' | 'createdAt' | 'questionnaireTemplateId'>) => void;
+  updateCondition: (id: string, data: Partial<QuestionCondition>) => void;
+  deleteCondition: (id: string) => void;
+  
+  // Actions
+  saveDraft: () => Promise<void>;
+  publishTemplate: () => Promise<void>;
+  validateTemplate: () => Promise<boolean>;
+  resetTemplate: () => void;
+  
+  // Validation
+  validateCurrentStep: () => boolean;
+  getStepErrors: (step: WizardStep) => string[];
+}
+
+export const useTemplateWizard = (options: UseTemplateWizardOptions = {}): UseTemplateWizardReturn => {
+  const { templateId, autoSave = {}, onSave, onError } = options;
+  const autoSaveConfig = { ...DEFAULT_AUTO_SAVE_CONFIG, ...autoSave };
+  
+  const [state, setState] = useState<TemplateWizardState>(INITIAL_STATE);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Auto-save refs
+  const autoSaveTimeoutRef = useRef<NodeJS.Timeout>();
+  const lastSaveDataRef = useRef<string>('');
+  
+  // Load template if templateId is provided
+  useEffect(() => {
+    if (templateId) {
+      loadTemplate(templateId);
+    }
+  }, [templateId]);
+  
+  // Auto-save effect
+  useEffect(() => {
+    if (!autoSaveConfig.enabled || !state.isDirty || !templateId) {
+      return;
+    }
+    
+    const currentDataStr = JSON.stringify({
+      templateData: state.templateData,
+      sections: state.sections,
+      questions: state.questions,
+      conditions: state.conditions,
+    });
+    
+    // Only auto-save if data actually changed
+    if (currentDataStr === lastSaveDataRef.current) {
+      return;
+    }
+    
+    // Clear existing timeout
+    if (autoSaveTimeoutRef.current) {
+      clearTimeout(autoSaveTimeoutRef.current);
+    }
+    
+    // Set new timeout for auto-save
+    autoSaveTimeoutRef.current = setTimeout(() => {
+      handleAutoSave();
+    }, autoSaveConfig.debounceMs);
+    
+    return () => {
+      if (autoSaveTimeoutRef.current) {
+        clearTimeout(autoSaveTimeoutRef.current);
+      }
+    };
+  }, [state.templateData, state.sections, state.questions, state.conditions, state.isDirty, autoSaveConfig.enabled, autoSaveConfig.debounceMs, templateId]);
+  
+  const loadTemplate = useCallback(async (id: string) => {
+    setIsLoading(true);
+    try {
+      const template = await questionnaireTemplatesApi.getDraftTemplate(id);
+      
+      // Process sections and questions from the response
+      const sections = template.sections?.map(mapResponseToSection) || [];
+      const questions = template.questions?.map(mapResponseToQuestion) || [];
+      const conditions = template.conditions?.map(mapResponseToCondition) || [];
+      
+      setState(prev => ({
+        ...prev,
+        templateData: mapResponseToTemplate(template),
+        sections,
+        questions,
+        conditions,
+        isDirty: false,
+        lastSaved: template.lastModified,
+      }));
+      
+      lastSaveDataRef.current = JSON.stringify({
+        templateData: mapResponseToTemplate(template),
+        sections,
+        questions,
+        conditions,
+      });
+      
+    } catch (error) {
+      onError?.(error as ApiError);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [onError]);
+  
+  const handleAutoSave = useCallback(async () => {
+    if (!templateId) return;
+    
+    setState(prev => ({ ...prev, isAutoSaving: true }));
+    
+    try {
+      const saveRequest: SaveDraftRequest = {
+        templateId,
+        title: state.templateData.title || '',
+        description: state.templateData.description || '',
+        expirationMonths: state.templateData.expirationMonths || 12,
+        certificateType: state.templateData.certificateType,
+      };
+      
+      await questionnaireTemplatesApi.saveDraft(saveRequest);
+      
+      const now = new Date().toISOString();
+      setState(prev => ({
+        ...prev,
+        isDirty: false,
+        isAutoSaving: false,
+        lastSaved: now,
+      }));
+      
+      lastSaveDataRef.current = JSON.stringify({
+        templateData: state.templateData,
+        sections: state.sections,
+        questions: state.questions,
+        conditions: state.conditions,
+      });
+      
+    } catch (error) {
+      setState(prev => ({ ...prev, isAutoSaving: false }));
+      onError?.(error as ApiError);
+    }
+  }, [templateId, state.templateData, state.sections, state.questions, state.conditions, onError]);
+  
+  // Navigation functions
+  const goToStep = useCallback((step: WizardStep) => {
+    setState(prev => ({ ...prev, currentStep: step }));
+  }, []);
+  
+  const nextStep = useCallback(() => {
+    const steps = Object.values(WizardStep);
+    const currentIndex = steps.indexOf(state.currentStep);
+    if (currentIndex < steps.length - 1 && validateCurrentStep()) {
+      goToStep(steps[currentIndex + 1]);
+    }
+  }, [state.currentStep, goToStep]);
+  
+  const previousStep = useCallback(() => {
+    const steps = Object.values(WizardStep);
+    const currentIndex = steps.indexOf(state.currentStep);
+    if (currentIndex > 0) {
+      goToStep(steps[currentIndex - 1]);
+    }
+  }, [state.currentStep, goToStep]);
+  
+  // Template data management
+  const updateTemplateData = useCallback((data: Partial<QuestionnaireTemplate>) => {
+    setState(prev => ({
+      ...prev,
+      templateData: { ...prev.templateData, ...data },
+      isDirty: true,
+    }));
+  }, []);
+  
+  // Section management
+  const addSection = useCallback((section: Omit<QuestionnaireSection, 'id' | 'createdAt' | 'questionnaireTemplateId'>) => {
+    const newSection: QuestionnaireSection = {
+      ...section,
+      id: `temp-${Date.now()}-${Math.random()}`,
+      createdAt: new Date().toISOString(),
+      questionnaireTemplateId: templateId || '',
+      questions: [],
+    };
+    
+    setState(prev => ({
+      ...prev,
+      sections: [...prev.sections, newSection],
+      isDirty: true,
+    }));
+  }, [templateId]);
+  
+  const updateSection = useCallback((id: string, data: Partial<QuestionnaireSection>) => {
+    setState(prev => ({
+      ...prev,
+      sections: prev.sections.map(section =>
+        section.id === id ? { ...section, ...data } : section
+      ),
+      isDirty: true,
+    }));
+  }, []);
+  
+  const deleteSection = useCallback((id: string) => {
+    setState(prev => ({
+      ...prev,
+      sections: prev.sections.filter(section => section.id !== id),
+      questions: prev.questions.filter(question => question.sectionId !== id),
+      conditions: prev.conditions.filter(condition => 
+        !prev.questions.some(q => q.sectionId === id && (q.id === condition.sourceQuestionId || q.id === condition.targetQuestionId))
+      ),
+      isDirty: true,
+    }));
+  }, []);
+  
+  const reorderSections = useCallback((fromIndex: number, toIndex: number) => {
+    setState(prev => {
+      const newSections = [...prev.sections];
+      const [moved] = newSections.splice(fromIndex, 1);
+      newSections.splice(toIndex, 0, moved);
+      
+      // Update order indices
+      const updatedSections = newSections.map((section, index) => ({
+        ...section,
+        order: index + 1,
+      }));
+      
+      return {
+        ...prev,
+        sections: updatedSections,
+        isDirty: true,
+      };
+    });
+  }, []);
+  
+  // Question management
+  const addQuestion = useCallback((question: Omit<TemplateQuestion, 'id' | 'createdAt' | 'questionnaireTemplateId'>) => {
+    const newQuestion: TemplateQuestion = {
+      ...question,
+      id: `temp-${Date.now()}-${Math.random()}`,
+      createdAt: new Date().toISOString(),
+      questionnaireTemplateId: templateId || '',
+      conditions: [],
+    };
+    
+    setState(prev => ({
+      ...prev,
+      questions: [...prev.questions, newQuestion],
+      isDirty: true,
+    }));
+  }, [templateId]);
+  
+  const updateQuestion = useCallback((id: string, data: Partial<TemplateQuestion>) => {
+    setState(prev => ({
+      ...prev,
+      questions: prev.questions.map(question =>
+        question.id === id ? { ...question, ...data } : question
+      ),
+      isDirty: true,
+    }));
+  }, []);
+  
+  const deleteQuestion = useCallback((id: string) => {
+    setState(prev => ({
+      ...prev,
+      questions: prev.questions.filter(question => question.id !== id),
+      conditions: prev.conditions.filter(condition => 
+        condition.sourceQuestionId !== id && condition.targetQuestionId !== id
+      ),
+      isDirty: true,
+    }));
+  }, []);
+  
+  const reorderQuestions = useCallback((sectionId: string, fromIndex: number, toIndex: number) => {
+    setState(prev => {
+      const sectionQuestions = prev.questions.filter(q => q.sectionId === sectionId);
+      const otherQuestions = prev.questions.filter(q => q.sectionId !== sectionId);
+      
+      const [moved] = sectionQuestions.splice(fromIndex, 1);
+      sectionQuestions.splice(toIndex, 0, moved);
+      
+      // Update order indices
+      const updatedSectionQuestions = sectionQuestions.map((question, index) => ({
+        ...question,
+        order: index + 1,
+      }));
+      
+      return {
+        ...prev,
+        questions: [...otherQuestions, ...updatedSectionQuestions],
+        isDirty: true,
+      };
+    });
+  }, []);
+  
+  // Condition management
+  const addCondition = useCallback((condition: Omit<QuestionCondition, 'id' | 'createdAt' | 'questionnaireTemplateId'>) => {
+    const newCondition: QuestionCondition = {
+      ...condition,
+      id: `temp-${Date.now()}-${Math.random()}`,
+      createdAt: new Date().toISOString(),
+      questionnaireTemplateId: templateId || '',
+    };
+    
+    setState(prev => ({
+      ...prev,
+      conditions: [...prev.conditions, newCondition],
+      isDirty: true,
+    }));
+  }, [templateId]);
+  
+  const updateCondition = useCallback((id: string, data: Partial<QuestionCondition>) => {
+    setState(prev => ({
+      ...prev,
+      conditions: prev.conditions.map(condition =>
+        condition.id === id ? { ...condition, ...data } : condition
+      ),
+      isDirty: true,
+    }));
+  }, []);
+  
+  const deleteCondition = useCallback((id: string) => {
+    setState(prev => ({
+      ...prev,
+      conditions: prev.conditions.filter(condition => condition.id !== id),
+      isDirty: true,
+    }));
+  }, []);
+  
+  // Actions
+  const saveDraft = useCallback(async () => {
+    if (!templateId) {
+      throw new Error('Cannot save draft: no template ID');
+    }
+    
+    const saveRequest: SaveDraftRequest = {
+      templateId,
+      title: state.templateData.title || '',
+      description: state.templateData.description || '',
+      expirationMonths: state.templateData.expirationMonths || 12,
+      certificateType: state.templateData.certificateType,
+    };
+    
+    await questionnaireTemplatesApi.saveDraft(saveRequest);
+    
+    setState(prev => ({
+      ...prev,
+      isDirty: false,
+      lastSaved: new Date().toISOString(),
+    }));
+    
+    onSave?.(templateId);
+  }, [templateId, state.templateData, onSave]);
+  
+  const publishTemplate = useCallback(async () => {
+    if (!templateId) {
+      throw new Error('Cannot publish: no template ID');
+    }
+    
+    await questionnaireTemplatesApi.publishTemplate(templateId);
+    
+    setState(prev => ({
+      ...prev,
+      templateData: { ...prev.templateData, status: TemplateStatus.Active },
+      isDirty: false,
+    }));
+  }, [templateId]);
+  
+  const validateTemplate = useCallback(async (): Promise<boolean> => {
+    if (!templateId) {
+      return false;
+    }
+    
+    const result = await questionnaireTemplatesApi.validateTemplate(templateId);
+    
+    if (!result.isValid) {
+      setState(prev => ({
+        ...prev,
+        validationErrors: {
+          general: result.errors,
+        },
+      }));
+    }
+    
+    return result.isValid;
+  }, [templateId]);
+  
+  const resetTemplate = useCallback(() => {
+    setState(INITIAL_STATE);
+    lastSaveDataRef.current = '';
+  }, []);
+  
+  // Validation functions
+  const validateCurrentStep = useCallback((): boolean => {
+    const errors: ValidationErrors = {};
+    
+    switch (state.currentStep) {
+      case WizardStep.BasicInfo:
+        if (!state.templateData.title?.trim()) {
+          errors.title = ['Title is required'];
+        }
+        if (state.templateData.title && state.templateData.title.length > 200) {
+          errors.title = [...(errors.title || []), 'Title must be less than 200 characters'];
+        }
+        if (!state.templateData.description?.trim()) {
+          errors.description = ['Description is required'];
+        }
+        if (state.templateData.description && state.templateData.description.length > 1000) {
+          errors.description = [...(errors.description || []), 'Description must be less than 1000 characters'];
+        }
+        if (!state.templateData.expirationMonths || state.templateData.expirationMonths < 1 || state.templateData.expirationMonths > 120) {
+          errors.expirationMonths = ['Expiration months must be between 1 and 120'];
+        }
+        break;
+        
+      case WizardStep.Sections:
+        if (state.sections.length === 0) {
+          errors.sections = ['At least one section is required'];
+        }
+        state.sections.forEach((section, index) => {
+          if (!section.title?.trim()) {
+            errors[`section_${index}_title`] = ['Section title is required'];
+          }
+        });
+        break;
+        
+      case WizardStep.Questions:
+        if (state.questions.length === 0) {
+          errors.questions = ['At least one question is required'];
+        }
+        state.questions.forEach((question, index) => {
+          if (!question.title?.trim()) {
+            errors[`question_${index}_title`] = ['Question title is required'];
+          }
+          if (!question.sectionId) {
+            errors[`question_${index}_section`] = ['Question must belong to a section'];
+          }
+        });
+        break;
+        
+      case WizardStep.Conditions: {
+        // Validate conditions if any exist
+        state.conditions.forEach((condition, index) => {
+          const sourceQuestion = state.questions.find(q => q.id === condition.sourceQuestionId);
+          const targetQuestion = state.questions.find(q => q.id === condition.targetQuestionId);
+          
+          if (!sourceQuestion) {
+            errors[`condition_${index}_source`] = ['Source question not found'];
+          }
+          if (!targetQuestion) {
+            errors[`condition_${index}_target`] = ['Target question not found'];
+          }
+          if (!condition.expectedValue?.trim()) {
+            errors[`condition_${index}_value`] = ['Expected value is required'];
+          }
+        });
+        break;
+      }
+        
+      case WizardStep.Review: {
+        // Final validation - all previous steps must be valid
+        const allSteps = [WizardStep.BasicInfo, WizardStep.Sections, WizardStep.Questions, WizardStep.Conditions];
+        const previousState = state.currentStep;
+        
+        for (const step of allSteps) {
+          setState(prev => ({ ...prev, currentStep: step }));
+          const stepValid = validateCurrentStep();
+          if (!stepValid) {
+            errors[`step_${step}`] = [`${step} step has validation errors`];
+          }
+        }
+        
+        setState(prev => ({ ...prev, currentStep: previousState }));
+        break;
+      }
+    }
+    
+    setState(prev => ({ ...prev, validationErrors: errors }));
+    return Object.keys(errors).length === 0;
+  }, [state.currentStep, state.templateData, state.sections, state.questions, state.conditions]);
+  
+  const getStepErrors = useCallback((step: WizardStep): string[] => {
+    const stepErrors: string[] = [];
+    const errors = state.validationErrors;
+    
+    // Collect errors related to the specific step
+    Object.keys(errors).forEach(key => {
+      if (key.startsWith(`step_${step}`) || 
+          (step === WizardStep.BasicInfo && ['title', 'description', 'expirationMonths'].includes(key)) ||
+          (step === WizardStep.Sections && key.startsWith('section_')) ||
+          (step === WizardStep.Questions && key.startsWith('question_')) ||
+          (step === WizardStep.Conditions && key.startsWith('condition_'))) {
+        stepErrors.push(...errors[key]);
+      }
+    });
+    
+    return stepErrors;
+  }, [state.validationErrors]);
+  
+  // Computed properties
+  const steps = Object.values(WizardStep);
+  const currentStepIndex = steps.indexOf(state.currentStep);
+  const canGoNext = currentStepIndex < steps.length - 1;
+  const canGoPrevious = currentStepIndex > 0;
+  
+  return {
+    // State
+    state,
+    isLoading,
+    
+    // Navigation
+    currentStep: state.currentStep,
+    canGoNext,
+    canGoPrevious,
+    goToStep,
+    nextStep,
+    previousStep,
+    
+    // Data management
+    updateTemplateData,
+    addSection,
+    updateSection,
+    deleteSection,
+    reorderSections,
+    addQuestion,
+    updateQuestion,
+    deleteQuestion,
+    reorderQuestions,
+    addCondition,
+    updateCondition,
+    deleteCondition,
+    
+    // Actions
+    saveDraft,
+    publishTemplate,
+    validateTemplate,
+    resetTemplate,
+    
+    // Validation
+    validateCurrentStep,
+    getStepErrors,
+  };
+};
