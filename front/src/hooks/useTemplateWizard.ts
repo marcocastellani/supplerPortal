@@ -201,7 +201,7 @@ export const useTemplateWizard = (options: UseTemplateWizardOptions = {}): UseTe
   const loadTemplate = useCallback(async (id: string) => {
     setIsLoading(true);
     try {
-      const template = await questionnaireTemplatesApi.getDraftTemplate(id);
+      const template = await questionnaireTemplatesApi.getTemplate(id);
       
       // Process sections and questions from the response
       const sections = template.sections?.map(mapResponseToSection) || [];
@@ -276,11 +276,15 @@ export const useTemplateWizard = (options: UseTemplateWizardOptions = {}): UseTe
   
   const nextStep = useCallback(() => {
     const steps = Object.values(WizardStep);
-    const currentIndex = steps.indexOf(state.currentStep);
-    if (currentIndex < steps.length - 1 && validateCurrentStep()) {
-      goToStep(steps[currentIndex + 1]);
-    }
-  }, [state.currentStep, goToStep]);
+    const currentIndex = steps.indexOf(stateRef.current.currentStep);
+    
+    // Use setTimeout to ensure state is fully updated before validation
+    setTimeout(() => {
+      if (currentIndex < steps.length - 1 && validateCurrentStep()) {
+        goToStep(steps[currentIndex + 1]);
+      }
+    }, 0);
+  }, [goToStep]);
   
   const previousStep = useCallback(() => {
     const steps = Object.values(WizardStep);
@@ -492,11 +496,26 @@ export const useTemplateWizard = (options: UseTemplateWizardOptions = {}): UseTe
   }, [templateId]);
   
   const validateTemplate = useCallback(async (): Promise<boolean> => {
-    if (!templateId) {
+    if (!state.templateData.title || !state.templateData.description) {
       return false;
     }
     
-    const result = await questionnaireTemplatesApi.validateTemplate(templateId);
+    const templateRequest = {
+      title: state.templateData.title,
+      description: state.templateData.description,
+      targetEntityTypeId: state.templateData.targetEntityTypeId || 1,
+      primaryLanguage: state.templateData.primaryLanguage || 'en',
+      expirationMonths: state.templateData.expirationMonths || 12,
+      certificateType: state.templateData.certificateType || 'SelfAssessment' as any,
+      sections: state.sections.map(section => ({
+        title: section.title,
+        description: section.description || '',
+        order: section.order,
+        translations: section.translations
+      }))
+    };
+    
+    const result = await questionnaireTemplatesApi.validateTemplate(templateRequest);
     
     if (!result.isValid) {
       setState(prev => ({
@@ -516,33 +535,40 @@ export const useTemplateWizard = (options: UseTemplateWizardOptions = {}): UseTe
   }, []);
   
   // Validation functions
+  // Use ref to always access current state
+  const stateRef = useRef(state);
+  stateRef.current = state;
+
   const validateCurrentStep = useCallback((): boolean => {
+    // Get the current state from ref to avoid stale closures
+    const currentState = stateRef.current;
+    
     const errors: ValidationErrors = {};
     
-    switch (state.currentStep) {
+    switch (currentState.currentStep) {
       case WizardStep.BasicInfo:
-        if (!state.templateData.title?.trim()) {
+        if (!currentState.templateData.title?.trim()) {
           errors.title = ['Title is required'];
         }
-        if (state.templateData.title && state.templateData.title.length > 200) {
+        if (currentState.templateData.title && currentState.templateData.title.length > 200) {
           errors.title = [...(errors.title || []), 'Title must be less than 200 characters'];
         }
-        if (!state.templateData.description?.trim()) {
+        if (!currentState.templateData.description?.trim()) {
           errors.description = ['Description is required'];
         }
-        if (state.templateData.description && state.templateData.description.length > 1000) {
+        if (currentState.templateData.description && currentState.templateData.description.length > 1000) {
           errors.description = [...(errors.description || []), 'Description must be less than 1000 characters'];
         }
-        if (!state.templateData.expirationMonths || state.templateData.expirationMonths < 1 || state.templateData.expirationMonths > 120) {
+        if (!currentState.templateData.expirationMonths || currentState.templateData.expirationMonths < 1 || currentState.templateData.expirationMonths > 120) {
           errors.expirationMonths = ['Expiration months must be between 1 and 120'];
         }
         break;
         
       case WizardStep.Sections:
-        if (state.sections.length === 0) {
+        if (currentState.sections.length === 0) {
           errors.sections = ['At least one section is required'];
         }
-        state.sections.forEach((section, index) => {
+        currentState.sections.forEach((section, index) => {
           if (!section.title?.trim()) {
             errors[`section_${index}_title`] = ['Section title is required'];
           }
@@ -550,10 +576,10 @@ export const useTemplateWizard = (options: UseTemplateWizardOptions = {}): UseTe
         break;
         
       case WizardStep.Questions:
-        if (state.questions.length === 0) {
+        if (currentState.questions.length === 0) {
           errors.questions = ['At least one question is required'];
         }
-        state.questions.forEach((question, index) => {
+        currentState.questions.forEach((question, index) => {
           if (!question.title?.trim()) {
             errors[`question_${index}_title`] = ['Question title is required'];
           }
@@ -565,9 +591,9 @@ export const useTemplateWizard = (options: UseTemplateWizardOptions = {}): UseTe
         
       case WizardStep.Conditions: {
         // Validate conditions if any exist
-        state.conditions.forEach((condition, index) => {
-          const sourceQuestion = state.questions.find(q => q.id === condition.sourceQuestionId);
-          const targetQuestion = state.questions.find(q => q.id === condition.targetQuestionId);
+        currentState.conditions.forEach((condition, index) => {
+          const sourceQuestion = currentState.questions.find(q => q.id === condition.sourceQuestionId);
+          const targetQuestion = currentState.questions.find(q => q.id === condition.targetQuestionId);
           
           if (!sourceQuestion) {
             errors[`condition_${index}_source`] = ['Source question not found'];
@@ -584,25 +610,26 @@ export const useTemplateWizard = (options: UseTemplateWizardOptions = {}): UseTe
         
       case WizardStep.Review: {
         // Final validation - all previous steps must be valid
-        const allSteps = [WizardStep.BasicInfo, WizardStep.Sections, WizardStep.Questions, WizardStep.Conditions];
-        const previousState = state.currentStep;
-        
-        for (const step of allSteps) {
-          setState(prev => ({ ...prev, currentStep: step }));
-          const stepValid = validateCurrentStep();
-          if (!stepValid) {
-            errors[`step_${step}`] = [`${step} step has validation errors`];
-          }
+        // For this step, just validate that all data is present
+        if (!currentState.templateData.title?.trim()) {
+          errors.title = ['Title is required'];
         }
-        
-        setState(prev => ({ ...prev, currentStep: previousState }));
+        if (!currentState.templateData.description?.trim()) {
+          errors.description = ['Description is required'];
+        }
+        if (currentState.sections.length === 0) {
+          errors.sections = ['At least one section is required'];
+        }
+        if (currentState.questions.length === 0) {
+          errors.questions = ['At least one question is required'];
+        }
         break;
       }
     }
     
     setState(prev => ({ ...prev, validationErrors: errors }));
     return Object.keys(errors).length === 0;
-  }, [state.currentStep, state.templateData, state.sections, state.questions, state.conditions]);
+  }, []); // Remove all dependencies to avoid stale closures
   
   const getStepErrors = useCallback((step: WizardStep): string[] => {
     const stepErrors: string[] = [];
