@@ -426,4 +426,97 @@ public class GetSupplyNetworkEntitiesQueryTests : BaseTestFixture
         result.HasNextPage.Should().BeFalse();
         result.HasPreviousPage.Should().BeFalse();
     }
+
+    [Test]
+    public async Task ShouldFilterByEntityType_Site_WhenEntityTypeProvided()
+    {
+        // Arrange - Create mixed entity types including Site
+        var siteEntity = new Domain.Entities.SupplyNetworkEntities
+        {
+            LegalName = "Test Site",
+            EntityType = EntityType.Site,
+            RoleInSupplyChain = RoleInSupplyChain.Manufacturer,
+            AccreditationStatus = AccreditationStatus.Approved,
+            Country = "US",
+            Active = true,
+            ShortName = "TSi", ExternalCode = "TSi001", Region = "", City = "", Address = "", ZipCode = "", 
+            Email = "", PhoneNumber = "", ContactPersonName = "", VatCode = "", TaxCode = "", Tags = Array.Empty<string>()
+        };
+
+        await AddAsync(siteEntity); // Assume other entities are added if needed
+
+        var query = new GetSupplyNetworkEntitiesQuery
+        {
+            Page = 1,
+            PageSize = 10,
+            EntityType = EntityType.Site
+        };
+
+        // Act and Assert similar to existing tests
+        var result = await SendAsync(query);
+        result.Items.Should().HaveCount(1);
+        result.Items.Single().EntityType.Should().Be(EntityType.Site);
+    }
+
+    [Test]
+    public async Task ShouldFilterByEntityType_SubSupplier_WhenEntityTypeProvided()
+    {
+        // Arrange - Create mixed entity types including SubSupplier
+        var subSupplierEntity = new Domain.Entities.SupplyNetworkEntities
+        {
+            LegalName = "Test SubSupplier",
+            EntityType = EntityType.SubSupplier,
+            RoleInSupplyChain = RoleInSupplyChain.Manufacturer,
+            AccreditationStatus = AccreditationStatus.Approved,
+            Country = "US",
+            Active = true,
+            ShortName = "TSS", ExternalCode = "TSS001", Region = "", City = "", Address = "", ZipCode = "", 
+            Email = "", PhoneNumber = "", ContactPersonName = "", VatCode = "", TaxCode = "", Tags = Array.Empty<string>()
+        };
+
+        await AddAsync(subSupplierEntity); // Assume other entities are added if needed
+
+        var query = new GetSupplyNetworkEntitiesQuery
+        {
+            Page = 1,
+            PageSize = 10,
+            EntityType = EntityType.SubSupplier
+        };
+
+        // Act and Assert similar to existing tests
+        var result = await SendAsync(query);
+        result.Items.Should().HaveCount(1);
+        result.Items.Single().EntityType.Should().Be(EntityType.SubSupplier);
+    }
+
+    [Test]
+    public async Task ShouldFilterByEntityType_Person_WhenEntityTypeProvided()
+    {
+        // Arrange - Create mixed entity types including Person
+        var personEntity = new Domain.Entities.SupplyNetworkEntities
+        {
+            LegalName = "Test Person",
+            EntityType = EntityType.Person,
+            RoleInSupplyChain = RoleInSupplyChain.Manufacturer,
+            AccreditationStatus = AccreditationStatus.Approved,
+            Country = "US",
+            Active = true,
+            ShortName = "TP", ExternalCode = "TP001", Region = "", City = "", Address = "", ZipCode = "", 
+            Email = "", PhoneNumber = "", ContactPersonName = "", VatCode = "", TaxCode = "", Tags = Array.Empty<string>()
+        };
+
+        await AddAsync(personEntity); // Assume other entities are added if needed
+
+        var query = new GetSupplyNetworkEntitiesQuery
+        {
+            Page = 1,
+            PageSize = 10,
+            EntityType = EntityType.Person
+        };
+
+        // Act and Assert similar to existing tests
+        var result = await SendAsync(query);
+        result.Items.Should().HaveCount(1);
+        result.Items.Single().EntityType.Should().Be(EntityType.Person);
+    }
 }

@@ -1,0 +1,120 @@
+---
+trigger: always_on
+---
+
+# 🧠 Project Context – Remira Fullstack Platform
+
+## 📁 Struttura del progetto
+
+Il repository è organizzato in due cartelle principali:
+
+- `api/` → Contiene il backend sviluppato in **.NET Core**, strutturato secondo il pattern **CQRS** con uso di **MediatR** per la separazione tra Command e Query.
+- `front/` → Contiene il frontend sviluppato in **React + TypeScript**, stile modulare, componenti riutilizzabili, UI gestita via Storybook.
+
+---
+
+## 🧠 Architettura API (`api/`)
+
+- Le API seguono un'architettura a **layer** con separazione tra Controller, Application (CQRS), Domain e Infrastructure.
+- Tutte le richieste devono essere gestite tramite **MediatR**:
+  - Le operazioni mutative usano `Command + Handler`
+  - Le operazioni in lettura usano `Query + Handler`
+- Ogni handler è **unit-testabile** e agnostico rispetto alla persistenza.
+- DTO usati per input/output. Validazione lato server con `FluentValidation`.
+- Gli endpoint REST sono esposti tramite Controller standard ASP.NET.
+- database Azure SQL Server with entity framework
+
+---
+
+## 🎨 Architettura Frontend (`front/`)
+
+- L'applicazione è costruita con **React + TypeScript**.
+- La UI è composta da componenti riutilizzabili, coerenti e minimali.
+- Prima di scrivere un nuovo componente, controllare lo **Storybook aziendale**:  
+  👉 https://storybook.remira.com
+- Se non esiste un componente adeguato, crearne uno nuovo coerente per stile e comportamento.
+- Test:
+  - Unit test con **Jest**
+  - Integration test con **React Testing Library**
+- Gestione form con **React Hook Form**
+- API call effettuate tramite funzioni axios isolate in `/api/` client-side
+- Testing: Vitest 0.34, Playwright 1.40
+- use redux for state management
+
+
+* **Additional Tools/Technologies:**
+  * Docker & Docker Compose
+  * GitHub Actions for CI/CD
+  * AWS (ECS, RDS, S3)
+  * OpenTelemetry for observability
+
+<coding_style>
+## Coding Style and Conventions
+
+* **Language-Specific Style Guides:**
+  * TypeScript: Airbnb style guide with project-specific ESLint config
+* **Naming Conventions:**
+  * TypeScript:
+    * PascalCase for components, interfaces, types, and classes
+    * camelCase for variables, functions, and instances
+    * UPPER_SNAKE_CASE for constants
+
+* **Environment Variables:**
+  * Never commit .env files to version control
+  * Use .env.example files with dummy values
+  * Document all environment variables in README.md
+  # Document all important steps how to deploy, install the application in README.md, keep it up to date
+  * Group variables by service/purpose with prefixes
+</coding_style>
+
+<workflow>
+## Workflow
+
+* **Testing Strategy:**
+  * Unit tests for utilities and pure functions (>90% coverage)
+  * Integration tests for API endpoints and services
+  * E2E tests for critical user flows
+  * Visual regression tests for UI components
+  
+* **Deployment Process:**
+  * PR builds deployed to preview environments
+  * Main branch deploys to staging environment
+  * Release tags deploy to production
+  * Database migrations run automatically in CI/CD
+  
+* **Branching Strategy:**
+  * Feature branches: `feature/feature-name`
+  * Bugfix branches: `fix/issue-description`
+  * Release branches: `release/v1.2.3`
+  * Test AI changes in separate branches: `ai/description`
+</workflow>
+
+<ai_interaction>
+## AI Interaction
+
+* **Focus in Requests:**
+  * Limit scope to specific files or functions
+  * Provide clear acceptance criteria
+  * Use custom tags for structured requests: `<request>...</request>`
+  
+* **Handling Existing Code:**
+  * Preserve formatting and style of surrounding code
+  * Leave existing comments intact unless specifically editing them
+  * Match abstraction level of current implementation
+  
+* **Feedback on Rules:**
+  * Tag rule applications with abbreviations: [SF], [DRY], etc.
+  * Explain reasoning when choosing between conflicting rules
+  * Suggest rule improvements if patterns emerge
+</ai_interaction>
+
+<additional_notes>
+## Additional Notes
+
+* **Important Patterns/Architectural Principles:**
+  * Repository pattern for data access
+  * Command/Query Responsibility Segregation (CQRS)
+  * Feature-based folder structure within modules
+  * Atomic design principles for UI components
+</additional_notes>
+

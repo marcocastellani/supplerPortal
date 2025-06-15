@@ -42,7 +42,7 @@ cleanup() {
     pkill -P $$ 2>/dev/null || true
     
     # Termina eventuali processi rimasti con più precisione
-    pkill -f "dotnet run.*SupplierPortal.API" 2>/dev/null || true
+    pkill -f "dotnet watch run.*SupplierPortal.API" 2>/dev/null || true
     pkill -f "npm run dev" 2>/dev/null || true
     pkill -f "vite.*--host" 2>/dev/null || true
     

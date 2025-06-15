@@ -1,141 +1,145 @@
-##Il sistema di Supply Ne### Epic A: Accreditamento rete di fornitura
+## The Supply Network System
 
-1. Come buyer, voglio poter inviare una ric- Automatizzi l'accreditamento dei nuovi attori della rete, riducendo tempi e rischi.iesta di accreditamento a un nuovo attore della rete così da avviare il processo di onboarding in modo tracciabile.
-2. Come attore della rete, voglio compilare i dati richiesti per l'accreditamento in un'interfaccia chiara così da completare velocemente l'onboarding.
-3. Come amministratore, voglio poter approvare o respingere le richieste in base a soglie e documenti ricevuti, così da garantire la compliance.
-4. come amministratore, voglio poter inserire manualmente gli attori della rete della fornitura in modo da non costringere quelli già accreditati a riaccreditarsi.
+### Epic A: Supply network accreditation
 
-### Epic B: Gestione questionari
+1. As a buyer, I want to be able to send an accreditation request to a new network actor so that I can start the onboarding process in a traceable way.
+2. As a network actor, I want to fill in the required data for accreditation in a clear interface so that I can quickly complete the onboarding.
+3. As an administrator, I want to be able to approve or reject requests based on thresholds and received documents, so as to ensure compliance.
+4. As an administrator, I want to be able to manually insert supply network actors so as not to force those already accredited to re-accredit themselves.
 
-1. Come sustainability manager, voglio creare template personalizzati di questionari con domande condizionali così da raccogliere solo le informazioni rilevanti per ogni tipo di attore della rete.
-2. Come attore della rete, voglio ricevere notifiche automatiche e compilare il questionario direttamente da web così da rispettare le scadenze.ement è una piattaforma avanzata progettata per digitalizzare e centralizzare l'intero ciclo di gestione della rete di fornitura nelle aziende strutturate, con particolare attenzione ai settori moda, lusso e manifatturiero. Il software consente di configurare processi di accreditamento complessi, tracciare le performance qualitative e sostenibili degli attori della rete di fornitura, e generare KPI dinamici a partire da questionari strutturati.Descrizione tecnica
+### Epic B: Questionnaire management
 
-Il sistema di Supplier Management è una piattaforma avanzata progettata per digitalizzare e centralizzare l’intero ciclo di gestione dei fornitori nelle aziende strutturate, con particolare attenzione ai settori moda, lusso e manifatturiero. Il software consente di configurare processi di accreditamento complessi, tracciare le performance qualitative e sostenibili dei fornitori, e generare KPI dinamici a partire da questionari strutturati.
+1. As a sustainability manager, I want to create personalized questionnaire templates with conditional questions so as to collect only the relevant information for each type of network actor.
+2. As a network actor, I want to receive automatic notifications and fill out the questionnaire directly from the web so as to meet deadlines.
 
-Le aziende possono definire template personalizzati per la raccolta delle informazioni, assegnarli agli attori della rete di fornitura e subfornitori sulla base di regole dinamiche, e valutare automaticamente o manualmente le risposte ricevute. Il sistema supporta la gestione multilingua, multi-sito e multi-attore, garantendo auditabilità e tracciabilità completa di ogni azione. Gli indicatori chiave di performance sono configurabili con tassonomie a due livelli e possono essere alimentati sia da dati dichiarativi (questionari) che da eventi di sistema (non conformità, ritardi, ispezioni).
+### Technical Description
 
-Integrabile con sistemi documentali, di qualità e MES, il software diventa il cuore della visibilità e collaborazione nella catena di fornitura, con vantaggi tangibili in termini di efficienza, compliance e sostenibilità.
+The Supply Network Entity Management system is an advanced platform designed to digitize and centralize the entire supply network entity management cycle in structured companies, with particular attention to the fashion, luxury, and manufacturing sectors. The software allows for configuring complex accreditation processes, tracking qualitative and sustainable performance of supply network entities, and generating dynamic KPIs from structured questionnaires.
 
----
+Companies can define personalized templates for information collection, assign them to supply network entities and sub-supply network entities based on dynamic rules, and automatically or manually evaluate received responses. The system supports multilingual, multi-site, and multi-entity management, ensuring complete auditability and traceability of every action. Key performance indicators are configurable with two-level taxonomies and can be fed by both declarative data (questionnaires) and system events (non-conformities, delays, inspections).
 
-## Moduli funzionali
-
-| Modulo                          | Scopo                                                                 | Attori coinvolti                     | Output principali                                     |
-|--------------------------------|------------------------------------------------------------------------|--------------------------------------|-------------------------------------------------------|
-| Accreditamento rete di fornitura| Raccogliere, validare e approvare informazioni preliminari            | Buyer, Attori della rete             | Scheda attore approvata                               |
-| Gestione questionari           | Creare, assegnare, compilare e valutare template di raccolta dati     | Sustainability Manager, Attori rete | Questionari compilati, score, commenti                |
-| Audit & Ispezioni              | Pianificare e registrare attività di controllo e audit on-site        | Ispettore, Qualità, Attori rete     | Verbali, esiti ispezioni, evidenze documentali        |
-| KPI & Performance              | Calcolare indicatori qualitativi, logistici, ESG, rischio, ecc.       | Sustainability, Qualità, Management | Cruscotti di performance, alert soglie superate       |
-| Gestione subfornitori e sedi   | Mappare catena di fornitura multilivello e relative sedi operative    | Attori rete, Buyer                  | Alberatura supply chain, visibilità multilivello      |
-| Gestione documentale (integra) | Associare e versionare documenti ad attori della rete e attività      | Tutti                               | Repository documentale con permessi                   |
+Integrable with document management, quality, and MES systems, the software becomes the heart of visibility and collaboration in the supply chain, with tangible benefits in terms of efficiency, compliance, and sustainability.
 
 ---
 
-## Epic & User Story
+## Functional Modules
 
-### Epic A: Accreditamento fornitori
+| Module                               | Purpose                                                               | Actors Involved                      | Main Outputs                                          |
+|-------------------------------------|-----------------------------------------------------------------------|--------------------------------------|-------------------------------------------------------|
+| Supply network entity accreditation | Collect, validate and approve preliminary information                 | Buyer, Network actors                | Approved actor profile                                |
+| Questionnaire management            | Create, assign, compile and evaluate data collection templates       | Sustainability Manager, Network actors| Completed questionnaires, scores, comments           |
+| Audit & Inspections                 | Plan and record control and on-site audit activities                 | Inspector, Quality, Network actors   | Reports, inspection results, documentary evidence     |
+| KPI & Performance                   | Calculate qualitative, logistics, ESG, risk indicators, etc.         | Sustainability, Quality, Management  | Performance dashboards, threshold exceeded alerts    |
+| Sub-supply network entity and site management| Map multi-level supply chain and related operational sites    | Network actors, Buyer               | Supply chain tree structure, multi-level visibility  |
+| Document management (integrated)     | Associate and version documents to network actors and activities     | All                                 | Document repository with permissions                 |
 
-1. Come buyer, voglio poter inviare una richiesta di accreditamento a un nuovo fornitore così da avviare il processo di onboarding in modo tracciabile.
-2. Come fornitore, voglio compilare i dati richiesti per l’accreditamento in un’interfaccia chiara così da completare velocemente l’onboarding.
-3. Come amministratore, voglio poter approvare o respingere le richieste in base a soglie e documenti ricevuti, così da garantire la compliance.
-4. come amministratiore, voglio poter inserire manualmente i miei fornitori in modo da non costringere i fornitori giá accreditati a riaccreditarsi.
-5. come utente, voglio poter inserire massivamente i miei supply entities mediante excel per evitare di reinserirli tutti manualmente. É importante poter scaricare un template ed avere una validazione prima dell'inserimento
+---
 
-### Epic B: Gestione questionari
+## Epic & User Stories
 
-1. Come sustainability manager, voglio creare template personalizzati di questionari con domande condizionali così da raccogliere solo le informazioni rilevanti per ogni tipo di fornitore.
-2. Come fornitore, voglio ricevere notifiche automatiche e compilare il questionario direttamente da web così da rispettare le scadenze.
-3. Come valutatore, voglio analizzare le risposte e assegnare punteggi e commenti per ogni sezione così da avere una valutazione chiara e storicizzata.
+### Epic A: Supply Network Entity accreditation
+
+1. As a buyer, I want to be able to send an accreditation request to a new supply network entity so that I can start the onboarding process in a traceable way.
+2. As a supply network entity, I want to fill in the required data for accreditation in a clear interface so that I can quickly complete the onboarding.
+3. As an administrator, I want to be able to approve or reject requests based on thresholds and received documents, so as to ensure compliance.
+4. As an administrator, I want to be able to manually insert my supply network entities so as not to force already accredited supply network entities to re-accredit themselves.
+5. As a user, I want to be able to massively insert my supply entities through Excel to avoid having to re-enter them all manually. It's important to be able to download a template and have validation before insertion.
+6. As a supply chain operator, I want to view, search and filter all network entities so that I can quickly access key information and navigate between supply network entities, sites, sub-supply network entities and contacts.
+
+### Epic B: Questionnaire management
+
+1. As a sustainability manager, I want to create personalized questionnaire templates with conditional questions so as to collect only the relevant information for each type of supply network entity.
+2. As a supply network entity, I want to receive automatic notifications and fill out the questionnaire directly from the web so as to meet deadlines.
+3. As an evaluator, I want to analyze responses and assign scores and comments for each section so as to have a clear and historicized evaluation.
 
 ### Epic C: KPI & Performance
 
-1. Come quality manager, voglio che il sistema generi automaticamente i KPI degli attori della rete a partire dai dati raccolti così da avere un cruscotto sempre aggiornato.
-2. Come decision-maker, voglio confrontare i KPI degli attori della rete tra loro per categoria merceologica così da facilitare la selezione dei migliori partner.
+1. As a quality manager, I want the system to automatically generate KPIs of supply network entities from collected data so as to have an always updated dashboard.
+2. As a decision-maker, I want to compare supply network entities' KPIs with each other by product category so as to facilitate the selection of the best partners.
 
 ---
 
-## Flussi principali (testuali)
+## Main Flows (textual)
 
-### Flusso 1: Accreditamento
+### Flow 1: Accreditation
 
-1. Buyer avvia richiesta → seleziona template → invio all'attore della rete  
-2. Attore della rete compila dati e carica documenti  
-3. Sistema verifica completezza → alert se mancano campi  
-4. Buyer approva / respinge → notifica all'attore della rete  
-5. Stato accreditamento aggiornato
+1. Buyer initiates request → selects template → sends to network actor
+2. Network actor fills in data and uploads documents
+3. System verifies completeness → alert if fields are missing
+4. Buyer approves / rejects → notification to network actor
+5. Accreditation status updated
 
-### Flusso 2: Compilazione questionari
+### Flow 2: Questionnaire completion
 
-1. Sistema assegna questionario → in base a tag e regole  
-2. Attore della rete riceve notifica → accede e compila  
-3. Sistema valuta automaticamente (regole)  
-4. Valutatore finale esegue controllo manuale (se previsto)  
-5. Stato e score salvati su scheda dell'attore della rete
+1. System assigns questionnaire → based on tags and rules
+2. Supply network entity receives notification → accesses and completes
+3. System automatically evaluates (rules)
+4. Final evaluator performs manual check (if required)
+5. Status and score saved on supply network entity's profile
 
-### Flusso 3: Generazione KPI
+### Flow 3: KPI generation
 
-1. Questionari → valutati → generano punteggio per KPI  
-2. Altri dati (audit, reclami, delivery) → arricchiscono KPI  
-3. Tassonomia KPI → aggrega per tipologia, sede, merceologia  
-4. Cruscotto visivo per management  
-5. Alert se soglie superate
+1. Questionnaires → evaluated → generate score for KPI
+2. Other data (audits, complaints, delivery) → enrich KPI
+3. KPI taxonomy → aggregates by type, site, product category
+4. Visual dashboard for management
+5. Alert if thresholds exceeded
 
-### Flusso 4: Analisi performance
+### Flow 4: Performance analysis
 
-1. Management accede a dashboard  
-2. Selezione filtri (periodo, tipo attore della rete, categoria)  
-3. Confronto grafico tra attori della rete  
-4. Esportazione o condivisione analisi  
-5. Integrazione con sistemi decisionali
-
----
-
-## Glossario
-
-| Termine             | Definizione                                                               |
-|---------------------|---------------------------------------------------------------------------|
-| Accredito rete      | Processo di onboarding e validazione iniziale di un nuovo attore della rete |
-| Questionario        | Strumento per raccogliere dati qualitativi, ESG, logistici, etc.         |
-| KPI                 | Key Performance Indicator, indicatore chiave di prestazione              |
-| Tag                 | Etichette configurabili per classificare attori della rete/questionari   |
-| Score               | Valutazione assegnata all'attore della rete in base a risposte o performance |
-| Tassonomia          | Struttura a due livelli per classificare e aggregare KPI                 |
-| Subfornitore        | Entità a valle dell'attore principale della rete                         |
-| Audit               | Verifica in loco o da remoto della compliance o qualità                  |
+1. Management accesses dashboard
+2. Filter selection (period, supply network entity type, category)
+3. Graphical comparison between supply network entities
+4. Export or share analysis
+5. Integration with decision-making systems
 
 ---
 
-## Presentazione marketing orientata al cliente
+## Glossary
 
-### La tua supply chain sotto controllo, ovunque nel mondo
-
-Nel settore moda e manifatturiero, i fornitori sono una risorsa strategica, ma anche una fonte di rischio e complessità. Il nostro software nasce per portare ordine, visibilità e controllo in ogni fase del ciclo fornitore, dall’accreditamento fino alla valutazione delle performance ESG.
-
-Con una piattaforma unica:
-
-- Automatizzi l’accreditamento dei nuovi fornitori, riducendo tempi e rischi.
-- Raccogli e valuti informazioni grazie a questionari dinamici e multilingua.
-- Tracci KPI ambientali, qualitativi e logistici con un cruscotto sempre aggiornato.
-- Coinvolgi attori della rete e sub-fornitori, anche in paesi lontani, con flussi digitalizzati.
-- Garantisci la compliance con standard di qualità e sostenibilità internazionali.
-
-Una soluzione pronta all’uso, ma personalizzabile secondo le tue regole e le tue priorità. Sviluppata per aziende strutturate che vogliono ridurre i costi nascosti, prevenire le non conformità e scegliere partner più affidabili.
+| Term                          | Definition                                                                      |
+|-------------------------------|---------------------------------------------------------------------------------|
+| Supply Network Entity accreditation| Initial onboarding and validation process for a new supply network entity |
+| Questionnaire                 | Tool for collecting qualitative, ESG, logistics data, etc.                     |
+| KPI                           | Key Performance Indicator                                                       |
+| Tag                           | Configurable labels to classify supply network entities/questionnaires         |
+| Score                         | Evaluation assigned to supply network entity based on responses or performance |
+| Taxonomy                      | Two-level structure to classify and aggregate KPIs                             |
+| Sub-supply network entity     | Entity downstream from the main supply network entity                          |
+| Audit                         | On-site or remote verification of compliance or quality                        |
 
 ---
 
-## Sezioni da completare
+## Customer-oriented marketing presentation
 
-- Definizione KPI specifici (es. % on-time delivery, CO₂/pezzo, etc.)
-- Soglie di allerta per i KPI
-- Tassonomia di tag (categorie attori della rete, aree merceologiche, etc.)
-- Nome ruoli utente (es. valutatore, referente, validatore, etc.)
-- Template di questionari per diversi ambiti (etica, qualità, sicurezza, ecc.)
+### Your supply chain under control, anywhere in the world
+
+In the fashion and manufacturing sector, supply network entities are a strategic resource, but also a source of risk and complexity. Our software was created to bring order, visibility and control to every phase of the supply network entity cycle, from accreditation to ESG performance evaluation.
+
+With a single platform:
+
+- You automate the accreditation of new supply network entities, reducing time and risks.
+- You collect and evaluate information through dynamic and multilingual questionnaires.
+- You track environmental, qualitative and logistics KPIs with an always updated dashboard.
+- You involve supply network entities and sub-supply network entities, even in distant countries, with digitized flows.
+- You ensure compliance with international quality and sustainability standards.
+
+A ready-to-use solution, but customizable according to your rules and priorities. Developed for structured companies that want to reduce hidden costs, prevent non-conformities and choose more reliable partners.
 
 ---
 
-## Caso d’uso sintetico
+## Sections to be completed
 
-Un brand italiano del lusso, con oltre 200 fornitori nel Sud Est Asiatico, ha digitalizzato il processo di accreditamento centralizzando la raccolta documentale e la compilazione dei questionari ESG. Utilizzando regole dinamiche basate su tag, il sistema ha assegnato questionari ambientali solo ai fornitori più impattanti. I KPI generati automaticamente hanno permesso di identificare fornitori ad alto rischio ambientale e avviare piani di sostituzione o miglioramento.
+- Definition of specific KPIs (e.g. % on-time delivery, CO₂/piece, etc.)
+- Alert thresholds for KPIs
+- Tag taxonomy (supply network entity categories, product areas, etc.)
+- User role names (e.g. evaluator, contact person, validator, etc.)
+- Questionnaire templates for different areas (ethics, quality, safety, etc.)
 
- # Diagrammi per i flussi principali
- 
+---
+
+## Synthetic use case
+
+An Italian luxury brand, with over 200 supply network entities in Southeast Asia, has digitized the accreditation process by centralizing document collection and ESG questionnaire completion. Using dynamic rules based on tags, the system assigned environmental questionnaires only to the most impactful supply network entities. The automatically generated KPIs made it possible to identify supply network entities at high environmental risk and initiate replacement or improvement plans.
+
+# Diagrams for main flows
