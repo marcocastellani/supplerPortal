@@ -1,25 +1,39 @@
 import { useState, useCallback } from 'react';
-import { SupplyNetworkEntitiesService } from '../services/supplyNetworkEntitiesService';
-import { SupplyNetworkEntityFormData } from '../types/supplyNetworkEntities';
-import { useErrorHandling } from './useErrorHandling';
-import { log } from '../utils/logger';
-import { TIMING } from '../constants/ui';
+import { SupplyNetworkEntitiesService } from '@/services/supplyNetworkEntitiesService';
+import { SupplyNetworkEntityFormData } from '@/types/supplyNetworkEntities';
+import { logger as log } from '@/utils/logger';
+import { TIMING } from '@/constants/ui';
+import { useApiErrorHandler } from '@/hooks/useErrorHandler';
+import { ErrorType } from '@/utils/errorHandling';
 
-export interface UseEntitySubmissionReturn {
+interface UseEntitySubmissionReturn {
   isLoading: boolean;
   isSuccess: boolean;
   error: string | null;
-  errorType: string | null;
+  errorType: ErrorType | null;
   submitEntity: (formData: SupplyNetworkEntityFormData) => Promise<void>;
+  resetForm: (defaultValues?: SupplyNetworkEntityFormData) => void;
   clearError: () => void;
-  resetSuccess: () => void;
 }
 
-export const useEntitySubmission = (): UseEntitySubmissionReturn => {
+/**
+ * Custom hook for handling entity submission with enhanced error handling [REH]
+ */
+export function useEntitySubmission(
+  resetFormCallback?: (defaultValues?: SupplyNetworkEntityFormData) => void
+): UseEntitySubmissionReturn {
+  const { 
+    error: apiError, 
+    hasError, 
+    errorMessage, 
+    handleApiError, 
+    clearError: clearApiError 
+  } = useApiErrorHandler('useEntitySubmission');
+  
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const { error, errorType, handleError, clearError } = useErrorHandling();
 
+  // Submit entity with enhanced error handling [REH]
   const submitEntity = useCallback(async (formData: SupplyNetworkEntityFormData) => {
     log.info('Starting entity submission', {
       component: 'useEntitySubmission',
@@ -29,7 +43,7 @@ export const useEntitySubmission = (): UseEntitySubmissionReturn => {
     });
 
     setIsLoading(true);
-    clearError();
+    clearApiError();
 
     try {
       const requestData = {
@@ -52,59 +66,67 @@ export const useEntitySubmission = (): UseEntitySubmissionReturn => {
         tags: formData.tags,
         active: formData.active,
         accreditationStatus: formData.accreditationStatus,
-        accreditationDate: formData.accreditationDate,
+        accreditationDate: formData.accreditationDate
       };
 
-      log.debug('Sending entity creation request', {
-        component: 'useEntitySubmission',
-        requestData: {
-          ...requestData,
-          // Don't log sensitive data in full
-          email: requestData.email ? '[email]' : undefined,
-          phoneNumber: requestData.phoneNumber ? '[phone]' : undefined,
-        }
-      });
-
       const result = await SupplyNetworkEntitiesService.createSupplyNetworkEntity(requestData);
-
-      log.info('Entity created successfully', {
+      
+      log.info('Entity submission successful', {
         component: 'useEntitySubmission',
         entityId: result.id,
-        legalName: result.legalName
+        entityType: formData.entityType,
+        legalName: formData.legalName
       });
 
       setIsSuccess(true);
-
-      // Auto-reset success state after configured duration
+      
+      // Auto-hide success message after timeout [PA]
       setTimeout(() => {
         setIsSuccess(false);
       }, TIMING.SUCCESS_MESSAGE_DURATION);
 
     } catch (err) {
+      // Use enhanced API error handling [REH]
+      handleApiError(err, '/supply-network-entities', 'POST');
+      
       log.error('Entity submission failed', {
         component: 'useEntitySubmission',
         error: err,
         entityType: formData.entityType,
         legalName: formData.legalName
       });
-      
-      handleError(err);
     } finally {
       setIsLoading(false);
     }
-  }, [handleError, clearError]);
+  }, [handleApiError, clearApiError]);
 
-  const resetSuccess = useCallback(() => {
+  // Reset form state [REH]
+  const resetForm = useCallback((defaultValues?: SupplyNetworkEntityFormData) => {
     setIsSuccess(false);
-  }, []);
+    clearApiError();
+    
+    if (resetFormCallback) {
+      resetFormCallback(defaultValues);
+    }
+    
+    log.info('Form reset completed', {
+      component: 'useEntitySubmission',
+      hasDefaultValues: !!defaultValues
+    });
+  }, [resetFormCallback, clearApiError]);
+
+  // Clear error state [REH]
+  const clearError = useCallback(() => {
+    clearApiError();
+  }, [clearApiError]);
 
   return {
     isLoading,
     isSuccess,
-    error,
-    errorType,
+    error: hasError ? errorMessage : null,
+    errorType: apiError?.type || null,
     submitEntity,
-    clearError,
-    resetSuccess,
+    resetForm,
+    clearError
   };
-};
+}

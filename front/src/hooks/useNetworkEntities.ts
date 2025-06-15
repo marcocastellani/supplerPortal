@@ -1,14 +1,14 @@
-import { useState, useCallback, useEffect } from 'react';
-import { debounce } from 'lodash';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SupplyNetworkEntitiesService } from '../services/supplyNetworkEntitiesService';
-import { EntityType, SupplyNetworkEntityDto } from '../types/supplyNetworkEntities';
-import { log } from '../utils/logger';
-import { DATA_CONSTANTS, TIMING } from '../constants/ui';
+import { SupplyNetworkEntitiesService } from '@/services/supplyNetworkEntitiesService';
+import { SupplyNetworkEntityDto, GetSupplyNetworkEntitiesQueryResult } from '@/types/supplyNetworkEntities';
+import { logger as log } from '@/utils/logger';
+import { DATA_CONSTANTS, TIMING } from '@/constants/ui';
+import { useApiErrorHandler } from '@/hooks/useErrorHandler';
 
 export interface NetworkEntitiesFilters {
   searchQuery: string;
-  filterType: EntityType | 'all';
+  filterType: string | 'all';
   filterStatus: 'all' | 'active' | 'inactive';
   currentPage: number;
 }
@@ -24,7 +24,7 @@ export interface NetworkEntitiesState {
 
 export interface NetworkEntitiesActions {
   setSearchQuery: (query: string) => void;
-  setFilterType: (type: EntityType | 'all') => void;
+  setFilterType: (type: string | 'all') => void;
   setFilterStatus: (status: 'all' | 'active' | 'inactive') => void;
   setCurrentPage: (page: number) => void;
   refetch: () => void;
@@ -52,7 +52,7 @@ export const useNetworkEntities = (): NetworkEntitiesState & NetworkEntitiesActi
   const fetchEntities = useCallback(
     async (
       search: string,
-      type: EntityType | 'all',
+      type: string | 'all',
       status: 'all' | 'active' | 'inactive',
       page: number
     ) => {
@@ -112,7 +112,7 @@ export const useNetworkEntities = (): NetworkEntitiesState & NetworkEntitiesActi
     debounce(
       (
         search: string,
-        type: EntityType | 'all',
+        type: string | 'all',
         status: 'all' | 'active' | 'inactive',
         page: number
       ) => {
@@ -147,7 +147,7 @@ export const useNetworkEntities = (): NetworkEntitiesState & NetworkEntitiesActi
     }));
   }, []);
 
-  const setFilterType = useCallback((type: EntityType | 'all') => {
+  const setFilterType = useCallback((type: string | 'all') => {
     setFilters(prev => ({
       ...prev,
       filterType: type,

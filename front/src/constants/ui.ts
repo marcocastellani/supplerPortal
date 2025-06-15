@@ -11,8 +11,11 @@ export const UI_SPACING = {
   CARD_PADDING: 2,
   BUTTON_MARGIN: 2,
   ICON_MARGIN: 0.5,
+  SMALL: 1,
   SMALL_MARGIN: 1,
+  MEDIUM: 2,
   MEDIUM_MARGIN: 2,
+  LARGE: 3,
   LARGE_MARGIN: 3,
 } as const;
 

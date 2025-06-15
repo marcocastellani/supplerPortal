@@ -12,6 +12,7 @@ import { useEntityEnums } from "../hooks/useEntityEnums";
 import { useNewEntityForm } from "../hooks/useNewEntityForm";
 import { useEntitySubmission } from "../hooks/useEntitySubmission";
 import { LoadingState, SuccessState } from "../components/NewEntity";
+import { ErrorNotification } from "../components/ErrorNotification";
 import { TIMING } from "../constants/ui";
 
 const NewSupplyNetworkEntity: React.FC = () => {
