@@ -4,9 +4,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Remira.UCP.SupplierPortal.Infrastructure.Persistence;
+using Remira.UCP.SupplierPortal.Application.Interfaces;
 
 namespace Remira.UCP.SupplierPortal.Application.IntegrationTests.Setup;
 
+/// <summary>
+/// Test implementation of ICurrentUserService that returns a fixed user ID for integration tests
+/// </summary>
+public class TestCurrentUserService : ICurrentUserService
+{
+    public string? UserId => "test-admin-user-12345";
+}
 
 internal class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
@@ -34,6 +42,10 @@ internal class CustomWebApplicationFactory : WebApplicationFactory<Program>
                     .AddDbContext<ApplicationDbContext>((sp, options) =>
                         options.UseSqlServer(ContainerConnectionString,
                             builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+
+            // Configure test CurrentUserService to return a fixed user ID
+            services.Remove<ICurrentUserService>()
+                    .AddScoped<ICurrentUserService, TestCurrentUserService>();
 
             services.EnsureDbCreated<ApplicationDbContext>();
         });

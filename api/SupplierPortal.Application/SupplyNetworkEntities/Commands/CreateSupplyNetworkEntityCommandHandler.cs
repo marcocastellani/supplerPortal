@@ -29,15 +29,7 @@ public class CreateSupplyNetworkEntityCommandHandler : IRequestHandler<CreateSup
     public async Task<SupplyNetworkEntityDto> Handle(CreateSupplyNetworkEntityCommand request, CancellationToken cancellationToken)
     {
         // Validazione duplicati
-        if (!string.IsNullOrEmpty(request.ExternalCode))
-        {
-            var existingByCode = await _context.Suppliers
-                .FirstOrDefaultAsync(s => s.ExternalCode == request.ExternalCode, cancellationToken);
-            
-            if (existingByCode != null)
-                throw new InvalidOperationException($"An entity with External Code '{request.ExternalCode}' already exists.");
-        }
-
+   
         if (!string.IsNullOrEmpty(request.VatCode))
         {
             var existingByVat = await _context.Suppliers
@@ -80,9 +72,8 @@ public class CreateSupplyNetworkEntityCommandHandler : IRequestHandler<CreateSup
             Tags = request.Tags,
             Active = request.Active,
             AccreditationStatus = request.AccreditationStatus,
-            AccreditationDate = request.AccreditationDate ?? (request.AccreditationStatus == Domain.Enums.AccreditationStatus.Approved ? _dateTime.Now : null),
-            Created = _dateTime.Now,
-            CreatedBy = _currentUserService.UserId ?? "system"
+            AccreditationDate = request.AccreditationDate ?? (request.AccreditationStatus == Domain.Enums.AccreditationStatus.Approved ? _dateTime.Now : null)
+            // Created e CreatedBy sono gestiti dall'AuditableEntitySaveChangesInterceptor
         };
 
         _context.Suppliers.Add(entity);

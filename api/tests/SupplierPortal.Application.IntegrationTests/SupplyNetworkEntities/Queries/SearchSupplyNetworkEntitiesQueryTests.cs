@@ -164,7 +164,9 @@ public class SearchSupplyNetworkEntitiesQueryTests : BaseTestFixture
         result.Should().NotBeNull();
         result.Should().HaveCount(1);
         result.First().Email.Should().Be("contact@email-test-company.fr");
-        result.First().DisplayText.Should().Contain("contact@email-test-company.fr");
+        result.First().DisplayText.Should().Contain("Email Test Company");
+        result.First().DisplayText.Should().Contain("(ETC001)");
+        result.First().DisplayText.Should().Contain("[Paris, FR]");
     }
 
     [Test]

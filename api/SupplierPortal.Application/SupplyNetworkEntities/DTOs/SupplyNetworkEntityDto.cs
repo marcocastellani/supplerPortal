@@ -2,9 +2,14 @@ using Remira.UCP.SupplierPortal.Domain.Enums;
 using Remira.UCP.SupplierPortal.Application.Interfaces;
 using Remira.UCP.SupplierPortal.Domain.Entities;
 using AutoMapper;
+using Remira.UCP.SupplierPortal.Application.Common.Mappings;
+using Remira.UCP.SupplierPortal.Application.SupplyNetworkEntities.Commands;
 
 namespace Remira.UCP.SupplierPortal.Application.SupplyNetworkEntities.DTOs;
 
+/// <summary>
+/// DTO for supply network entity responses
+/// </summary>
 public class SupplyNetworkEntityDto : IMapFrom<Domain.Entities.SupplyNetworkEntities>
 {
     public Guid Id { get; set; }
@@ -55,5 +60,14 @@ public class SupplyNetworkEntityDto : IMapFrom<Domain.Entities.SupplyNetworkEnti
     {
         profile.CreateMap<Domain.Entities.SupplyNetworkEntities, SupplyNetworkEntityDto>()
             .ForMember(d => d.ParentName, opt => opt.MapFrom(s => s.Parent != null ? s.Parent.LegalName : null));
+
+        // Mappatura Command -> Entity per evitare duplicazioni nel handler
+        profile.CreateMap<CreateSupplyNetworkEntityCommand, Domain.Entities.SupplyNetworkEntities>()
+            .ForMember(d => d.Id, opt => opt.Ignore()) // Generated in handler
+            .ForMember(d => d.Parent, opt => opt.Ignore()) // Navigation property
+            .ForMember(d => d.Created, opt => opt.Ignore()) // Set in handler
+            .ForMember(d => d.CreatedBy, opt => opt.Ignore()) // Set in handler  
+            .ForMember(d => d.LastModified, opt => opt.Ignore()) // Set in handler
+            .ForMember(d => d.LastModifiedBy, opt => opt.Ignore()); // Set in handler
     }
 }

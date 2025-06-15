@@ -30,8 +30,6 @@ public class CreateSupplyNetworkEntityCommandValidator : AbstractValidator<Creat
         RuleFor(x => x.ExternalCode)
             .MaximumLength(100)
             .WithMessage("External Code must not exceed 100 characters")
-            .MustAsync(BeUniqueExternalCode)
-            .WithMessage("External Code must be unique")
             .When(x => !string.IsNullOrEmpty(x.ExternalCode));
 
         RuleFor(x => x.VatCode)
@@ -77,12 +75,7 @@ public class CreateSupplyNetworkEntityCommandValidator : AbstractValidator<Creat
             .WithMessage("VAT Code is recommended for Supplier entities")
             .When(x => x.EntityType == EntityType.Supplier);
     }
-
-    private async Task<bool> BeUniqueExternalCode(string externalCode, CancellationToken cancellationToken)
-    {
-        return !await _context.Suppliers
-            .AnyAsync(s => s.ExternalCode == externalCode, cancellationToken);
-    }
+ 
 
     private async Task<bool> BeUniqueVatCode(string vatCode, CancellationToken cancellationToken)
     {
