@@ -10,6 +10,8 @@ Questo documento descrive lo scopo e l'utilizzo dei file principali nel progetto
 - **MediatR**: Obbligatorio per tutti i Command/Query nel backend (.NET Core)
 - **DbSet Naming**: Controllare sempre il nome corretto nel `IApplicationDbContext` (es: `Suppliers` non `SupplyNetworkEntities`)
 - **Nullability**: Gestire sempre i warning CS8619 con null coalescing (`?? new List<>()`)
+- **GetById Pattern**: Sempre creare Query/Handler dedicati per GetById, mai filtrare liste paginate in memoria
+- **Controller Routing**: Aggiungere sempre `[Route("api/v{version:apiVersion}/[controller-name]")]` ai controller
 
 ### 🎨 **Frontend Development**
 - **Componenti**: Preferire composizione a ereditarietà (EntitySelector modulare)
@@ -76,6 +78,8 @@ Questo documento descrive lo scopo e l'utilizzo dei file principali nel progetto
 | `SupplierPortal.Application/SupplyNetworkEntities/Commands/CreateSupplyNetworkEntityCommandValidator.cs` | ⭐ FluentValidation per Command |
 | `SupplierPortal.Application/SupplyNetworkEntities/Queries/GetSupplyNetworkEntitiesQuery.cs` | ⭐ Query paginata con filtri multipli |
 | `SupplierPortal.Application/SupplyNetworkEntities/Queries/GetSupplyNetworkEntitiesQueryHandler.cs` | ⭐ Handler per listing con paginazione |
+| `SupplierPortal.Application/SupplyNetworkEntities/Queries/GetSupplyNetworkEntityByIdQuery.cs` | ⭐ Query CQRS per recupero singola entità per ID |
+| `SupplierPortal.Application/SupplyNetworkEntities/Queries/GetSupplyNetworkEntityByIdQueryHandler.cs` | ⭐ Handler dedicato per GetById (efficiente, non filtra liste paginate) |
 | `SupplierPortal.Application/SupplyNetworkEntities/Queries/SearchSupplyNetworkEntitiesQuery.cs` | ⭐ Query specializzata per typeahead search |
 | `SupplierPortal.Application/SupplyNetworkEntities/Queries/SearchSupplyNetworkEntitiesQueryHandler.cs` | ⭐ Handler per ricerca multi-campo (min 3 char, max 15 risultati) |
 | `SupplierPortal.Application/SupplyNetworkEntities/DTOs/SupplyNetworkEntityDto.cs` | ⭐ DTO completo per entità con mapping AutoMapper |
@@ -364,6 +368,8 @@ src/components/Dashboard/
 - **MediatR**: pattern CQRS per tutti i Command/Query
 - **Naming**: verificare nomi DbSet in IApplicationDbContext
 - **Nullability**: gestire warning CS8619 con null coalescing
+- **GetById Pattern**: Creare sempre Query/Handler dedicati per GetById
+- **Controller Routing**: Aggiungere `[Route("api/v{version:apiVersion}/[controller-name]")]` ai controller
 
 #### Frontend Development  
 - **Componenti**: preferire composizione (EntitySelector modulare)
@@ -507,6 +513,8 @@ api/SupplierPortal.Application/SupplyNetworkEntities/
 ├── Commands/CreateSupplyNetworkEntityCommandValidator.cs
 ├── Queries/GetSupplyNetworkEntitiesQuery.cs
 ├── Queries/GetSupplyNetworkEntitiesQueryHandler.cs
+├── Queries/GetSupplyNetworkEntityByIdQuery.cs
+├── Queries/GetSupplyNetworkEntityByIdQueryHandler.cs
 └── DTOs/SupplyNetworkEntityDto.cs
 
 api/SupplierPortal.API/Controllers/
@@ -679,8 +687,8 @@ SupplyNetworkEntities/
 ├── Queries/
 │   ├── GetSupplyNetworkEntitiesQuery.cs
 │   ├── GetSupplyNetworkEntitiesQueryHandler.cs
-│   ├── SearchSupplyNetworkEntitiesQuery.cs
-│   └── SearchSupplyNetworkEntitiesQueryHandler.cs
+│   ├── GetSupplyNetworkEntityByIdQuery.cs
+│   └── GetSupplyNetworkEntityByIdQueryHandler.cs
 └── DTOs/
     ├── SupplyNetworkEntityDto.cs
     └── SupplyNetworkEntitySearchResultDto.cs
