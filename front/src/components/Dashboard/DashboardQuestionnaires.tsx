@@ -6,6 +6,7 @@ import { DashboardFilters } from "./DashboardFilters";
 import { QuestionnaireGrid } from "./QuestionnaireGrid";
 import { getDashboardQuestionnaires } from "../../services/dashboardService";
 import { UpcomingQuestionnaireDto } from "../../types/dashboard";
+import { log } from "@/utils/logger";
 
 export interface DashboardQuestionnairesProps {
   className?: string;
@@ -31,11 +32,17 @@ export const DashboardQuestionnaires: React.FC<
         setLoading(true);
         setError(null);
         const data = await getDashboardQuestionnaires();
-        console.log("Fetched questionnaires:", data);
+        log.info("Fetched questionnaires:", {
+          component: "DashboardQuestionnaires",
+          data,
+        });
         setQuestionnaires(data);
         setFilteredQuestionnaires(data);
       } catch (err) {
-        console.error("Error fetching questionnaires:", err);
+        log.error("Error fetching questionnaires:", {
+          component: "DashboardQuestionnaires",
+          error: err,
+        });
         // Edge case: Connection problems
         if (axios.isAxiosError(err)) {
           if (err.code === "ECONNABORTED" || err.code === "ERR_NETWORK") {

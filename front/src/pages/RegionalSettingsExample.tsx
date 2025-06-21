@@ -1,18 +1,15 @@
 import { apis, ucpVersions } from "@/utils/apiVersions";
 import {
-  getPatternFromLocaleAndStyle,
   getProfileProperty,
-  getTimeFormat,
   RegionalSettings,
   saveProfileProperty,
 } from "@remira/ucpaccelerator_unified_utils";
 import { Container, Grid, Text } from "@remira/unifiedui";
 import { PageHeader } from "../components/LayoutComponents";
 import LanguageIcon from "@mui/icons-material/Language";
-import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { log } from "../utils/logger";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 //Example of a function to save the current user's regional settings
 export const SaveRegionalSettings = async (
@@ -33,9 +30,15 @@ export const SaveRegionalSettings = async (
 
     // Save settings to localStorage
     localStorage.setItem("regionalSettings", JSON.stringify(settings));
-    log.info("Regional settings saved successfully", { component: 'SaveRegionalSettings', settings });
+    log.info("Regional settings saved successfully", {
+      component: "SaveRegionalSettings",
+      settings,
+    });
   } catch (error) {
-    log.error("Error saving regional settings", { component: 'SaveRegionalSettings', error });
+    log.error("Error saving regional settings", {
+      component: "SaveRegionalSettings",
+      error,
+    });
   }
 };
 
@@ -45,7 +48,9 @@ export const RegionalSettingsExample = () => {
 
   const { t } = useTranslation();
 
-  log.debug("Regional settings component initialized", { component: 'RegionalSettingsExample' });
+  log.debug("Regional settings component initialized", {
+    component: "RegionalSettingsExample",
+  });
   useEffect(() => {
     const fetchRegionalSettings = async () => {
       const regionalSettingsData = await getProfileProperty(
@@ -55,17 +60,35 @@ export const RegionalSettingsExample = () => {
       );
 
       if (regionalSettingsData) {
-        setDateFormat(regionalSettingsData.dateFormat || "DD/MM/YYYY");
-        setTimeFormat(regionalSettingsData.timeFormat || "HH:mm");
-        log.info("Regional settings loaded", { 
-          component: 'RegionalSettingsExample',
-          dateFormat: regionalSettingsData.dateFormat,
-          timeFormat: regionalSettingsData.timeFormat
-        });
+        try {
+          // Parse the JSON string to get the actual RegionalSettings object
+          const parsedSettings: RegionalSettings =
+            typeof regionalSettingsData === "string"
+              ? JSON.parse(regionalSettingsData)
+              : regionalSettingsData;
+
+          setDateFormat(parsedSettings.dateFormat || "DD/MM/YYYY");
+          setTimeFormat(parsedSettings.timeFormat || "HH:mm");
+          log.info("Regional settings loaded", {
+            component: "RegionalSettingsExample",
+            dateFormat: parsedSettings.dateFormat,
+            timeFormat: parsedSettings.timeFormat,
+          });
+        } catch (parseError) {
+          log.error("Error parsing regional settings", {
+            component: "RegionalSettingsExample",
+            error: parseError,
+          });
+          // Use defaults if parsing fails
+          setDateFormat("DD/MM/YYYY");
+          setTimeFormat("HH:mm");
+        }
       } else {
         setDateFormat("DD/MM/YYYY");
         setTimeFormat("HH:mm");
-        log.warn("No regional settings found, using defaults", { component: 'RegionalSettingsExample' });
+        log.warn("No regional settings found, using defaults", {
+          component: "RegionalSettingsExample",
+        });
       }
     };
 

@@ -291,16 +291,40 @@ vi.mock("@mui/material", async () => {
   };
 });
 
-// Mock Material-UI icons
-vi.mock("@mui/icons-material", () => ({
-  Search: () => React.createElement("span", null, "SearchIcon"),
-  FilterList: () => React.createElement("span", null, "FilterIcon"),
-  Refresh: () => React.createElement("span", null, "RefreshIcon"),
-  Business: () => React.createElement("span", null, "BusinessIcon"),
-  Person: () => React.createElement("span", null, "PersonIcon"),
-  LocationOn: () => React.createElement("span", null, "LocationIcon"),
-  CheckCircle: () => React.createElement("span", null, "CheckIcon"),
-  Error: () => React.createElement("span", null, "ErrorIcon"),
-  Warning: () => React.createElement("span", null, "WarningIcon"),
-  Info: () => React.createElement("span", null, "InfoIcon"),
-}));
+// Mock @mui/icons-material
+vi.mock("@mui/icons-material", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    ErrorOutline: (props: any) =>
+      React.createElement("svg", { ...props, "data-testid": "error-icon" }),
+    Refresh: (props: any) =>
+      React.createElement("svg", { ...props, "data-testid": "refresh-icon" }),
+    Visibility: (props: any) =>
+      React.createElement("svg", {
+        ...props,
+        "data-testid": "visibility-icon",
+      }),
+    Add: (props: any) =>
+      React.createElement("svg", { ...props, "data-testid": "add-icon" }),
+    LocationOn: (props: any) =>
+      React.createElement("svg", { ...props, "data-testid": "location-icon" }),
+    Business: (props: any) =>
+      React.createElement("svg", { ...props, "data-testid": "business-icon" }),
+    Language: (props: any) =>
+      React.createElement("svg", { ...props, "data-testid": "language-icon" }),
+    AdminPanelSettings: (props: any) =>
+      React.createElement("svg", { ...props, "data-testid": "admin-icon" }),
+    Check: (props: any) =>
+      React.createElement("svg", { ...props, "data-testid": "check-icon" }),
+    Close: (props: any) =>
+      React.createElement("svg", { ...props, "data-testid": "close-icon" }),
+    AddBusiness: (props: any) =>
+      React.createElement("svg", {
+        ...props,
+        "data-testid": "add-business-icon",
+      }),
+    Warning: (props: any) =>
+      React.createElement("svg", { ...props, "data-testid": "warning-icon" }),
+  };
+});

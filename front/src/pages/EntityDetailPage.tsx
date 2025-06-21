@@ -6,6 +6,7 @@ import { Box, Alert, CircularProgress, IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { PageHeader } from "../components/LayoutComponents";
+import { log } from "@/utils/logger";
 
 import {
   EntityHeroSection,
@@ -56,11 +57,15 @@ const EntityDetailPage: React.FC = () => {
     if (!entity) return;
     try {
       const updatedEntity = await updateField(entity.id, fieldName, fieldValue);
-      // Update local state with the response
-      // Note: In a full implementation, we'd update the entity state here
-      console.log("Field updated:", updatedEntity);
+      log.info("Field updated:", {
+        component: "EntityDetailPage",
+        updatedEntity,
+      });
     } catch (error) {
-      console.error("Failed to update field:", error);
+      log.error("Failed to update field:", {
+        component: "EntityDetailPage",
+        error,
+      });
       throw error;
     }
   };

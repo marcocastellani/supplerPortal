@@ -32,6 +32,7 @@ import {
   QuestionType,
   CertificateType,
 } from "../../../types/questionnaire-templates";
+import { log } from "@/utils/logger";
 
 interface ReviewStepProps {
   templateData: Partial<QuestionnaireTemplate>;
@@ -79,7 +80,7 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
       await onPublish();
       setPublishDialogOpen(false);
     } catch (error) {
-      console.error("Failed to publish:", error);
+      log.error("Failed to publish:", { component: "ReviewStep", error });
     } finally {
       setIsPublishing(false);
     }
