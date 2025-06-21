@@ -38,9 +38,9 @@ const EntityDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  
+
   // Use Zustand store for tab state
-  const { activeTab, setActiveTab } = useTab('entity-detail', 0);
+  const { activeTab, setActiveTab } = useTab("entity-detail", 0);
 
   // Custom hooks for data and updates [CA]
   const { entity, parentEntity, isLoading, error, fetchEntity } =
@@ -185,7 +185,7 @@ const EntityDetailPage: React.FC = () => {
         {/* Tab Navigation */}
         <Grid item xs={12}>
           <EntityTabNavigation
-            activeTab={activeTab as number}
+            activeTab={typeof activeTab === "number" ? activeTab : 0}
             onTabChange={handleTabChange}
           />
         </Grid>
