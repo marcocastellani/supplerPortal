@@ -1,18 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Remira.UCP.SupplierPortal.API.Controllers.Base;
+using Asp.Versioning;
 
 namespace Remira.UCP.SupplierPortal.API.Controllers;
 
-//Controller for Dapr Service Bus Events
-
-[Route("api/v1/[controller]")]
-[ApiController]
-public class IntegrationEventController : ControllerBase
+/// <summary>
+/// Controller for Dapr Service Bus Events
+/// </summary>
+[ApiVersion("2025-06-01")]
+public class IntegrationEventController : MediatrBaseController
 {
-
-    //[HttpPost("Test")]
-    //[Topic(IEventBus.UCP_PUBSUB_NAME, nameof(TestIntegrationEvent))]
-    //public Task HandleAsync(TestIntegrationEvent @event, [FromServices] TestIntegrationEventHandler handler)
-    //=> handler.HandleAsync(@event);
-
-
+    // TODO: Implement integration event handlers when required
 }
