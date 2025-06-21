@@ -18,12 +18,14 @@
 ## 🎯 Design Principles
 
 ### Core Principles [SF]
+
 - **Consistency First**: Always use existing UnifiedUI components before creating new ones
 - **Accessibility by Default**: All components must meet WCAG 2.1 AA standards
 - **Scalable Architecture**: Design for multiple themes and responsive breakpoints
 - **Performance Optimized**: Minimize bundle size and optimize rendering
 
 ### Design Philosophy [RP]
+
 - **Atomic Design**: Components are built from atoms → molecules → organisms → templates
 - **Progressive Enhancement**: Core functionality works without JavaScript
 - **Mobile-First**: Responsive design starts from mobile viewport
@@ -36,58 +38,65 @@
 ### 🌈 Colors
 
 #### Primary Colors
+
 ```scss
---primary: rgb(57, 180, 191);           // #39B4BF - Main brand color
---primary-dark: rgb(0, 93, 107);        // #005D6B - Dark variant
---primary-light: rgb(235, 247, 248);    // #EBF7F8 - Light variant
---primary-lo: rgba(57, 180, 191, 0.2);  // 20% opacity
+--primary: rgb(57, 180, 191); // #39B4BF - Main brand color
+--primary-dark: rgb(0, 93, 107); // #005D6B - Dark variant
+--primary-light: rgb(235, 247, 248); // #EBF7F8 - Light variant
+--primary-lo: rgba(57, 180, 191, 0.2); // 20% opacity
 ```
 
 #### Neutral Colors
+
 ```scss
---white: rgb(255, 255, 255);      // #FFFFFF
+--white: rgb(255, 255, 255); // #FFFFFF
 --light-grey: rgb(236, 239, 241); // #ECEFF1
---dark-grey: rgb(38, 50, 56);     // #263238
---disabled: rgb(176, 190, 197);   // #B0BEC5
+--dark-grey: rgb(38, 50, 56); // #263238
+--disabled: rgb(176, 190, 197); // #B0BEC5
 
 // Grey Scale
---grey-50: #ECEFF1;
---grey-100: #CFD8DC;
---grey-200: #B0BEC5;
---grey-300: #90A4AE;
---grey-400: #78909C;
---grey-600: #546E7A;
+--grey-50: #eceff1;
+--grey-100: #cfd8dc;
+--grey-200: #b0bec5;
+--grey-300: #90a4ae;
+--grey-400: #78909c;
+--grey-600: #546e7a;
 --grey-900: #263238;
 ```
 
 #### Signal Colors
+
 ```scss
---error: rgb(255, 88, 105);        // #FF5869
+--error: rgb(255, 88, 105); // #FF5869
 --error-light: rgb(255, 238, 239); // #FFEEEF
---warning: rgb(255, 178, 91);      // #FFB25B
+--warning: rgb(255, 178, 91); // #FFB25B
 --warning-light: rgb(247, 244, 240); // #F7F4F0
---success: rgb(92, 184, 92);       // #5CB85C
+--success: rgb(92, 184, 92); // #5CB85C
 --success-light: rgb(240, 247, 240); // #F0F7F0
---info: rgb(91, 192, 222);         // #5BC0DE
---info-light: rgb(240, 246, 247);  // #F0F6F7
+--info: rgb(91, 192, 222); // #5BC0DE
+--info-light: rgb(240, 246, 247); // #F0F6F7
 ```
 
 #### Chart Colors
+
 ```scss
---dark-warning: rgb(255, 130, 0);  // #FF8200
---yellow: rgb(255, 205, 0);        // #FFCD00
---dark-petrol: rgb(0, 93, 107);    // #005D6B
---blue: rgb(0, 94, 184);           // #005EB8
+--dark-warning: rgb(255, 130, 0); // #FF8200
+--yellow: rgb(255, 205, 0); // #FFCD00
+--dark-petrol: rgb(0, 93, 107); // #005D6B
+--blue: rgb(0, 94, 184); // #005EB8
 ```
 
 ### 📝 Typography
 
 #### Font Families
+
 ```scss
---font-sans-pro: 'Source Sans 3', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+--font-sans-pro: "Source Sans 3", "Helvetica Neue", "Helvetica", "Arial",
+  sans-serif;
 ```
 
 #### font Weights
+
 ```scss
 --light: 300;
 --regular: 400;
@@ -95,6 +104,7 @@
 ```
 
 #### Typography Scale
+
 ```scss
 // Headings
 h1, .h1: 2rem (32px), font-weight: 300
@@ -112,6 +122,7 @@ small: 0.875rem (14px), font-weight: 400
 ### 📐 Spacing & Layout
 
 #### Spacing Scale (8px base)
+
 ```scss
 --space-xs: 4px;
 --space-sm: 8px;
@@ -123,6 +134,7 @@ small: 0.875rem (14px), font-weight: 400
 ```
 
 #### Border Radius
+
 ```scss
 --radius-sm: 4px;
 --radius-md: 16px;
@@ -130,6 +142,7 @@ small: 0.875rem (14px), font-weight: 400
 ```
 
 #### Shadows
+
 ```scss
 --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 --shadow-md: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
@@ -137,6 +150,7 @@ small: 0.875rem (14px), font-weight: 400
 ```
 
 #### Breakpoints
+
 ```scss
 --layout-breakpoint-small: 1080px;
 ```
@@ -148,17 +162,20 @@ small: 0.875rem (14px), font-weight: 400
 ### 🔘 Buttons
 
 #### Button Variants
+
 - **Base**: Default button style
 - **Text**: Minimal button without background
 - **Contained**: Filled button with primary color
 - **Outlined**: Border-only button
 
 #### Button Sizes
+
 - **Small**: Compact size for secondary actions
 - **Medium**: Default size for most use cases
 - **Large**: Prominent size for primary actions
 
 #### Usage Rules [DRY]
+
 ```typescript
 // ✅ Correct Usage
 <Button variant="contained" color="primary" size="medium">
@@ -172,6 +189,7 @@ small: 0.875rem (14px), font-weight: 400
 ### 🏷️ Status Indicators
 
 #### Badges
+
 ```typescript
 // Status variants with semantic colors
 <StatusBadge status="published">Live</StatusBadge>
@@ -182,6 +200,7 @@ small: 0.875rem (14px), font-weight: 400
 ```
 
 #### Chips
+
 ```typescript
 // Multiple selection indicators
 <Chip label="Active" color="primary" />
@@ -192,12 +211,14 @@ small: 0.875rem (14px), font-weight: 400
 ### 📊 Data Display
 
 #### Tables
+
 - **Base Table**: Simple data display
 - **Enhanced Table**: With sorting, filtering, pagination
 - **Editable Table**: Inline editing capabilities
 - **Action Table**: With row actions and bulk operations
 
 #### Cards
+
 ```typescript
 // Card variants
 <Card elevation={1}>           // Subtle shadow
@@ -209,6 +230,7 @@ small: 0.875rem (14px), font-weight: 400
 ### 📝 Form Elements
 
 #### Input Fields
+
 ```typescript
 // Standard input with validation
 <Input
@@ -228,6 +250,7 @@ small: 0.875rem (14px), font-weight: 400
 ```
 
 #### Select Components
+
 ```typescript
 // Single select
 <Select
@@ -256,6 +279,7 @@ small: 0.875rem (14px), font-weight: 400
 ### 🎛️ Navigation
 
 #### Navbar
+
 ```typescript
 // Standard navbar with theme support
 <Navbar
@@ -267,6 +291,7 @@ small: 0.875rem (14px), font-weight: 400
 ```
 
 #### Tabs
+
 ```typescript
 // Content tabs
 <TabNavigator
@@ -289,6 +314,7 @@ small: 0.875rem (14px), font-weight: 400
 ### 💬 Feedback
 
 #### Dialogs
+
 ```typescript
 // Confirmation dialog
 <Dialog
@@ -297,12 +323,15 @@ small: 0.875rem (14px), font-weight: 400
   content="Are you sure you want to delete this item?"
   actions={[
     <Button onClick={handleCancel}>Cancel</Button>,
-    <Button onClick={handleConfirm} color="error">Delete</Button>
+    <Button onClick={handleConfirm} color="error">
+      Delete
+    </Button>,
   ]}
 />
 ```
 
 #### Loading States
+
 ```typescript
 // Skeleton for loading content
 <Skeleton variant="rectangular" width="100%" height={200} />
@@ -319,6 +348,7 @@ small: 0.875rem (14px), font-weight: 400
 ## 📐 Layout System
 
 ### Grid System
+
 ```typescript
 // 12-column responsive grid
 <Grid container spacing={2}>
@@ -335,6 +365,7 @@ small: 0.875rem (14px), font-weight: 400
 ```
 
 ### Layout Components
+
 ```typescript
 // Page layout with header and sidebar
 <AuthenticatedLayout>
@@ -347,6 +378,7 @@ small: 0.875rem (14px), font-weight: 400
 ```
 
 ### Container System
+
 ```typescript
 // Containers with consistent spacing
 <Container maxWidth="lg">        // Large container
@@ -362,61 +394,66 @@ small: 0.875rem (14px), font-weight: 400
 ### 🎭 Theme System
 
 #### Light/Dark Mode Support
+
 ```typescript
 // Theme configuration
 const themes = {
   light: {
-    background: '#eceff1',
-    bgHover: 'rgb(224, 224, 224)',
-    color: '#263238',
-    navbarBackground: '#263238',
-    navbarColor: '#fff',
+    background: "#eceff1",
+    bgHover: "rgb(224, 224, 224)",
+    color: "#263238",
+    navbarBackground: "#263238",
+    navbarColor: "#fff",
   },
   dark: {
-    background: '#36474f',
-    bgHover: 'rgb(44, 43, 43)',
-    color: '#ffffff',
-    navbarBackground: '#263238',
-    navbarColor: '#bcc0c2',
+    background: "#36474f",
+    bgHover: "rgb(44, 43, 43)",
+    color: "#ffffff",
+    navbarBackground: "#263238",
+    navbarColor: "#bcc0c2",
   },
 };
 ```
 
 #### Theme Usage
+
 ```scss
 // SCSS mixin for theme-aware styling
 @include themify($themes) {
-  background-color: themed('background');
-  color: themed('color');
+  background-color: themed("background");
+  color: themed("color");
 }
 ```
 
 ### 🎯 Status Patterns
 
 #### Status Colors Mapping
+
 ```typescript
 const statusConfig = {
-  published: { color: 'blue', bg: 'blue-50' },
-  inProgress: { color: 'amber', bg: 'amber-50' },
-  completed: { color: 'emerald', bg: 'emerald-50' },
-  overdue: { color: 'red', bg: 'red-50' },
-  draft: { color: 'gray', bg: 'gray-50' },
+  published: { color: "blue", bg: "blue-50" },
+  inProgress: { color: "amber", bg: "amber-50" },
+  completed: { color: "emerald", bg: "emerald-50" },
+  overdue: { color: "red", bg: "red-50" },
+  draft: { color: "gray", bg: "gray-50" },
 };
 ```
 
 #### Priority Indicators
+
 ```typescript
 const priorityConfig = {
-  critical: { color: 'red-600', icon: '🔥', pulse: true },
-  high: { color: 'orange-600', icon: '⚡', pulse: false },
-  medium: { color: 'yellow-600', icon: '⚠️', pulse: false },
-  low: { color: 'green-600', icon: '✅', pulse: false },
+  critical: { color: "red-600", icon: "🔥", pulse: true },
+  high: { color: "orange-600", icon: "⚡", pulse: false },
+  medium: { color: "yellow-600", icon: "⚠️", pulse: false },
+  low: { color: "green-600", icon: "✅", pulse: false },
 };
 ```
 
 ### 📱 Responsive Patterns
 
 #### Mobile-First Approach
+
 ```scss
 // Base styles (mobile)
 .component {
@@ -448,30 +485,34 @@ const priorityConfig = {
 ### ✅ DO's
 
 1. **Always use UnifiedUI components first** [DRY]
+
    ```typescript
    // ✅ Use existing components
-   import { Button, Card, Input } from '@remira/unifiedui';
+   import { Button, Card, Input } from "@remira/unifiedui";
    ```
 
 2. **Follow naming conventions** [ISA]
+
    ```typescript
    // ✅ PascalCase for components
    const UserProfileCard = () => {};
-   
+
    // ✅ camelCase for props and functions
    const handleUserSubmit = () => {};
    ```
 
 3. **Use design tokens consistently** [SF]
+
    ```scss
    // ✅ Use CSS custom properties
    color: var(--primary);
-   
+
    // ✅ Use SCSS variables
    color: $primary;
    ```
 
 4. **Implement proper accessibility** [REH]
+
    ```typescript
    // ✅ Include ARIA labels and roles
    <Button aria-label="Delete item" role="button">
@@ -495,6 +536,7 @@ const priorityConfig = {
 ### ❌ DON'Ts
 
 1. **Don't create custom components unnecessarily** [DRY]
+
    ```typescript
    // ❌ Don't reinvent existing components
    const CustomButton = styled.button`
@@ -504,28 +546,31 @@ const priorityConfig = {
    ```
 
 2. **Don't use magic numbers** [CMV]
+
    ```scss
    // ❌ Avoid hardcoded values
    margin: 23px;
-   
+
    // ✅ Use design tokens
    margin: var(--space-lg);
    ```
 
 3. **Don't ignore responsive design** [PA]
+
    ```scss
    // ❌ Fixed desktop-only styles
    width: 1200px;
-   
+
    // ✅ Responsive approach
    max-width: 100%;
    ```
 
 4. **Don't skip prop validation** [IV]
+
    ```typescript
    // ❌ Missing prop types
    const Component = ({ data }) => {};
-   
+
    // ✅ Proper TypeScript interfaces
    interface Props {
      data: UserData[];
@@ -554,8 +599,8 @@ When creating new components, follow this structure:
 
 ```typescript
 // ComponentName.tsx
-import React from 'react';
-import { cn } from '@/utils/cn';
+import React from "react";
+import { cn } from "@/utils/cn";
 
 interface ComponentNameProps {
   /**
@@ -569,30 +614,30 @@ interface ComponentNameProps {
   /**
    * Component variant
    */
-  variant?: 'default' | 'primary' | 'secondary';
+  variant?: "default" | "primary" | "secondary";
   /**
    * Size variant
    */
-  size?: 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
 }
 
 /**
  * ComponentName - Brief description of what this component does
- * 
+ *
  * @param props - Component props
  * @returns JSX.Element
  */
 export const ComponentName: React.FC<ComponentNameProps> = ({
   children,
   className,
-  variant = 'default',
-  size = 'md',
+  variant = "default",
+  size = "md",
   ...props
 }) => {
   return (
     <div
       className={cn(
-        'base-styles',
+        "base-styles",
         `variant-${variant}`,
         `size-${size}`,
         className
@@ -629,4 +674,4 @@ When developing UI components:
 5. **Test accessibility** - Ensure proper ARIA labels, keyboard navigation, and screen reader support
 6. **Use design tokens** - Never hardcode colors, spacing, or typography values
 
-This design system ensures consistent, accessible, and maintainable UI components across the entire REMIRA platform. Always refer to this document when making UI-related decisions. 
+This design system ensures consistent, accessible, and maintainable UI components across the entire REMIRA platform. Always refer to this document when making UI-related decisions.
