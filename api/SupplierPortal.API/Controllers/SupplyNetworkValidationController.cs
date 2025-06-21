@@ -9,7 +9,6 @@ using System;
 namespace Remira.UCP.SupplierPortal.API.Controllers;
 
 [ApiVersion("2025-06-01")]
-[Route("api/supplynetworkentities/validate")]
 public class SupplyNetworkValidationController : MediatrBaseController
 {
     private readonly IApplicationDbContext _context;
