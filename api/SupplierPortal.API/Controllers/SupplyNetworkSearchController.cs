@@ -8,6 +8,7 @@ using Asp.Versioning;
 namespace Remira.UCP.SupplierPortal.API.Controllers;
 
 [ApiVersion("2025-06-01")]
+[Route("api/supplynetworkentities/search")]
 public class SupplyNetworkSearchController : MediatrBaseController
 {
     /// <summary>
