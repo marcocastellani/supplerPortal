@@ -1,0 +1,1 @@
+export { useRbacStore } from './rbacStore';
