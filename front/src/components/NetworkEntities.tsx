@@ -6,7 +6,7 @@ import { PageHeader } from "./LayoutComponents";
 import { FormInputChangeEvent } from "../types/ui";
 import { EntityType } from "../types/supplyNetworkEntities";
 import { useNetworkEntitiesStore } from "../stores/networkEntitiesStore";
-import { ICON_SIZES, DATA_CONSTANTS } from "../constants/ui";
+import { ICON_SIZES } from "../constants/ui";
 import {
   EntityFilters,
   EntityTable,
@@ -77,7 +77,7 @@ const NetworkEntities: React.FC = () => {
 
   // Conditional rendering based on state
   if (error) {
-    return <ErrorState message={error} />;
+    return <ErrorState error={error} />;
   }
 
   return (
@@ -114,6 +114,9 @@ const NetworkEntities: React.FC = () => {
               entities={entities}
               currentPage={filters.currentPage}
               totalPages={totalPages}
+              totalCount={totalCount}
+              pageSize={20}
+              isLoading={isLoading}
               onPageChange={handlePageChange}
             />
           )}
