@@ -8,7 +8,10 @@ using Asp.Versioning;
 
 namespace Remira.UCP.SupplierPortal.API.Controllers;
 
-[ApiVersion("2025-06-01")] 
+/// <summary>
+/// Controller for managing supply network entities including suppliers, locations, sub-suppliers, and contacts.
+/// </summary>
+[ApiVersion("2025-06-01")]
 public class SupplyNetworkEntitiesController : MediatrBaseController
 {
     /// <summary>
