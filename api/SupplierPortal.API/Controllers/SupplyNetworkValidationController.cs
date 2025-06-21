@@ -4,6 +4,7 @@ using Remira.UCP.SupplierPortal.Application.SupplyNetworkEntities.Queries;
 using Asp.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Remira.UCP.SupplierPortal.Application.Interfaces;
+using System;
 
 namespace Remira.UCP.SupplierPortal.API.Controllers;
 
@@ -27,6 +28,7 @@ public class SupplyNetworkValidationController : MediatrBaseController
     [HttpGet("external-code/{externalCode}")]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult> ValidateExternalCode(string externalCode, [FromQuery] Guid? excludeId = null)
     {
         if (string.IsNullOrWhiteSpace(externalCode))
@@ -34,19 +36,31 @@ public class SupplyNetworkValidationController : MediatrBaseController
             return BadRequest(new { message = "External code cannot be empty" });
         }
 
-        // Direct database query for exact matching - no pagination needed for validation
-        var existsQuery = _context.SupplyNetworkEntities
-            .Where(s => s.ExternalCode.ToLower() == externalCode.ToLower());
-
-        // Exclude specific entity when updating
-        if (excludeId.HasValue)
+        if (externalCode.Length > 100) // Reasonable limit for external codes
         {
-            existsQuery = existsQuery.Where(s => s.Id != excludeId.Value);
+            return BadRequest(new { message = "External code cannot exceed 100 characters" });
         }
 
-        var exists = await existsQuery.AnyAsync();
+        try
+        {
+            // Direct database query for exact matching - no pagination needed for validation
+            var existsQuery = _context.SupplyNetworkEntities
+                .Where(s => s.ExternalCode != null && string.Equals(s.ExternalCode, externalCode, StringComparison.OrdinalIgnoreCase));
 
-        return Ok(new { isUnique = !exists });
+            // Exclude specific entity when updating
+            if (excludeId.HasValue)
+            {
+                existsQuery = existsQuery.Where(s => s.Id != excludeId.Value);
+            }
+
+            var exists = await existsQuery.AnyAsync();
+
+            return Ok(new { isUnique = !exists });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new { message = "An error occurred while validating external code" });
+        }
     }
 
     /// <summary>
@@ -58,6 +72,7 @@ public class SupplyNetworkValidationController : MediatrBaseController
     [HttpGet("vat-code/{vatCode}")]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult> ValidateVatCode(string vatCode, [FromQuery] Guid? excludeId = null)
     {
         if (string.IsNullOrWhiteSpace(vatCode))
@@ -65,19 +80,31 @@ public class SupplyNetworkValidationController : MediatrBaseController
             return BadRequest(new { message = "VAT code cannot be empty" });
         }
 
-        // Direct database query for exact matching - check ALL entities, no pagination
-        var existsQuery = _context.SupplyNetworkEntities
-            .Where(s => s.VatCode.ToLower() == vatCode.ToLower());
-
-        // Exclude specific entity when updating
-        if (excludeId.HasValue)
+        if (vatCode.Length > 50) // Reasonable limit for VAT codes
         {
-            existsQuery = existsQuery.Where(s => s.Id != excludeId.Value);
+            return BadRequest(new { message = "VAT code cannot exceed 50 characters" });
         }
 
-        var exists = await existsQuery.AnyAsync();
+        try
+        {
+            // Direct database query for exact matching - check ALL entities, no pagination
+            var existsQuery = _context.SupplyNetworkEntities
+                .Where(s => s.VatCode != null && string.Equals(s.VatCode, vatCode, StringComparison.OrdinalIgnoreCase));
 
-        return Ok(new { isUnique = !exists });
+            // Exclude specific entity when updating
+            if (excludeId.HasValue)
+            {
+                existsQuery = existsQuery.Where(s => s.Id != excludeId.Value);
+            }
+
+            var exists = await existsQuery.AnyAsync();
+
+            return Ok(new { isUnique = !exists });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new { message = "An error occurred while validating VAT code" });
+        }
     }
 
     /// <summary>
@@ -89,6 +116,7 @@ public class SupplyNetworkValidationController : MediatrBaseController
     [HttpGet("legal-name/{legalName}")]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult> ValidateLegalName(string legalName, [FromQuery] Guid? excludeId = null)
     {
         if (string.IsNullOrWhiteSpace(legalName))
@@ -96,18 +124,30 @@ public class SupplyNetworkValidationController : MediatrBaseController
             return BadRequest(new { message = "Legal name cannot be empty" });
         }
 
-        // Direct database query for exact matching - check ALL entities, no pagination
-        var existsQuery = _context.SupplyNetworkEntities
-            .Where(s => s.LegalName.ToLower() == legalName.ToLower());
-
-        // Exclude specific entity when updating
-        if (excludeId.HasValue)
+        if (legalName.Length > 200) // Reasonable limit for legal names
         {
-            existsQuery = existsQuery.Where(s => s.Id != excludeId.Value);
+            return BadRequest(new { message = "Legal name cannot exceed 200 characters" });
         }
 
-        var exists = await existsQuery.AnyAsync();
+        try
+        {
+            // Direct database query for exact matching - check ALL entities, no pagination
+            var existsQuery = _context.SupplyNetworkEntities
+                .Where(s => s.LegalName != null && string.Equals(s.LegalName, legalName, StringComparison.OrdinalIgnoreCase));
 
-        return Ok(new { isUnique = !exists });
+            // Exclude specific entity when updating
+            if (excludeId.HasValue)
+            {
+                existsQuery = existsQuery.Where(s => s.Id != excludeId.Value);
+            }
+
+            var exists = await existsQuery.AnyAsync();
+
+            return Ok(new { isUnique = !exists });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new { message = "An error occurred while validating legal name" });
+        }
     }
 }
