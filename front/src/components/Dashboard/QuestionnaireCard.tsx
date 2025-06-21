@@ -18,16 +18,39 @@ import {
 import { UpcomingQuestionnaireDto } from "../../types/dashboard";
 import { StatusChip } from "./StatusChip";
 import { PriorityChip } from "./PriorityChip";
+import {
+  sanitizeUserInput,
+  sanitizeEntityCode,
+  sanitizeAndTruncate,
+} from "../../utils/sanitization";
 
 interface QuestionnaireCardProps {
   questionnaire: UpcomingQuestionnaireDto;
   onActionClick?: (questionnaire: UpcomingQuestionnaireDto) => void;
 }
 
+/**
+ * QuestionnaireCard component with XSS protection via input sanitization [IV][REH]
+ *
+ * Displays questionnaire information with proper sanitization of all
+ * user-generated content to prevent XSS attacks.
+ */
 export const QuestionnaireCard: React.FC<QuestionnaireCardProps> = ({
   questionnaire,
   onActionClick,
 }) => {
+  // ✅ Sanitize all user-generated content to prevent XSS [IV][REH]
+  const sanitizedTitle = sanitizeAndTruncate(questionnaire.title, 80);
+  const sanitizedType = sanitizeUserInput(questionnaire.type);
+  const sanitizedSupplierName = sanitizeAndTruncate(
+    questionnaire.supplierName,
+    40
+  );
+  const sanitizedSupplierCode = sanitizeEntityCode(questionnaire.supplierCode);
+  const sanitizedId = sanitizeEntityCode(
+    questionnaire.id?.slice(-8)?.toUpperCase()
+  );
+
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString("it-IT", {
       day: "2-digit",
@@ -66,7 +89,7 @@ export const QuestionnaireCard: React.FC<QuestionnaireCardProps> = ({
           alignItems="flex-start"
           mb={2}
         >
-          <Box flex={1}>
+          <Box flex={1} title={sanitizedTitle}>
             <Typography
               variant="h6"
               component="h3"
@@ -80,11 +103,11 @@ export const QuestionnaireCard: React.FC<QuestionnaireCardProps> = ({
                 overflow: "hidden",
               }}
             >
-              {questionnaire.title}
+              {sanitizedTitle}
             </Typography>
 
             <Chip
-              label={questionnaire.type}
+              label={sanitizedType}
               size="small"
               variant="outlined"
               sx={{
@@ -115,17 +138,26 @@ export const QuestionnaireCard: React.FC<QuestionnaireCardProps> = ({
           {/* Supplier Info */}
           <Box display="flex" alignItems="center" gap={1}>
             <Business sx={{ fontSize: 16, color: "text.secondary" }} />
-            <Typography variant="body2" color="text.secondary">
-              {questionnaire.supplierName}
-            </Typography>
+            <Box title={sanitizedSupplierName} sx={{ flex: 1, minWidth: 0 }}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {sanitizedSupplierName}
+              </Typography>
+            </Box>
             <Chip
-              label={questionnaire.supplierCode}
+              label={sanitizedSupplierCode}
               size="small"
               variant="outlined"
               sx={{
                 fontSize: "0.7rem",
                 height: 20,
-                ml: "auto",
               }}
             />
           </Box>
@@ -174,7 +206,7 @@ export const QuestionnaireCard: React.FC<QuestionnaireCardProps> = ({
           <Box display="flex" alignItems="center" gap={1}>
             <Assignment sx={{ fontSize: 16, color: "text.secondary" }} />
             <Typography variant="caption" color="text.secondary">
-              ID: {questionnaire.id.slice(-8).toUpperCase()}
+              ID: {sanitizedId}
             </Typography>
           </Box>
 
