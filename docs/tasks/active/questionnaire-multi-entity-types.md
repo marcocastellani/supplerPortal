@@ -193,19 +193,19 @@ Implement support for multiple entity types per questionnaire template to enable
 
 ### **Phase 4: Business Logic & Assignment** (Estimated: 4 hours)
 
-#### ⏳ **Task 10: Update Questionnaire Assignment Logic [REH][PA]**
+#### ✅ **Task 10: Update Questionnaire Assignment Logic [REH][PA]**
 
-- **Status**: ⏳ Pending
+- **Status**: ✅ Complete
 - **Priority**: 🟡 Medium
 - **Estimated Time**: 3 hours
 - **Assignee**: AI
 - **Dependencies**: Task 5
 - **Description**: Modify assignment logic to consider multiple entity types when creating questionnaire instances
 - **Acceptance Criteria**:
-  - [ ] Assignment command filters entities by template's target types
-  - [ ] Validation prevents assignment to incompatible entity types
-  - [ ] Bulk assignment handles entity type filtering efficiently
-  - [ ] Clear error messages for invalid assignments
+  - [x] Assignment command filters entities by template's target types
+  - [x] Validation prevents assignment to incompatible entity types
+  - [x] Bulk assignment handles entity type filtering efficiently
+  - [x] Clear error messages for invalid assignments
 - **Implementation Notes**:
   - Update `AssignQuestionnaireCommand` and handler
   - Add efficient LINQ queries for entity type filtering
