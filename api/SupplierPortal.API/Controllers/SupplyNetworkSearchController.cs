@@ -7,6 +7,9 @@ using Asp.Versioning;
 
 namespace Remira.UCP.SupplierPortal.API.Controllers;
 
+/// <summary>
+/// Search supply network entities with typeahead functionality
+/// </summary>
 [ApiVersion("2025-06-01")]
 public class SupplyNetworkSearchController : MediatrBaseController
 {

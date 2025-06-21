@@ -8,14 +8,16 @@ This section organizes all project tasks, from active work to completed achievem
 
 Currently in-progress or planned tasks:
 
-- _No active tasks currently_ - All major tasks completed!
+_No active tasks at this time_
 
 ### ✅ **Completed Tasks**
 
 Successfully completed work and achievements:
 
+- [`us-b1-001-template-listing-search.md`](./completed/us-b1-001-template-listing-search.md) - ✅ **Template Listing & Search** - Complete full-stack implementation with CQRS backend, responsive UI, and integrated navigation
 - [`design-system-compliance-completed.md`](./completed/design-system-compliance-completed.md) - 100% design system compliance achieved
 - [`code-cleanup-completed.md`](./completed/code-cleanup-completed.md) - Major code cleanup and refactoring
+- [`questionnaire-multi-entity-types.md`](./completed/questionnaire-multi-entity-types.md) - Multi-entity type support for questionnaires
 
 ### 📦 **Archived Plans**
 
@@ -34,6 +36,13 @@ Templates for creating new tasks and plans:
 
 ### 🏆 **Major Achievements**
 
+- **✅ Template Listing & Search (US-B1-001)** - Complete full-stack implementation ⭐ **NEW**
+
+  - CQRS backend with server-side search, filtering, pagination, sorting
+  - Responsive React components with UnifiedUI compliance
+  - Integrated navigation and URL persistence
+  - Performance optimized with debounced search
+
 - **✅ Design System Compliance** - 11/11 tasks completed (100%)
 
   - Security vulnerabilities eliminated
@@ -49,11 +58,12 @@ Templates for creating new tasks and plans:
 
 ### 📊 **Statistics**
 
-- **Total Completed Tasks**: 11+ major tasks
+- **Total Completed Tasks**: 12+ major tasks
 - **Security Issues Resolved**: 5/5 critical issues
 - **Accessibility Compliance**: WCAG 2.1 AA achieved
 - **Design System Compliance**: 100%
 - **Documentation Coverage**: Comprehensive
+- **Latest Feature**: Template Listing & Search (US-B1-001)
 
 ## 🔗 **Navigation**
 

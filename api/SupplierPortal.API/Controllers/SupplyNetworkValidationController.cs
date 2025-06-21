@@ -8,6 +8,9 @@ using System;
 
 namespace Remira.UCP.SupplierPortal.API.Controllers;
 
+/// <summary>
+/// validation conroller
+/// </summary>
 [ApiVersion("2025-06-01")]
 public class SupplyNetworkValidationController : MediatrBaseController
 {
