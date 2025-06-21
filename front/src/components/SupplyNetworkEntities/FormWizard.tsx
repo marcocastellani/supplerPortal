@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Container, Grid, Text, Card } from "@remira/unifiedui";
+import { Container, Grid, Text, Card, Button } from "@remira/unifiedui";
+import { Box, LinearProgress } from "@mui/material";
 import { PageHeader } from "../LayoutComponents";
 import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 
@@ -15,10 +16,21 @@ interface FormWizardProps {
   isLoading?: boolean; // Add loading state
 }
 
+/**
+ * WizardStep component for encapsulating form wizard steps [SF]
+ */
 export const WizardStep: React.FC<WizardStepProps> = ({ children }) => {
   return <>{children}</>;
 };
 
+/**
+ * FormWizard component using UnifiedUI components and design tokens [DRY][SF]
+ *
+ * @param children - Array of WizardStep components
+ * @param onComplete - Callback when wizard is completed
+ * @param isLoading - Loading state for form submission
+ * @returns JSX.Element
+ */
 export const FormWizard: React.FC<FormWizardProps> = ({
   children,
   onComplete,
@@ -43,6 +55,9 @@ export const FormWizard: React.FC<FormWizardProps> = ({
     buttonBackLabel: "Back",
   }));
 
+  // ✅ Calculate progress using design system approach [SF]
+  const progressValue = ((currentStep + 1) / steps.length) * 100;
+
   return (
     <Container type="page">
       <Grid container rowSpacing={3} sx={{ paddingTop: 2 }}>
@@ -57,106 +72,73 @@ export const FormWizard: React.FC<FormWizardProps> = ({
         <Grid item xs={12}>
           <Card sx={{ p: 3 }}>
             {steps && steps[currentStep] && (
-              <div>
-                {/* Step header */}
-                <div style={{ marginBottom: "24px" }}>
+              <Box>
+                {/* Step header with design system compliant styling */}
+                <Box sx={{ mb: 3 }}>
                   <Text variant="h5" sx={{ mb: 1 }}>
                     Step {currentStep + 1} of {steps.length}:{" "}
                     {steps[currentStep].label}
                   </Text>
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "8px",
-                      marginTop: "16px",
+
+                  {/* ✅ Using Material-UI LinearProgress with design tokens [DRY][SF] */}
+                  <LinearProgress
+                    variant="determinate"
+                    value={progressValue}
+                    sx={{
+                      mt: 2,
+                      height: 4,
+                      borderRadius: 2,
+                      backgroundColor: "grey.200", // ✅ Design token instead of #e0e0e0 [CMV]
+                      "& .MuiLinearProgress-bar": {
+                        backgroundColor: "primary.main", // ✅ Design token instead of #1976d2 [CMV]
+                        borderRadius: 2,
+                      },
                     }}
-                  >
-                    {steps.map((_, index) => (
-                      <div
-                        key={index}
-                        style={{
-                          flex: 1,
-                          height: "4px",
-                          backgroundColor:
-                            index <= currentStep ? "#1976d2" : "#e0e0e0",
-                          borderRadius: "2px",
-                        }}
-                      />
-                    ))}
-                  </div>
-                </div>
+                  />
+                </Box>
 
                 {/* Step content */}
-                <div style={{ marginBottom: "24px" }}>
-                  {steps[currentStep].content}
-                </div>
+                <Box sx={{ mb: 3 }}>{steps[currentStep].content}</Box>
 
-                {/* Navigation buttons */}
-                <div
-                  style={{
+                {/* ✅ Navigation buttons using UnifiedUI Button components [DRY] */}
+                <Box
+                  sx={{
                     display: "flex",
                     justifyContent: "space-between",
-                    marginTop: "32px",
+                    mt: 4,
                   }}
                 >
-                  <div>
+                  <Box>
                     {currentStep > 0 && (
-                      <button
-                        type="button"
+                      <Button
+                        variant="outlined"
                         onClick={steps[currentStep].handleStepBack}
                         disabled={isLoading}
-                        style={{
-                          padding: "12px 24px",
-                          backgroundColor: "transparent",
-                          border: "1px solid #ccc",
-                          borderRadius: "8px",
-                          cursor: isLoading ? "not-allowed" : "pointer",
-                          fontSize: "14px",
-                          fontWeight: "500",
-                          opacity: isLoading ? 0.6 : 1,
-                        }}
-                      >
-                        {steps[currentStep].buttonBackLabel || "Back"}
-                      </button>
+                        size="medium"
+                        label={steps[currentStep].buttonBackLabel || "Back"}
+                      />
                     )}
-                  </div>
-                  <div>
-                    <button
-                      type="button"
+                  </Box>
+                  <Box>
+                    <Button
+                      variant="contained"
                       onClick={steps[currentStep].handleStepForward}
                       disabled={isLoading || !steps[currentStep].isValid}
-                      style={{
-                        padding: "12px 24px",
-                        backgroundColor:
-                          isLoading || !steps[currentStep].isValid
-                            ? "#ccc"
-                            : "#1976d2",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "8px",
-                        cursor:
-                          isLoading || !steps[currentStep].isValid
-                            ? "not-allowed"
-                            : "pointer",
-                        fontSize: "14px",
-                        fontWeight: "500",
-                        opacity:
-                          isLoading || !steps[currentStep].isValid ? 0.6 : 1,
-                        position: "relative",
-                      }}
-                    >
-                      {isLoading && currentStep === children.length - 1 ? (
-                        <span>
-                          <span style={{ marginRight: "8px" }}>⏳</span>
-                          Creating...
-                        </span>
-                      ) : (
-                        steps[currentStep].buttonNextLabel || "Next"
-                      )}
-                    </button>
-                  </div>
-                </div>
-              </div>
+                      size="medium"
+                      label={
+                        isLoading && currentStep === children.length - 1
+                          ? "Creating..."
+                          : steps[currentStep].buttonNextLabel || "Next"
+                      }
+                      startIcon={
+                        isLoading && currentStep === children.length - 1
+                          ? "⏳"
+                          : undefined
+                      }
+                    />
+                  </Box>
+                </Box>
+              </Box>
             )}
           </Card>
         </Grid>
