@@ -14,15 +14,8 @@ import { useEntitySubmission } from "../hooks/useEntitySubmission";
 import { LoadingState, SuccessState } from "../components/NewEntity";
 import { TIMING } from "../constants/ui";
 import { ErrorType } from "../utils/errorHandling";
-import { log } from "../utils/logger";
 
 const NewSupplyNetworkEntity: React.FC = () => {
-  // Debug: Log component mount/unmount to identify if it's being recreated
-  log.info("NewSupplyNetworkEntity component rendered", {
-    component: "NewSupplyNetworkEntity",
-    timestamp: Date.now(),
-  });
-
   // Custom hooks for state management
   const {
     enumValues,
