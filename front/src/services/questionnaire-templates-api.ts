@@ -158,20 +158,17 @@ class QuestionnaireTemplatesApi {
     }
   }
 
-  // Save template as draft
-  async saveDraft(
-    data: SaveDraftRequest
-  ): Promise<QuestionnaireTemplateResponse> {
+  // Save template as draft (auto-save functionality)
+  async saveDraft(templateId: string, data: SaveDraftRequest): Promise<void> {
     try {
       const params = new URLSearchParams();
       params.append("api-version", "2025-06-01");
 
-      const response = await axios.post(
-        "/api/questionnairetemplates/draft",
+      await axios.put(
+        `/api/questionnairetemplates/${templateId}/auto-save`,
         data,
         { params }
       );
-      return response.data;
     } catch (error: any) {
       throw this.handleError(error);
     }

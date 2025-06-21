@@ -201,7 +201,8 @@ export const useTemplateWizard = (
 
   // Auto-save effect
   useEffect(() => {
-    if (!autoSaveConfig.enabled || !state.isDirty || !templateId) {
+    const currentTemplateId = state.templateData.id || templateId;
+    if (!autoSaveConfig.enabled || !state.isDirty || !currentTemplateId) {
       return;
     }
 
@@ -281,20 +282,22 @@ export const useTemplateWizard = (
   );
 
   const handleAutoSave = useCallback(async () => {
-    if (!templateId) return;
+    // Use the template ID from state if it exists, otherwise fall back to the prop
+    const currentTemplateId = state.templateData.id || templateId;
+    if (!currentTemplateId) return;
 
     setState((prev) => ({ ...prev, isAutoSaving: true }));
 
     try {
       const saveRequest: SaveDraftRequest = {
-        templateId,
+        templateId: currentTemplateId,
         title: state.templateData.title || "",
         description: state.templateData.description || "",
         expirationMonths: state.templateData.expirationMonths || 12,
         certificateType: state.templateData.certificateType,
       };
 
-      await questionnaireTemplatesApi.saveDraft(saveRequest);
+      await questionnaireTemplatesApi.saveDraft(currentTemplateId, saveRequest);
 
       const now = new Date().toISOString();
       setState((prev) => ({
@@ -565,7 +568,8 @@ export const useTemplateWizard = (
   // Actions
   const saveDraft = useCallback(async () => {
     try {
-      let currentTemplateId = templateId;
+      // Use the template ID from state if it exists, otherwise fall back to the prop
+      let currentTemplateId = state.templateData.id || templateId;
 
       // If no templateId exists, create the template first
       if (!currentTemplateId) {
@@ -611,7 +615,7 @@ export const useTemplateWizard = (
           currentTemplateId,
         });
       } else {
-        // If template exists, use the saveDraft API
+        // If template exists, use the auto-save API
         const saveRequest: SaveDraftRequest = {
           templateId: currentTemplateId,
           title: state.templateData.title || "",
@@ -620,12 +624,15 @@ export const useTemplateWizard = (
           certificateType: state.templateData.certificateType,
         };
 
-        log.debug("saveDraft: Saving draft for existing template:", {
+        log.debug("saveDraft: Auto-saving existing template:", {
           hook: "useTemplateWizard",
           currentTemplateId,
         });
 
-        await questionnaireTemplatesApi.saveDraft(saveRequest);
+        await questionnaireTemplatesApi.saveDraft(
+          currentTemplateId,
+          saveRequest
+        );
       }
 
       setState((prev) => ({
@@ -657,7 +664,8 @@ export const useTemplateWizard = (
 
   const publishTemplate = useCallback(async () => {
     try {
-      let currentTemplateId = templateId;
+      // Use the template ID from state if it exists, otherwise fall back to the prop
+      let currentTemplateId = state.templateData.id || templateId;
 
       // If no templateId exists, create the template first
       if (!currentTemplateId) {
