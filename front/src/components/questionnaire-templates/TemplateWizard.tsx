@@ -11,6 +11,8 @@ import {
   Alert,
   CircularProgress,
   Snackbar,
+  FormControlLabel,
+  Switch,
 } from "@mui/material";
 import { useTemplateWizard } from "../../hooks/useTemplateWizard";
 import { WizardStep } from "../../types/questionnaire-templates";
@@ -44,6 +46,7 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
     "success"
   );
+  const [autoSaveEnabled, setAutoSaveEnabled] = useState(false);
 
   const {
     state,
@@ -73,6 +76,7 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
     getStepErrors,
   } = useTemplateWizard({
     templateId,
+    autoSave: { enabled: autoSaveEnabled },
     onSave: () => {
       setSnackbarMessage("Template saved successfully");
       setSnackbarSeverity("success");
@@ -215,9 +219,29 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
     >
       <Card elevation={1}>
         <CardContent>
-          <Typography variant="h4" component="h1" gutterBottom>
-            {currentTemplateId ? "Edit Template" : "Create New Template"}
-          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2,
+            }}
+          >
+            <Typography variant="h4" component="h1">
+              {currentTemplateId ? "Edit Template" : "Create New Template"}
+            </Typography>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={autoSaveEnabled}
+                  onChange={(e) => setAutoSaveEnabled(e.target.checked)}
+                  color="primary"
+                />
+              }
+              label="Auto-save"
+              sx={{ m: 0 }}
+            />
+          </Box>
 
           {/* Auto-save indicator */}
           {state.isAutoSaving && (

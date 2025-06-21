@@ -326,6 +326,27 @@ export const useTemplateWizard = (
     onError,
   ]);
 
+  // Trigger autosave immediately when enabled with existing unsaved changes
+  useEffect(() => {
+    if (autoSaveConfig.enabled && state.isDirty) {
+      const currentTemplateId = state.templateData.id || templateId;
+      if (currentTemplateId) {
+        // Set a short timeout to trigger autosave when enabled
+        const timeoutId = setTimeout(() => {
+          handleAutoSave();
+        }, 1000); // 1 second delay when enabling autosave
+
+        return () => clearTimeout(timeoutId);
+      }
+    }
+  }, [
+    autoSaveConfig.enabled,
+    state.isDirty,
+    state.templateData.id,
+    templateId,
+    handleAutoSave,
+  ]);
+
   // Navigation functions
   const goToStep = useCallback((step: WizardStep) => {
     setState((prev) => ({ ...prev, currentStep: step }));
