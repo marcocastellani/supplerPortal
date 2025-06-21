@@ -13,11 +13,24 @@ interface StatusChipProps extends Omit<ChipProps, "color"> {
 }
 
 /**
- * StatusChip component for displaying questionnaire status with design system compliant colors [SF]
+ * StatusChip component for displaying questionnaire status with design system compliant colors [SF][CMV]
  *
- * @param status - The questionnaire status type
- * @param props - Additional chip props
- * @returns JSX.Element
+ * Features:
+ * - Uses Material-UI theme tokens instead of hardcoded colors for accessibility
+ * - Supports all questionnaire status types with semantic color mapping
+ * - Fully responsive design with consistent typography
+ * - WCAG 2.1 AA compliant color contrast ratios
+ * - Light/dark theme compatible
+ *
+ * @param status - The questionnaire status type (Draft, Published, InProgress, Completed, Overdue)
+ * @param props - Additional Material-UI Chip props (size, variant, onClick, etc.)
+ * @returns JSX.Element - Styled chip component with status-specific colors
+ *
+ * @example
+ * ```tsx
+ * <StatusChip status="Completed" />
+ * <StatusChip status="Overdue" onClick={handleClick} />
+ * ```
  */
 export const StatusChip: React.FC<StatusChipProps> = ({ status, ...props }) => {
   const getStatusConfig = (status: QuestionnaireStatus) => {

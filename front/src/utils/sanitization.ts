@@ -3,6 +3,27 @@
  *
  * This module provides secure methods for displaying user-generated content
  * by escaping HTML entities and sanitizing potentially dangerous input.
+ *
+ * Security Features:
+ * - HTML entity escaping to prevent XSS injection
+ * - Input validation and sanitization for user-generated content
+ * - Entity code validation with alphanumeric filtering
+ * - Text truncation with safe length limits
+ * - Type guards for runtime type safety
+ *
+ * Used throughout the application to secure:
+ * - EntityTable display data (names, VAT codes, locations)
+ * - QuestionnaireCard content (titles, supplier information)
+ * - Form inputs and user-generated text
+ * - API response data before rendering
+ *
+ * @example
+ * ```tsx
+ * // Secure display of user data
+ * const safeName = sanitizeUserInput(entity.name);
+ * const safeCode = sanitizeEntityCode(entity.vatCode);
+ * const truncated = sanitizeAndTruncate(longText, 100);
+ * ```
  */
 
 /**

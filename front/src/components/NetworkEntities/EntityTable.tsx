@@ -34,11 +34,51 @@ export interface EntityTableProps {
 }
 
 /**
- * EntityTable component with XSS protection and full accessibility support [IV][REH]
+ * EntityTable component with XSS protection and full accessibility support [IV][REH][PA]
  *
  * Displays supply network entities in a secure table format with proper
  * sanitization of all user-generated content to prevent XSS attacks
  * and comprehensive ARIA labels for WCAG 2.1 AA compliance.
+ *
+ * Security Features:
+ * - All user-generated content sanitized to prevent XSS attacks
+ * - Entity names, VAT codes, and location data properly escaped
+ * - Safe truncation of long text content with proper encoding
+ * - Input validation for all displayed data
+ *
+ * Accessibility Features:
+ * - WCAG 2.1 AA compliant table structure with proper roles
+ * - Comprehensive ARIA labels for screen readers
+ * - Keyboard navigation support with focus management
+ * - Semantic HTML structure with proper table headers
+ * - Screen reader announcements for pagination changes
+ *
+ * Performance Optimizations:
+ * - Memoized table headers and pagination info
+ * - Optimized re-rendering with useCallback hooks
+ * - Efficient entity data processing
+ *
+ * @param entities - Array of supply network entities to display
+ * @param currentPage - Current pagination page number
+ * @param totalPages - Total number of available pages
+ * @param totalCount - Total number of entities across all pages
+ * @param pageSize - Number of entities per page
+ * @param isLoading - Loading state for displaying skeleton/spinner
+ * @param onPageChange - Callback function for pagination changes
+ * @returns JSX.Element - Secure and accessible entity table component
+ *
+ * @example
+ * ```tsx
+ * <EntityTable
+ *   entities={entityList}
+ *   currentPage={1}
+ *   totalPages={5}
+ *   totalCount={100}
+ *   pageSize={20}
+ *   isLoading={false}
+ *   onPageChange={handlePageChange}
+ * />
+ * ```
  */
 const EntityTable: React.FC<EntityTableProps> = ({
   entities,

@@ -7,10 +7,24 @@ interface ErrorMessageProps {
 }
 
 /**
- * ErrorMessage component for displaying validation and error messages [SF]
+ * ErrorMessage component for displaying validation and error messages [SF][CMV]
  *
- * @param message - The error message to display
- * @returns JSX.Element | null
+ * Features:
+ * - Uses Material-UI theme error.main token instead of hardcoded colors
+ * - Consistent typography styling with proper font weight and size
+ * - Accessible error styling with semantic color meaning
+ * - Conditional rendering - returns null for empty messages
+ * - Theme-aware colors that adapt to light/dark mode
+ *
+ * @param message - The error message text to display (empty string renders nothing)
+ * @returns JSX.Element | null - Styled error message component or null if message is empty
+ *
+ * @example
+ * ```tsx
+ * <ErrorMessage message="This field is required" />
+ * <ErrorMessage message={formErrors.email} />
+ * <ErrorMessage message="" /> // Renders nothing
+ * ```
  */
 export const ErrorMessage: React.FC<ErrorMessageProps> = ({ message }) => {
   if (!message) return null;

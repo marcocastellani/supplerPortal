@@ -18,11 +18,36 @@ interface EntityTypeChipProps {
 }
 
 /**
- * EntityTypeChip component with full theme support [TH]
+ * EntityTypeChip component with full theme support [TH][SF][CMV]
  *
  * Displays entity type information with theme-aware colors that automatically
  * adapt to light/dark mode switching while maintaining accessibility and
  * design system consistency.
+ *
+ * Features:
+ * - Complete theme integration with Material-UI theme tokens
+ * - Support for all EntityType enum values (Supplier, Site, SubSupplier, Person, CompanyGroup)
+ * - Semantic color mapping with proper contrast ratios
+ * - Configurable size, variant, and styling options
+ * - Icon support with entity-specific icons
+ * - Internationalization support with react-i18next
+ * - Minimal mode for compact displays
+ * - WCAG 2.1 AA compliant color contrast
+ *
+ * @param entityType - The entity type from EntityType enum
+ * @param size - Component size variant ("small" | "medium")
+ * @param variant - Chip variant ("filled" | "outlined")
+ * @param showIcon - Whether to display entity-specific icon
+ * @param style - Visual style ("default" | "colorful")
+ * @param minimal - Enable minimal styling for compact displays
+ * @returns JSX.Element - Themed entity type chip component
+ *
+ * @example
+ * ```tsx
+ * <EntityTypeChip entityType={EntityType.Supplier} />
+ * <EntityTypeChip entityType={EntityType.Site} size="medium" showIcon={true} />
+ * <EntityTypeChip entityType={EntityType.Person} style="colorful" minimal={false} />
+ * ```
  */
 export const EntityTypeChip: React.FC<EntityTypeChipProps> = ({
   entityType,

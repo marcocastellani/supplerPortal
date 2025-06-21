@@ -35,6 +35,39 @@ interface QuestionnaireCardProps {
  * Displays questionnaire information with proper sanitization of all
  * user-generated content to prevent XSS attacks and comprehensive ARIA labels
  * for WCAG 2.1 AA compliance.
+ *
+ * Security Features:
+ * - All user-generated content sanitized to prevent XSS attacks
+ * - Questionnaire titles, supplier names, and IDs properly escaped
+ * - Safe truncation of long text content with encoding
+ * - Input validation for all displayed data
+ *
+ * Accessibility Features:
+ * - WCAG 2.1 AA compliant card structure with proper roles
+ * - Comprehensive ARIA labels and descriptions for screen readers
+ * - Keyboard navigation support with Enter/Space key handling
+ * - Semantic HTML structure with article/header elements
+ * - Focus management with visible focus indicators
+ * - Screen reader friendly date and status announcements
+ *
+ * Visual Features:
+ * - Responsive card layout with hover animations
+ * - Consistent typography and spacing
+ * - Status and priority chips with semantic colors
+ * - Supplier information with business icons
+ * - Due date formatting with overdue indicators
+ *
+ * @param questionnaire - The questionnaire data to display
+ * @param onActionClick - Optional callback for action button clicks
+ * @returns JSX.Element - Secure and accessible questionnaire card component
+ *
+ * @example
+ * ```tsx
+ * <QuestionnaireCard
+ *   questionnaire={questionnaireData}
+ *   onActionClick={(questionnaire) => handleAction(questionnaire)}
+ * />
+ * ```
  */
 export const QuestionnaireCard: React.FC<QuestionnaireCardProps> = ({
   questionnaire,

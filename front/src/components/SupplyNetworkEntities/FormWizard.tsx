@@ -24,15 +24,53 @@ export const WizardStep: React.FC<WizardStepProps> = ({ children }) => {
 };
 
 /**
- * FormWizard component with full accessibility support using UnifiedUI components [DRY][SF][REH]
+ * FormWizard component with full accessibility support using UnifiedUI components [DRY][SF][REH][CMV]
  *
  * Multi-step form wizard with comprehensive ARIA labels and keyboard navigation
  * support for WCAG 2.1 AA compliance.
  *
- * @param children - Array of WizardStep components
- * @param onComplete - Callback when wizard is completed
- * @param isLoading - Loading state for form submission
- * @returns JSX.Element
+ * Features:
+ * - Uses UnifiedUI Button components instead of custom HTML buttons [DRY]
+ * - Material-UI LinearProgress with theme tokens instead of hardcoded colors [CMV]
+ * - Comprehensive ARIA labels and roles for screen reader support [REH]
+ * - Progressive disclosure with step-by-step validation
+ * - Loading states with accessible feedback
+ * - Keyboard navigation support
+ * - Responsive design with consistent spacing
+ *
+ * Accessibility Features:
+ * - WCAG 2.1 AA compliant navigation structure
+ * - Proper ARIA roles (progressbar, navigation, main, status)
+ * - Screen reader announcements for progress and validation
+ * - Focus management between steps
+ * - Semantic HTML structure with proper headings
+ * - Live regions for dynamic content updates
+ *
+ * Design System Compliance:
+ * - Uses design tokens for colors and spacing
+ * - Consistent button styling with UnifiedUI
+ * - Material-UI components for progress indicators
+ * - Proper typography hierarchy
+ *
+ * @param children - Array of WizardStep components with titles and content
+ * @param onComplete - Callback function executed when wizard is completed
+ * @param isLoading - Loading state for form submission and button states
+ * @returns JSX.Element - Accessible multi-step form wizard component
+ *
+ * @example
+ * ```tsx
+ * <FormWizard onComplete={handleComplete} isLoading={isSubmitting}>
+ *   <WizardStep title="Basic Information">
+ *     <BasicInfoForm />
+ *   </WizardStep>
+ *   <WizardStep title="Contact Details">
+ *     <ContactForm />
+ *   </WizardStep>
+ *   <WizardStep title="Review">
+ *     <ReviewStep />
+ *   </WizardStep>
+ * </FormWizard>
+ * ```
  */
 export const FormWizard: React.FC<FormWizardProps> = ({
   children,
