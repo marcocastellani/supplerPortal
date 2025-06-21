@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   FormControl,
@@ -12,46 +12,27 @@ import {
   Collapse,
 } from "@mui/material";
 import { FilterList, ExpandMore, ExpandLess, Clear } from "@mui/icons-material";
+import { useDashboardStore } from "@/stores/dashboardStore";
 
 export interface DashboardFiltersProps {
-  suppliers: string[];
-  onFiltersChange: (filters: {
-    status?: string;
-    priority?: string;
-    supplier?: string;
-    search?: string;
-  }) => void;
   isLoading?: boolean;
 }
 
 export const DashboardFilters: React.FC<DashboardFiltersProps> = ({
-  suppliers,
-  onFiltersChange,
   isLoading = false,
 }) => {
-  const [expanded, setExpanded] = useState(false);
-  const [filters, setFilters] = useState({
-    status: "all",
-    priority: "all",
-    supplier: "all",
-    search: "",
-  });
+  // Get state and actions from Zustand store
+  const {
+    filters,
+    suppliers,
+    expandedFilters,
+    setFilters,
+    resetFilters,
+    toggleExpandedFilters,
+  } = useDashboardStore();
 
   const handleFilterChange = (key: string, value: string) => {
-    const newFilters = { ...filters, [key]: value };
-    setFilters(newFilters);
-    onFiltersChange(newFilters);
-  };
-
-  const handleClearFilters = () => {
-    const clearedFilters = {
-      status: "all",
-      priority: "all",
-      supplier: "all",
-      search: "",
-    };
-    setFilters(clearedFilters);
-    onFiltersChange(clearedFilters);
+    setFilters({ [key]: value });
   };
 
   return (
@@ -63,7 +44,7 @@ export const DashboardFilters: React.FC<DashboardFiltersProps> = ({
           justifyContent: "space-between",
           cursor: "pointer",
         }}
-        onClick={() => setExpanded(!expanded)}
+        onClick={toggleExpandedFilters}
       >
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <FilterList />
@@ -74,16 +55,16 @@ export const DashboardFilters: React.FC<DashboardFiltersProps> = ({
             size="small"
             onClick={(e) => {
               e.stopPropagation();
-              handleClearFilters();
+              resetFilters();
             }}
           >
             <Clear />
           </IconButton>
-          {expanded ? <ExpandLess /> : <ExpandMore />}
+          {expandedFilters ? <ExpandLess /> : <ExpandMore />}
         </Box>
       </Box>
 
-      <Collapse in={expanded}>
+      <Collapse in={expandedFilters}>
         <Stack
           direction={{ xs: "column", md: "row" }}
           spacing={2}
