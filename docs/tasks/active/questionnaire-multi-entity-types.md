@@ -155,20 +155,20 @@ Implement support for multiple entity types per questionnaire template to enable
   - Import EntityType from existing supply network entities types
   - Ensure type safety with proper validation
 
-#### ⏳ **Task 8: Implement Multi-Select UI Component [SF][RP]**
+#### ✅ **Task 8: Implement Multi-Select UI Component [SF][RP]**
 
-- **Status**: ⏳ Pending
+- **Status**: ✅ Complete
 - **Priority**: 🔴 High
 - **Estimated Time**: 3 hours
 - **Assignee**: AI
 - **Dependencies**: Task 7
 - **Description**: Replace single-select dropdown with multi-select component with chips
 - **Acceptance Criteria**:
-  - [ ] Multi-select dropdown with Material-UI Select component
-  - [ ] Selected entity types displayed as chips
-  - [ ] Proper validation (minimum 1 selection required)
-  - [ ] Responsive design following REMIRA design system
-  - [ ] Clear helper text explaining selection
+  - [x] Multi-select dropdown with Material-UI Select component
+  - [x] Selected entity types displayed as chips
+  - [x] Proper validation (minimum 1 selection required)
+  - [x] Responsive design following REMIRA design system
+  - [x] Clear helper text explaining selection
 - **Implementation Notes**:
   - Use MUI's `multiple` prop on Select component
   - Implement chip display in `renderValue`
