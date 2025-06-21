@@ -96,44 +96,44 @@ export const EntityTypeChip: React.FC<EntityTypeChipProps> = ({
     }
   };
 
-  // ✅ Get entity type color scheme with theme support [TH]
+  // ✅ Get entity type color scheme with theme support and improved contrast [TH]
   const getEntityTypeColor = (type: EntityType) => {
     switch (type) {
       case EntityType.Supplier:
         return {
-          color: theme.palette.primary.main, // ✅ Instead of #1976d2 [TH]
-          backgroundColor: theme.palette.primary.light, // ✅ Instead of #e3f2fd [TH]
+          color: theme.palette.common.white, // ✅ White text for better contrast [TH]
+          backgroundColor: theme.palette.primary.main, // ✅ Solid primary color [TH]
           borderColor: theme.palette.primary.main, // ✅ Theme-aware [TH]
         };
       case EntityType.Site:
         return {
-          color: theme.palette.warning.main, // ✅ Instead of #f57c00 [TH]
-          backgroundColor: theme.palette.warning.light, // ✅ Instead of #fff3e0 [TH]
+          color: theme.palette.common.white, // ✅ White text for better contrast [TH]
+          backgroundColor: theme.palette.warning.main, // ✅ Solid warning color [TH]
           borderColor: theme.palette.warning.main, // ✅ Theme-aware [TH]
         };
       case EntityType.SubSupplier:
         return {
-          color: theme.palette.secondary.main, // ✅ Instead of #7b1fa2 [TH]
-          backgroundColor: theme.palette.secondary.light, // ✅ Instead of #f3e5f5 [TH]
+          color: theme.palette.common.white, // ✅ White text for better contrast [TH]
+          backgroundColor: theme.palette.secondary.main, // ✅ Solid secondary color [TH]
           borderColor: theme.palette.secondary.main, // ✅ Theme-aware [TH]
         };
       case EntityType.Person:
         return {
-          color: theme.palette.success.main, // ✅ Instead of #388e3c [TH]
-          backgroundColor: theme.palette.success.light, // ✅ Instead of #e8f5e8 [TH]
+          color: theme.palette.common.white, // ✅ White text for better contrast [TH]
+          backgroundColor: theme.palette.success.main, // ✅ Solid success color [TH]
           borderColor: theme.palette.success.main, // ✅ Theme-aware [TH]
         };
       case EntityType.CompanyGroup:
         return {
-          color: theme.palette.error.main, // ✅ Instead of #d32f2f [TH]
-          backgroundColor: theme.palette.error.light, // ✅ Instead of #ffebee [TH]
+          color: theme.palette.common.white, // ✅ White text for better contrast [TH]
+          backgroundColor: theme.palette.error.main, // ✅ Solid error color [TH]
           borderColor: theme.palette.error.main, // ✅ Theme-aware [TH]
         };
       default:
         return {
-          color: theme.palette.text.secondary, // ✅ Instead of #757575 [TH]
-          backgroundColor: theme.palette.grey[50], // ✅ Instead of #f5f5f5 [TH]
-          borderColor: theme.palette.text.secondary, // ✅ Theme-aware [TH]
+          color: theme.palette.common.white, // ✅ White text for better contrast [TH]
+          backgroundColor: theme.palette.grey[600], // ✅ Darker grey for contrast [TH]
+          borderColor: theme.palette.grey[600], // ✅ Theme-aware [TH]
         };
     }
   };
@@ -180,6 +180,9 @@ export const EntityTypeChip: React.FC<EntityTypeChipProps> = ({
               color: `${colorScheme.color} !important`,
               marginLeft: "4px",
               marginRight: "8px",
+            },
+            "& .MuiChip-label": {
+              color: `${colorScheme.color} !important`,
             },
           }),
         ...(!minimal &&
