@@ -1,5 +1,5 @@
 import React from "react";
-import { Chip } from "@mui/material";
+import { Chip, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -16,6 +16,13 @@ interface AccreditationStatusChipProps {
   style?: "default" | "colorful";
 }
 
+/**
+ * AccreditationStatusChip component with full theme support [TH]
+ *
+ * Displays accreditation status with theme-aware colors that automatically
+ * adapt to light/dark mode switching while maintaining accessibility and
+ * semantic color meanings across all status types.
+ */
 export const AccreditationStatusChip: React.FC<
   AccreditationStatusChipProps
 > = ({
@@ -26,6 +33,7 @@ export const AccreditationStatusChip: React.FC<
   style = "colorful",
 }) => {
   const { t } = useTranslation();
+  const theme = useTheme(); // ✅ Access theme for light/dark mode support [TH]
 
   // Get status icon
   const getStatusIcon = (status: AccreditationStatus) => {
@@ -63,44 +71,44 @@ export const AccreditationStatusChip: React.FC<
     }
   };
 
-  // Get status color scheme
+  // ✅ Get status color scheme with theme support [TH]
   const getStatusColor = (status: AccreditationStatus) => {
     switch (status) {
       case AccreditationStatus.Approved:
         return {
-          color: "#2e7d32",
-          backgroundColor: "#e8f5e8",
-          borderColor: "#4caf50",
+          color: theme.palette.success.main, // ✅ Instead of #2e7d32 [TH]
+          backgroundColor: theme.palette.success.light, // ✅ Instead of #e8f5e8 [TH]
+          borderColor: theme.palette.success.main, // ✅ Instead of #4caf50 [TH]
         };
       case AccreditationStatus.Rejected:
         return {
-          color: "#d32f2f",
-          backgroundColor: "#ffebee",
-          borderColor: "#f44336",
+          color: theme.palette.error.main, // ✅ Instead of #d32f2f [TH]
+          backgroundColor: theme.palette.error.light, // ✅ Instead of #ffebee [TH]
+          borderColor: theme.palette.error.main, // ✅ Instead of #f44336 [TH]
         };
       case AccreditationStatus.Submitted:
         return {
-          color: "#ed6c02",
-          backgroundColor: "#fff3e0",
-          borderColor: "#ff9800",
+          color: theme.palette.warning.main, // ✅ Instead of #ed6c02 [TH]
+          backgroundColor: theme.palette.warning.light, // ✅ Instead of #fff3e0 [TH]
+          borderColor: theme.palette.warning.main, // ✅ Instead of #ff9800 [TH]
         };
       case AccreditationStatus.Suspended:
         return {
-          color: "#9c27b0",
-          backgroundColor: "#f3e5f5",
-          borderColor: "#9c27b0",
+          color: theme.palette.secondary.main, // ✅ Instead of #9c27b0 [TH]
+          backgroundColor: theme.palette.secondary.light, // ✅ Instead of #f3e5f5 [TH]
+          borderColor: theme.palette.secondary.main, // ✅ Theme-aware [TH]
         };
       case AccreditationStatus.Draft:
         return {
-          color: "#757575",
-          backgroundColor: "#f5f5f5",
-          borderColor: "#9e9e9e",
+          color: theme.palette.text.secondary, // ✅ Instead of #757575 [TH]
+          backgroundColor: theme.palette.grey[50], // ✅ Instead of #f5f5f5 [TH]
+          borderColor: theme.palette.grey[400], // ✅ Instead of #9e9e9e [TH]
         };
       default:
         return {
-          color: "#757575",
-          backgroundColor: "#f5f5f5",
-          borderColor: "#9e9e9e",
+          color: theme.palette.text.secondary, // ✅ Instead of #757575 [TH]
+          backgroundColor: theme.palette.grey[50], // ✅ Instead of #f5f5f5 [TH]
+          borderColor: theme.palette.grey[400], // ✅ Instead of #9e9e9e [TH]
         };
     }
   };
@@ -130,7 +138,7 @@ export const AccreditationStatusChip: React.FC<
           fontSize: size === "small" ? "0.75rem" : "0.875rem",
         },
         ...(style === "colorful" && {
-          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+          boxShadow: theme.shadows[1], // ✅ Theme-aware shadow instead of hardcoded [TH]
           color: `${colorScheme.color} !important`,
           backgroundColor: `${colorScheme.backgroundColor} !important`,
           border: `1px solid ${colorScheme.borderColor} !important`,
@@ -142,7 +150,7 @@ export const AccreditationStatusChip: React.FC<
         }),
         ...(style === "default" &&
           variant === "outlined" && {
-            borderColor: "rgba(0, 0, 0, 0.23)",
+            borderColor: theme.palette.divider, // ✅ Theme-aware border instead of rgba [TH]
           }),
       }}
     />

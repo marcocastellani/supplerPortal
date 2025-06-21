@@ -1,5 +1,5 @@
 import React from "react";
-import { Chip } from "@mui/material";
+import { Chip, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -12,6 +12,12 @@ interface ActiveStatusChipProps {
   style?: "default" | "colorful";
 }
 
+/**
+ * ActiveStatusChip component with full theme support [TH]
+ *
+ * Displays active/inactive status with theme-aware colors that automatically
+ * adapt to light/dark mode switching while maintaining accessibility.
+ */
 export const ActiveStatusChip: React.FC<ActiveStatusChipProps> = ({
   active,
   size = "small",
@@ -20,17 +26,19 @@ export const ActiveStatusChip: React.FC<ActiveStatusChipProps> = ({
   style = "colorful",
 }) => {
   const { t } = useTranslation();
+  const theme = useTheme(); // ✅ Access theme for light/dark mode support [TH]
 
+  // ✅ Theme-aware color scheme [TH]
   const colorScheme = active
     ? {
-        color: "#2e7d32",
-        backgroundColor: "#e8f5e8",
-        borderColor: "#4caf50",
+        color: theme.palette.success.main, // ✅ Instead of #2e7d32 [TH]
+        backgroundColor: theme.palette.success.light, // ✅ Instead of #e8f5e8 [TH]
+        borderColor: theme.palette.success.main, // ✅ Instead of #4caf50 [TH]
       }
     : {
-        color: "#d32f2f",
-        backgroundColor: "#ffebee",
-        borderColor: "#f44336",
+        color: theme.palette.error.main, // ✅ Instead of #d32f2f [TH]
+        backgroundColor: theme.palette.error.light, // ✅ Instead of #ffebee [TH]
+        borderColor: theme.palette.error.main, // ✅ Instead of #f44336 [TH]
       };
 
   return (
@@ -66,7 +74,7 @@ export const ActiveStatusChip: React.FC<ActiveStatusChipProps> = ({
           fontSize: size === "small" ? "0.75rem" : "0.875rem",
         },
         ...(style === "colorful" && {
-          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+          boxShadow: theme.shadows[1], // ✅ Theme-aware shadow instead of hardcoded [TH]
           color: `${colorScheme.color} !important`,
           backgroundColor: `${colorScheme.backgroundColor} !important`,
           border: `1px solid ${colorScheme.borderColor} !important`,
@@ -78,7 +86,7 @@ export const ActiveStatusChip: React.FC<ActiveStatusChipProps> = ({
         }),
         ...(style === "default" &&
           variant === "outlined" && {
-            borderColor: "rgba(0, 0, 0, 0.23)",
+            borderColor: theme.palette.divider, // ✅ Theme-aware border instead of rgba [TH]
           }),
       }}
     />

@@ -1,5 +1,5 @@
 import React from "react";
-import { Chip } from "@mui/material";
+import { Chip, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import BusinessIcon from "@mui/icons-material/Business";
 import FactoryIcon from "@mui/icons-material/Factory";
@@ -17,6 +17,13 @@ interface EntityTypeChipProps {
   minimal?: boolean;
 }
 
+/**
+ * EntityTypeChip component with full theme support [TH]
+ *
+ * Displays entity type information with theme-aware colors that automatically
+ * adapt to light/dark mode switching while maintaining accessibility and
+ * design system consistency.
+ */
 export const EntityTypeChip: React.FC<EntityTypeChipProps> = ({
   entityType,
   size = "small",
@@ -26,6 +33,7 @@ export const EntityTypeChip: React.FC<EntityTypeChipProps> = ({
   minimal = false,
 }) => {
   const { t } = useTranslation();
+  const theme = useTheme(); // ✅ Access theme for light/dark mode support [TH]
 
   // Get entity type icon
   const getEntityTypeIcon = (type: EntityType) => {
@@ -63,44 +71,44 @@ export const EntityTypeChip: React.FC<EntityTypeChipProps> = ({
     }
   };
 
-  // Get entity type color scheme
+  // ✅ Get entity type color scheme with theme support [TH]
   const getEntityTypeColor = (type: EntityType) => {
     switch (type) {
       case EntityType.Supplier:
         return {
-          color: "#1976d2",
-          backgroundColor: "#e3f2fd",
-          borderColor: "#1976d2",
+          color: theme.palette.primary.main, // ✅ Instead of #1976d2 [TH]
+          backgroundColor: theme.palette.primary.light, // ✅ Instead of #e3f2fd [TH]
+          borderColor: theme.palette.primary.main, // ✅ Theme-aware [TH]
         };
       case EntityType.Site:
         return {
-          color: "#f57c00",
-          backgroundColor: "#fff3e0",
-          borderColor: "#f57c00",
+          color: theme.palette.warning.main, // ✅ Instead of #f57c00 [TH]
+          backgroundColor: theme.palette.warning.light, // ✅ Instead of #fff3e0 [TH]
+          borderColor: theme.palette.warning.main, // ✅ Theme-aware [TH]
         };
       case EntityType.SubSupplier:
         return {
-          color: "#7b1fa2",
-          backgroundColor: "#f3e5f5",
-          borderColor: "#7b1fa2",
+          color: theme.palette.secondary.main, // ✅ Instead of #7b1fa2 [TH]
+          backgroundColor: theme.palette.secondary.light, // ✅ Instead of #f3e5f5 [TH]
+          borderColor: theme.palette.secondary.main, // ✅ Theme-aware [TH]
         };
       case EntityType.Person:
         return {
-          color: "#388e3c",
-          backgroundColor: "#e8f5e8",
-          borderColor: "#388e3c",
+          color: theme.palette.success.main, // ✅ Instead of #388e3c [TH]
+          backgroundColor: theme.palette.success.light, // ✅ Instead of #e8f5e8 [TH]
+          borderColor: theme.palette.success.main, // ✅ Theme-aware [TH]
         };
       case EntityType.CompanyGroup:
         return {
-          color: "#d32f2f",
-          backgroundColor: "#ffebee",
-          borderColor: "#d32f2f",
+          color: theme.palette.error.main, // ✅ Instead of #d32f2f [TH]
+          backgroundColor: theme.palette.error.light, // ✅ Instead of #ffebee [TH]
+          borderColor: theme.palette.error.main, // ✅ Theme-aware [TH]
         };
       default:
         return {
-          color: "#757575",
-          backgroundColor: "#f5f5f5",
-          borderColor: "#757575",
+          color: theme.palette.text.secondary, // ✅ Instead of #757575 [TH]
+          backgroundColor: theme.palette.grey[50], // ✅ Instead of #f5f5f5 [TH]
+          borderColor: theme.palette.text.secondary, // ✅ Theme-aware [TH]
         };
     }
   };
@@ -141,7 +149,7 @@ export const EntityTypeChip: React.FC<EntityTypeChipProps> = ({
         ...(!minimal &&
           style === "colorful" && {
             ...colorScheme,
-            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            boxShadow: theme.shadows[1], // ✅ Theme-aware shadow instead of hardcoded [TH]
             border: `1px solid ${colorScheme.borderColor} !important`,
             "& .MuiChip-icon": {
               color: `${colorScheme.color} !important`,
@@ -152,7 +160,7 @@ export const EntityTypeChip: React.FC<EntityTypeChipProps> = ({
         ...(!minimal &&
           style === "default" &&
           variant === "outlined" && {
-            borderColor: "rgba(0, 0, 0, 0.23)",
+            borderColor: theme.palette.divider, // ✅ Theme-aware border instead of rgba [TH]
           }),
       }}
     />

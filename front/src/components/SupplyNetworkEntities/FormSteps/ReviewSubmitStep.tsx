@@ -1,5 +1,6 @@
 import React from "react";
 import { Grid, Text } from "@remira/unifiedui";
+import { useTheme, Box } from "@mui/material";
 import { SupplyNetworkEntityFormData } from "../../../types/supplyNetworkEntities";
 
 interface ReviewSubmitStepProps {
@@ -11,6 +12,12 @@ interface ReviewSubmitStepProps {
   onClearError: () => void;
 }
 
+/**
+ * ReviewSubmitStep component with full theme support [TH]
+ *
+ * Displays form review information with theme-aware colors and styles
+ * that adapt to light/dark mode switching while maintaining accessibility.
+ */
 export const ReviewSubmitStep: React.FC<ReviewSubmitStepProps> = ({
   formData,
   isLoading,
@@ -19,6 +26,8 @@ export const ReviewSubmitStep: React.FC<ReviewSubmitStepProps> = ({
   onSubmit,
   onClearError,
 }) => {
+  const theme = useTheme(); // ✅ Access theme for light/dark mode support [TH]
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -31,12 +40,12 @@ export const ReviewSubmitStep: React.FC<ReviewSubmitStepProps> = ({
       </Grid>
 
       <Grid item xs={12}>
-        <div
-          style={{
-            border: "1px solid #e0e0e0",
-            borderRadius: "8px",
-            padding: "16px",
-            backgroundColor: "#fafafa",
+        <Box
+          sx={{
+            border: `1px solid ${theme.palette.divider}`, // ✅ Instead of #e0e0e0 [TH]
+            borderRadius: 2,
+            p: 2,
+            backgroundColor: theme.palette.grey[50], // ✅ Instead of #fafafa [TH]
           }}
         >
           <Grid container spacing={2}>
@@ -97,43 +106,43 @@ export const ReviewSubmitStep: React.FC<ReviewSubmitStepProps> = ({
               </Grid>
             )}
           </Grid>
-        </div>
+        </Box>
       </Grid>
 
       {isLoading && (
         <Grid item xs={12}>
-          <div
-            style={{
-              padding: "16px",
-              backgroundColor: "#d1ecf1",
-              border: "1px solid #bee5eb",
-              borderRadius: "8px",
-              color: "#0c5460",
+          <Box
+            sx={{
+              p: 2,
+              backgroundColor: theme.palette.info.light, // ✅ Instead of #d1ecf1 [TH]
+              border: `1px solid ${theme.palette.info.main}`, // ✅ Instead of #bee5eb [TH]
+              borderRadius: 2,
+              color: theme.palette.info.contrastText, // ✅ Instead of #0c5460 [TH]
             }}
           >
             Creating entity...
-          </div>
+          </Box>
         </Grid>
       )}
 
       {/* Error display component for Step 4 */}
       {error && (
         <Grid item xs={12}>
-          <div
-            style={{
-              padding: "16px",
-              backgroundColor: "#f8d7da",
-              border: "1px solid #f5c6cb",
-              borderRadius: "8px",
-              color: "#721c24",
+          <Box
+            sx={{
+              p: 2,
+              backgroundColor: theme.palette.error.light, // ✅ Instead of #f8d7da [TH]
+              border: `1px solid ${theme.palette.error.main}`, // ✅ Instead of #f5c6cb [TH]
+              borderRadius: 2,
+              color: theme.palette.error.contrastText, // ✅ Instead of #721c24 [TH]
               position: "relative",
               display: "flex",
               alignItems: "flex-start",
-              gap: "12px",
+              gap: 1.5,
             }}
           >
             {/* Error icon based on error type */}
-            <span style={{ fontSize: "20px", flexShrink: 0 }}>
+            <Box sx={{ fontSize: "20px", flexShrink: 0 }}>
               {errorType === "network"
                 ? "🌐"
                 : errorType === "validation"
@@ -141,11 +150,11 @@ export const ReviewSubmitStep: React.FC<ReviewSubmitStepProps> = ({
                 : errorType === "server"
                 ? "🔧"
                 : "❌"}
-            </span>
+            </Box>
 
             {/* Error content */}
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: "bold", marginBottom: "4px" }}>
+            <Box sx={{ flex: 1 }}>
+              <Box sx={{ fontWeight: "bold", mb: 0.5 }}>
                 {errorType === "network"
                   ? "Connection Error"
                   : errorType === "validation"
@@ -153,51 +162,59 @@ export const ReviewSubmitStep: React.FC<ReviewSubmitStepProps> = ({
                   : errorType === "server"
                   ? "Server Error"
                   : "Error"}
-              </div>
-              <div style={{ fontSize: "14px", whiteSpace: "pre-line" }}>
+              </Box>
+              <Box sx={{ fontSize: "14px", whiteSpace: "pre-line" }}>
                 {error}
-              </div>
-            </div>
+              </Box>
+            </Box>
 
             {/* Action buttons */}
-            <div style={{ display: "flex", gap: "8px", flexShrink: 0 }}>
+            <Box sx={{ display: "flex", gap: 1, flexShrink: 0 }}>
               {/* Retry button for network errors */}
               {errorType === "network" && (
-                <button
+                <Box
+                  component="button"
                   onClick={onSubmit}
                   disabled={isLoading}
-                  style={{
-                    padding: "6px 12px",
-                    backgroundColor: "#dc3545",
-                    color: "white",
+                  sx={{
+                    p: "6px 12px",
+                    backgroundColor: theme.palette.error.main, // ✅ Instead of #dc3545 [TH]
+                    color: theme.palette.error.contrastText, // ✅ Theme-aware text color [TH]
                     border: "none",
-                    borderRadius: "4px",
+                    borderRadius: 1,
                     fontSize: "12px",
                     cursor: isLoading ? "not-allowed" : "pointer",
                     opacity: isLoading ? 0.7 : 1,
+                    "&:hover": {
+                      backgroundColor: theme.palette.error.dark, // ✅ Theme-aware hover [TH]
+                    },
                   }}
                 >
                   {isLoading ? "⏳" : "🔄 Retry"}
-                </button>
+                </Box>
               )}
 
               {/* Dismiss button */}
-              <button
+              <Box
+                component="button"
                 onClick={onClearError}
-                style={{
-                  padding: "6px 8px",
+                sx={{
+                  p: "6px 8px",
                   backgroundColor: "transparent",
-                  color: "#721c24",
-                  border: "1px solid #721c24",
-                  borderRadius: "4px",
+                  color: theme.palette.error.contrastText, // ✅ Instead of #721c24 [TH]
+                  border: `1px solid ${theme.palette.error.contrastText}`, // ✅ Instead of #721c24 [TH]
+                  borderRadius: 1,
                   fontSize: "12px",
                   cursor: "pointer",
+                  "&:hover": {
+                    backgroundColor: theme.palette.action.hover, // ✅ Theme-aware hover [TH]
+                  },
                 }}
               >
                 ✕ Dismiss
-              </button>
-            </div>
-          </div>
+              </Box>
+            </Box>
+          </Box>
         </Grid>
       )}
     </Grid>

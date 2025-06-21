@@ -18,7 +18,7 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-const string ConfigKey = "UcpSupplierPortal";
+//const string ConfigKey = "UcpSupplierPortal";
 
 //builder.AddAzureAppConfiguration<UcpCommon>(ConfigKey);
 
