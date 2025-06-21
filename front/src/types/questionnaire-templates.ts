@@ -247,3 +247,31 @@ export interface AutoSaveConfig {
   intervalMs: number;
   debounceMs: number;
 }
+
+// Template Listing & Search Types
+export interface TemplateFilters {
+  searchTerm?: string;
+  status?: TemplateStatus;
+  language?: string;
+  createdFrom?: string;
+  createdTo?: string;
+  page?: number;
+  pageSize?: number;
+  sortBy?: "title" | "created" | "lastmodified" | "usagecount" | "status";
+  sortDirection?: "asc" | "desc";
+}
+
+export interface PaginatedTemplatesResponse {
+  templates: QuestionnaireTemplateResponse[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+  searchTerm?: string;
+  statusFilter?: TemplateStatus;
+  languageFilter?: string;
+  sortBy?: string;
+  sortDirection?: string;
+}

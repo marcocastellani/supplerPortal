@@ -77,21 +77,45 @@ class QuestionnaireTemplatesApi {
     }
   }
 
-  // Get all questionnaire templates
-  async getTemplates(
-    status?: TemplateStatus,
-    page: number = 1,
-    pageSize: number = 10
-  ): Promise<{
-    data: QuestionnaireTemplateResponse[];
-    total: number;
+  // Get all questionnaire templates with search, filtering, pagination and sorting
+  async getTemplates(filters?: {
+    searchTerm?: string;
+    status?: TemplateStatus;
+    language?: string;
+    createdFrom?: string;
+    createdTo?: string;
+    page?: number;
+    pageSize?: number;
+    sortBy?: string;
+    sortDirection?: "asc" | "desc";
+  }): Promise<{
+    templates: QuestionnaireTemplateResponse[];
+    totalCount: number;
     page: number;
     pageSize: number;
+    totalPages: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+    searchTerm?: string;
+    statusFilter?: TemplateStatus;
+    languageFilter?: string;
+    sortBy?: string;
+    sortDirection?: string;
   }> {
     try {
-      const params: any = { page, pageSize };
-      if (status) params.status = status;
-      params["api-version"] = "2025-06-01";
+      const params: any = {
+        page: filters?.page || 1,
+        pageSize: filters?.pageSize || 10,
+        "api-version": "2025-06-01",
+      };
+
+      if (filters?.searchTerm) params.searchTerm = filters.searchTerm;
+      if (filters?.status !== undefined) params.status = filters.status;
+      if (filters?.language) params.language = filters.language;
+      if (filters?.createdFrom) params.createdFrom = filters.createdFrom;
+      if (filters?.createdTo) params.createdTo = filters.createdTo;
+      if (filters?.sortBy) params.sortBy = filters.sortBy;
+      if (filters?.sortDirection) params.sortDirection = filters.sortDirection;
 
       const response = await axios.get("/api/questionnairetemplates", {
         params,

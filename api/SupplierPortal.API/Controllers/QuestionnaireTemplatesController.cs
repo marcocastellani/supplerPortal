@@ -5,7 +5,9 @@ using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.Save
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.CreateSection;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetTemplate;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetDraft;
+using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetTemplates;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Common;
+using Remira.UCP.SupplierPortal.Domain.Enums;
 using Asp.Versioning;
 
 namespace Remira.UCP.SupplierPortal.API.Controllers;
@@ -119,6 +121,62 @@ public class QuestionnaireTemplatesController : MediatrBaseController
         catch (Exception ex)
         {
             return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Get all questionnaire templates with search, filtering, pagination and sorting
+    /// </summary>
+    /// <param name="searchTerm">Search term to filter templates by title (server-side filtering)</param>
+    /// <param name="status">Filter by template status (Draft/Active/Archived)</param>
+    /// <param name="language">Filter by primary language</param>
+    /// <param name="createdFrom">Filter by creation date from</param>
+    /// <param name="createdTo">Filter by creation date to</param>
+    /// <param name="page">Page number (1-based, default: 1)</param>
+    /// <param name="pageSize">Number of items per page (1-100, default: 10)</param>
+    /// <param name="sortBy">Field to sort by (title, created, lastmodified, usagecount, status)</param>
+    /// <param name="sortDirection">Sort direction (asc/desc, default: asc)</param>
+    /// <returns>Paginated list of templates with metadata</returns>
+    [HttpGet]
+    [ProducesResponseType(typeof(PaginatedTemplatesResponse), 200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
+    public async Task<ActionResult<PaginatedTemplatesResponse>> GetTemplates(
+        [FromQuery] string? searchTerm = null,
+        [FromQuery] TemplateStatus? status = null,
+        [FromQuery] string? language = null,
+        [FromQuery] DateTime? createdFrom = null,
+        [FromQuery] DateTime? createdTo = null,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? sortBy = null,
+        [FromQuery] string? sortDirection = "asc")
+    {
+        try
+        {
+            var query = new GetQuestionnaireTemplatesQuery
+            {
+                SearchTerm = searchTerm,
+                Status = status,
+                Language = language,
+                CreatedFrom = createdFrom,
+                CreatedTo = createdTo,
+                Page = page,
+                PageSize = pageSize,
+                SortBy = sortBy,
+                SortDirection = sortDirection
+            };
+
+            var result = await Mediator.Send(query);
+            return Ok(result);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = ex.Message });
         }
     }
 

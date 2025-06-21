@@ -8,7 +8,7 @@ This section organizes all project tasks, from active work to completed achievem
 
 Currently in-progress or planned tasks:
 
-- _No active tasks currently_ - All major tasks completed!
+- [`us-b1-001-template-listing-search.md`](./active/us-b1-001-template-listing-search.md) - Template Listing & Search functionality implementation
 
 ### ✅ **Completed Tasks**
 
