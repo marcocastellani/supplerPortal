@@ -82,20 +82,20 @@ Implement support for multiple entity types per questionnaire template to enable
 
 ### **Phase 2: Application Layer Updates** (Estimated: 8 hours)
 
-#### ⏳ **Task 4: Update DTOs and Contracts [IV][DRY]**
+#### ✅ **Task 4: Update DTOs and Contracts [IV][DRY]**
 
-- **Status**: ⏳ Pending
+- **Status**: ✅ Complete
 - **Priority**: 🔴 High
 - **Estimated Time**: 2 hours
 - **Assignee**: AI
 - **Dependencies**: Task 3
 - **Description**: Modify all DTOs to use array of EntityType instead of single value
 - **Acceptance Criteria**:
-  - [ ] `CreateTemplateRequest` uses `List<EntityType> TargetEntityTypes`
-  - [ ] `QuestionnaireTemplateResponse` includes entity types array
-  - [ ] `UpdateTemplateRequest` supports entity types modification
-  - [ ] Backward compatibility maintained with old DTOs
-  - [ ] Proper validation attributes added (minimum 1 required)
+  - [x] `CreateTemplateRequest` uses `List<EntityType> TargetEntityTypes`
+  - [x] `QuestionnaireTemplateResponse` includes entity types array
+  - [x] `UpdateTemplateRequest` supports entity types modification
+  - [x] Backward compatibility maintained with old DTOs
+  - [x] Proper validation attributes added (minimum 1 required)
 - **Implementation Notes**:
   - Keep old properties for API versioning
   - Add AutoMapper profiles for entity type conversion

@@ -11,7 +11,15 @@ public class CreateQuestionnaireTemplateCommand : IRequest<QuestionnaireTemplate
 {
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
+
+    [Obsolete("Use TargetEntityTypes instead")]
     public int TargetEntityTypeId { get; set; }
+
+    /// <summary>
+    /// List of target entity types for this template (minimum 1 required)
+    /// </summary>
+    public List<EntityType> TargetEntityTypes { get; set; } = new();
+
     public string PrimaryLanguage { get; set; } = "en";
     public int ExpirationMonths { get; set; }
     public CertificateType CertificateType { get; set; }
