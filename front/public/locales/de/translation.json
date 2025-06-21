@@ -12,6 +12,24 @@
   "settings": "Einstellungen",
   "signIn": "anmelden",
   "signOut": "Abmelden",
+  "common": {
+    "loading": "Wird geladen...",
+    "refresh": "Aktualisieren",
+    "retry": "Wiederholen",
+    "clear": "Löschen",
+    "clearFilters": "Filter Löschen",
+    "clearAllFilters": "Alle Filter Löschen",
+    "view": "Anzeigen",
+    "pagination": {
+      "firstPage": "Erste Seite",
+      "previousPage": "Vorherige Seite",
+      "nextPage": "Nächste Seite",
+      "lastPage": "Letzte Seite",
+      "pageSize": "Elemente pro Seite",
+      "goTo": "Gehe zu Seite",
+      "jumpToPage": "Springe zu Seite"
+    }
+  },
   "status": "Status",
   "tableExample": "Tabellenbeispiel",
   "rbacExample": "RBAC -Beispiel",
@@ -180,5 +198,66 @@
       "createdBy": "Erstellt von",
       "updatedBy": "Aktualisiert von"
     }
+  },
+  "templates": {
+    "pageTitle": "Template-Verwaltung",
+    "pageSubtitle": "Fragebogen-Vorlagen verwalten",
+    "listTitle": "Vorlagen",
+    "totalCount": "Gesamt: {{count}} Vorlagen",
+    "search": {
+      "placeholder": "Vorlagen nach Titel, Beschreibung oder Zertifikatstyp suchen..."
+    },
+    "filters": {
+      "status": "Status",
+      "allStatuses": "Alle Status",
+      "language": "Sprache",
+      "allLanguages": "Alle Sprachen",
+      "createdFrom": "Erstellt von",
+      "createdTo": "Erstellt bis",
+      "advanced": "Erweiterte Filter"
+    },
+    "status": {
+      "active": "Aktiv",
+      "draft": "Entwurf",
+      "archived": "Archiviert",
+      "unknown": "Unbekannt"
+    },
+    "actions": {
+      "create": "Vorlage Erstellen",
+      "edit": "Vorlage Bearbeiten",
+      "preview": "Vorlage Vorschau",
+      "duplicate": "Vorlage Duplizieren",
+      "delete": "Vorlage Löschen"
+    },
+    "targetEntities": "Ziel-Entitäten",
+    "created": "Erstellt",
+    "modified": "Zuletzt Geändert",
+    "version": "Version",
+    "empty": {
+      "title": "Keine Vorlagen gefunden",
+      "description": "Beginnen Sie mit der Erstellung Ihrer ersten Fragebogen-Vorlage"
+    },
+    "error": {
+      "loadingFailed": "Fehler beim Laden der Vorlagen: {{error}}"
+    },
+    "errors": {
+      "fetchFailed": "Fehler beim Laden der Vorlagen. Bitte versuchen Sie es erneut."
+    },
+    "pagination": {
+      "showing": "Zeige {{start}} bis {{end}} von {{total}} Vorlagen",
+      "totalPages": "{{pages}} Seiten insgesamt"
+    }
+  },
+  "entityTypes": {
+    "supplier": "Lieferant",
+    "site": "Standort",
+    "subsupplier": "Unterlieferant",
+    "person": "Person",
+    "companygroup": "Unternehmensgruppe"
+  },
+  "languages": {
+    "english": "Englisch",
+    "german": "Deutsch",
+    "italian": "Italienisch"
   }
 }

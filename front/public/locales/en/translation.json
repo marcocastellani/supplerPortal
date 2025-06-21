@@ -20,7 +20,20 @@
   "common": {
     "loading": "Loading...",
     "refresh": "Refresh",
-    "retry": "Retry"
+    "retry": "Retry",
+    "clear": "Clear",
+    "clearFilters": "Clear Filters",
+    "clearAllFilters": "Clear All Filters",
+    "view": "View",
+    "pagination": {
+      "firstPage": "First Page",
+      "previousPage": "Previous Page",
+      "nextPage": "Next Page",
+      "lastPage": "Last Page",
+      "pageSize": "Items per page",
+      "goTo": "Go to page",
+      "jumpToPage": "Jump to page"
+    }
   },
   "dashboardPage": {
     "questionnaires": {
@@ -75,7 +88,7 @@
         "legalName": "Legal Name",
         "shortName": "Short Name",
         "externalCode": "External Code",
-        "email": "Email", 
+        "email": "Email",
         "vatCode": "VAT Code",
         "taxCode": "Tax Code",
         "country": "Country",
@@ -132,7 +145,7 @@
       },
       "errors": {
         "network": "🌐 Network Error",
-        "validation": "⚠️ Validation Error", 
+        "validation": "⚠️ Validation Error",
         "server": "🔧 Server Error",
         "unknown": "❌ Error",
         "dismiss": "Dismiss",
@@ -168,7 +181,7 @@
     "resultsCount": "{{count}} entities found",
     "filterAll": "All Types",
     "filterSupplier": "Suppliers",
-    "filterSite": "Sites", 
+    "filterSite": "Sites",
     "filterSubSupplier": "Sub-Suppliers",
     "filterPerson": "Persons",
     "filterCompanyGroup": "Company Groups",
@@ -178,14 +191,14 @@
     "entityType": {
       "supplier": "Supplier",
       "site": "Site",
-      "subSupplier": "Sub-Supplier", 
+      "subSupplier": "Sub-Supplier",
       "person": "Person",
       "companyGroup": "Company Group"
     },
     "table": {
       "name": "Name",
       "vat": "VAT",
-      "code": "Code", 
+      "code": "Code",
       "type": "Type",
       "location": "Location",
       "status": "Status"
@@ -221,7 +234,7 @@
     "tabs": {
       "overview": "Overview",
       "contacts": "Contacts & Address",
-      "business": "Business Details", 
+      "business": "Business Details",
       "subEntities": "Sub-Entities",
       "system": "System Info"
     },
@@ -271,5 +284,66 @@
       "emptyDescription": "This entity doesn't have any sub-entities yet.",
       "loadError": "Failed to load sub-entities"
     }
+  },
+  "templates": {
+    "pageTitle": "Template Management",
+    "pageSubtitle": "Manage questionnaire templates",
+    "listTitle": "Templates",
+    "totalCount": "Total: {{count}} templates",
+    "search": {
+      "placeholder": "Search templates by title, description, or certificate type..."
+    },
+    "filters": {
+      "status": "Status",
+      "allStatuses": "All Statuses",
+      "language": "Language",
+      "allLanguages": "All Languages",
+      "createdFrom": "Created From",
+      "createdTo": "Created To",
+      "advanced": "Advanced Filters"
+    },
+    "status": {
+      "active": "Active",
+      "draft": "Draft",
+      "archived": "Archived",
+      "unknown": "Unknown"
+    },
+    "actions": {
+      "create": "Create Template",
+      "edit": "Edit Template",
+      "preview": "Preview Template",
+      "duplicate": "Duplicate Template",
+      "delete": "Delete Template"
+    },
+    "targetEntities": "Target Entities",
+    "created": "Created",
+    "modified": "Last Modified",
+    "version": "Version",
+    "empty": {
+      "title": "No templates found",
+      "description": "Start by creating your first questionnaire template"
+    },
+    "error": {
+      "loadingFailed": "Failed to load templates: {{error}}"
+    },
+    "errors": {
+      "fetchFailed": "Failed to load templates. Please try again."
+    },
+    "pagination": {
+      "showing": "Showing {{start}} to {{end}} of {{total}} templates",
+      "totalPages": "{{pages}} pages total"
+    }
+  },
+  "entityTypes": {
+    "supplier": "Supplier",
+    "site": "Site",
+    "subsupplier": "Sub-Supplier",
+    "person": "Person",
+    "companygroup": "Company Group"
+  },
+  "languages": {
+    "english": "English",
+    "german": "German",
+    "italian": "Italian"
   }
 }

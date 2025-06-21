@@ -151,7 +151,7 @@
     "filterAll": "Tutti i Tipi",
     "filterSupplier": "Fornitori",
     "filterSite": "Siti",
-    "filterSubSupplier": "Sub-Fornitori", 
+    "filterSubSupplier": "Sub-Fornitori",
     "filterPerson": "Persone",
     "filterCompanyGroup": "Gruppi Aziendali",
     "filterAllStatus": "Tutti gli Stati",
@@ -161,14 +161,14 @@
       "supplier": "Fornitore",
       "site": "Sito",
       "subSupplier": "Sub-Fornitore",
-      "person": "Persona", 
+      "person": "Persona",
       "companyGroup": "Gruppo Aziendale"
     },
     "table": {
       "name": "Nome",
       "vat": "P.IVA",
       "code": "Codice",
-      "type": "Tipo", 
+      "type": "Tipo",
       "location": "Località",
       "status": "Stato"
     },
@@ -179,7 +179,7 @@
     "pagination": {
       "showing": "Mostra da {{from}} a {{to}} di {{total}} risultati",
       "previous": "Precedente",
-      "next": "Successivo", 
+      "next": "Successivo",
       "page": "Pagina {{current}} di {{total}}"
     }
   },
@@ -218,5 +218,66 @@
       "createdBy": "Creato da",
       "updatedBy": "Aggiornato da"
     }
+  },
+  "templates": {
+    "pageTitle": "Gestione Template",
+    "pageSubtitle": "Gestisci i template dei questionari",
+    "listTitle": "Template",
+    "totalCount": "Totale: {{count}} template",
+    "search": {
+      "placeholder": "Cerca template per titolo, descrizione o tipo di certificato..."
+    },
+    "filters": {
+      "status": "Stato",
+      "allStatuses": "Tutti gli Stati",
+      "language": "Lingua",
+      "allLanguages": "Tutte le Lingue",
+      "createdFrom": "Creato dal",
+      "createdTo": "Creato al",
+      "advanced": "Filtri Avanzati"
+    },
+    "status": {
+      "active": "Attivo",
+      "draft": "Bozza",
+      "archived": "Archiviato",
+      "unknown": "Sconosciuto"
+    },
+    "actions": {
+      "create": "Crea Template",
+      "edit": "Modifica Template",
+      "preview": "Anteprima Template",
+      "duplicate": "Duplica Template",
+      "delete": "Elimina Template"
+    },
+    "targetEntities": "Entità di Destinazione",
+    "created": "Creato",
+    "modified": "Ultima Modifica",
+    "version": "Versione",
+    "empty": {
+      "title": "Nessun template trovato",
+      "description": "Inizia creando il tuo primo template di questionario"
+    },
+    "error": {
+      "loadingFailed": "Errore nel caricamento dei template: {{error}}"
+    },
+    "errors": {
+      "fetchFailed": "Errore nel caricamento dei template. Riprova."
+    },
+    "pagination": {
+      "showing": "Mostra da {{start}} a {{end}} di {{total}} template",
+      "totalPages": "{{pages}} pagine totali"
+    }
+  },
+  "entityTypes": {
+    "supplier": "Fornitore",
+    "site": "Sito",
+    "subsupplier": "Sub-Fornitore",
+    "person": "Persona",
+    "companygroup": "Gruppo Aziendale"
+  },
+  "languages": {
+    "english": "Inglese",
+    "german": "Tedesco",
+    "italian": "Italiano"
   }
 }
