@@ -29,6 +29,7 @@ const mapResponseToTemplate = (
   title: response.title,
   description: response.description,
   targetEntityTypeId: response.targetEntityTypeId,
+  targetEntityTypes: response.targetEntityTypes || [],
   primaryLanguage: response.primaryLanguage,
   expirationMonths: response.expirationMonths,
   certificateType: response.certificateType,
@@ -97,6 +98,7 @@ const INITIAL_STATE: TemplateWizardState = {
     primaryLanguage: "en",
     expirationMonths: 12,
     targetEntityTypeId: 1,
+    targetEntityTypes: [],
   },
   sections: [],
   questions: [],
@@ -600,6 +602,7 @@ export const useTemplateWizard = (
           title: state.templateData.title || "",
           description: state.templateData.description || "",
           targetEntityTypeId: state.templateData.targetEntityTypeId || 1,
+          targetEntityTypes: state.templateData.targetEntityTypes || [],
           primaryLanguage: state.templateData.primaryLanguage || "en",
           expirationMonths: state.templateData.expirationMonths || 12,
           certificateType:
@@ -673,6 +676,7 @@ export const useTemplateWizard = (
       title: state.templateData.title,
       description: state.templateData.description,
       targetEntityTypeId: state.templateData.targetEntityTypeId || 1,
+      targetEntityTypes: state.templateData.targetEntityTypes || [],
       primaryLanguage: state.templateData.primaryLanguage || "en",
       expirationMonths: state.templateData.expirationMonths || 12,
       certificateType:
@@ -750,6 +754,14 @@ export const useTemplateWizard = (
         ) {
           errors.expirationMonths = [
             "Expiration months must be between 1 and 120",
+          ];
+        }
+        if (
+          !currentState.templateData.targetEntityTypes ||
+          currentState.templateData.targetEntityTypes.length === 0
+        ) {
+          errors.targetEntityTypes = [
+            "At least one target entity type must be selected",
           ];
         }
         break;
@@ -837,7 +849,12 @@ export const useTemplateWizard = (
         if (
           key.startsWith(`step_${step}`) ||
           (step === WizardStep.BasicInfo &&
-            ["title", "description", "expirationMonths"].includes(key)) ||
+            [
+              "title",
+              "description",
+              "expirationMonths",
+              "targetEntityTypes",
+            ].includes(key)) ||
           (step === WizardStep.Sections && key.startsWith("section_")) ||
           (step === WizardStep.Questions && key.startsWith("question_")) ||
           (step === WizardStep.Conditions && key.startsWith("condition_"))

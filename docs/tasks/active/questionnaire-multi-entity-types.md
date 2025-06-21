@@ -174,19 +174,19 @@ Implement support for multiple entity types per questionnaire template to enable
   - Implement chip display in `renderValue`
   - Follow existing form field patterns in BasicInfoStep
 
-#### ⏳ **Task 9: Update Form Validation Logic [REH][TDT]**
+#### ✅ **Task 9: Update Form Validation Logic [REH][TDT]**
 
-- **Status**: ⏳ Pending
+- **Status**: ✅ Complete
 - **Priority**: 🟡 Medium
 - **Estimated Time**: 2 hours
 - **Assignee**: AI
 - **Dependencies**: Task 8
 - **Description**: Update client-side validation to handle entity types array
 - **Acceptance Criteria**:
-  - [ ] Validation ensures at least one entity type is selected
-  - [ ] Error messages display properly for empty selections
-  - [ ] Form submission blocked when validation fails
-  - [ ] Consistent error styling with other form fields
+  - [x] Validation ensures at least one entity type is selected
+  - [x] Error messages display properly for empty selections
+  - [x] Form submission blocked when validation fails
+  - [x] Consistent error styling with other form fields
 - **Implementation Notes**:
   - Use existing validation patterns from the form
   - Integrate with form's error handling system
