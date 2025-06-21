@@ -29,3 +29,7 @@ src/assets/shared/*
 src/styles/shared/*
 
 .env
+# Log files
+*.log
+frontend.log
+api.log
