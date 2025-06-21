@@ -118,20 +118,20 @@ Implement support for multiple entity types per questionnaire template to enable
   - Use FluentValidation for entity type validation
   - Ensure proper transaction handling for junction table operations
 
-#### ⏳ **Task 6: Update API Controllers [IV][REH]**
+#### ✅ **Task 6: Update API Controllers [IV][REH]**
 
-- **Status**: ⏳ Pending
+- **Status**: ✅ Complete
 - **Priority**: 🟡 Medium
 - **Estimated Time**: 2 hours
 - **Assignee**: AI
 - **Dependencies**: Task 5
 - **Description**: Update controller endpoints to handle new entity types structure
 - **Acceptance Criteria**:
-  - [ ] POST `/api/questionnaire-templates` accepts entity types array
-  - [ ] PUT endpoints support entity types modification
-  - [ ] GET endpoints return entity types in response
-  - [ ] Proper HTTP status codes for validation errors
-  - [ ] API documentation updated (Swagger)
+  - [x] POST `/api/questionnaire-templates` accepts entity types array
+  - [x] PUT endpoints support entity types modification
+  - [x] GET endpoints return entity types in response
+  - [x] Proper HTTP status codes for validation errors
+  - [x] API documentation updated (Swagger)
 - **Implementation Notes**:
   - Maintain API versioning compatibility
   - Add proper model validation at controller level

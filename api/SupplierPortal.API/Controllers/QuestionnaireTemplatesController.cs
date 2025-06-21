@@ -17,10 +17,10 @@ namespace Remira.UCP.SupplierPortal.API.Controllers;
 public class QuestionnaireTemplatesController : MediatrBaseController
 {
     /// <summary>
-    /// Create a new questionnaire template
+    /// Create a new questionnaire template with multiple target entity types
     /// </summary>
-    /// <param name="command">Template creation data</param>
-    /// <returns>Created template with sections</returns>
+    /// <param name="command">Template creation data including target entity types array</param>
+    /// <returns>Created template with sections and entity type associations</returns>
     [HttpPost]
     [ProducesResponseType(typeof(QuestionnaireTemplateResponse), 201)]
     [ProducesResponseType(400)]
