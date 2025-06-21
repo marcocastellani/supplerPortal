@@ -76,6 +76,46 @@ export const QuestionnaireCard: React.FC<QuestionnaireCardProps> = ({
 }) => {
   const theme = useTheme(); // ✅ Access theme for better chip styling [TH]
 
+  // ✅ Get category-specific colors for better visual distinction [SF]
+  const getCategoryColor = (type: string) => {
+    const lowerType = type.toLowerCase();
+    if (lowerType.includes("compliance")) {
+      return {
+        bg: theme.palette.primary.main,
+        color: theme.palette.common.white,
+      };
+    }
+    if (lowerType.includes("quality")) {
+      return {
+        bg: theme.palette.success.main,
+        color: theme.palette.common.white,
+      };
+    }
+    if (lowerType.includes("environmental")) {
+      return {
+        bg: theme.palette.info.main,
+        color: theme.palette.common.white,
+      };
+    }
+    if (lowerType.includes("security")) {
+      return {
+        bg: theme.palette.warning.main,
+        color: theme.palette.common.white,
+      };
+    }
+    if (lowerType.includes("financial")) {
+      return {
+        bg: theme.palette.secondary.main,
+        color: theme.palette.common.white,
+      };
+    }
+    // Default fallback
+    return {
+      bg: theme.palette.grey[600],
+      color: theme.palette.common.white,
+    };
+  };
+
   // ✅ Sanitize all user-generated content to prevent XSS [IV][REH]
   const sanitizedTitle = sanitizeAndTruncate(questionnaire.title, 80);
   const sanitizedType = sanitizeUserInput(questionnaire.type);
@@ -87,6 +127,8 @@ export const QuestionnaireCard: React.FC<QuestionnaireCardProps> = ({
   const sanitizedId = sanitizeEntityCode(
     questionnaire.id?.slice(-8)?.toUpperCase()
   );
+
+  const categoryColors = getCategoryColor(sanitizedType);
 
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString("it-IT", {
@@ -178,11 +220,17 @@ export const QuestionnaireCard: React.FC<QuestionnaireCardProps> = ({
               sx={{
                 fontSize: "0.75rem",
                 height: 24,
-                backgroundColor: `${theme.palette.primary.main} !important`,
-                color: `${theme.palette.common.white} !important`,
-                border: `1px solid ${theme.palette.primary.main}`,
+                backgroundColor: categoryColors.bg,
+                color: categoryColors.color,
+                border: `1px solid ${categoryColors.bg} !important`,
+                fontWeight: 500,
                 "& .MuiChip-label": {
-                  color: `${theme.palette.common.white} !important`,
+                  color: categoryColors.color,
+                  fontWeight: 500,
+                },
+                "&.MuiChip-root": {
+                  backgroundColor: categoryColors.bg,
+                  color: categoryColors.color,
                 },
               }}
             />
@@ -241,8 +289,14 @@ export const QuestionnaireCard: React.FC<QuestionnaireCardProps> = ({
                 height: 20,
                 backgroundColor: `${theme.palette.grey[600]} !important`,
                 color: `${theme.palette.common.white} !important`,
-                border: `1px solid ${theme.palette.grey[600]}`,
+                border: `1px solid ${theme.palette.grey[600]} !important`,
+                fontWeight: 500,
                 "& .MuiChip-label": {
+                  color: `${theme.palette.common.white} !important`,
+                  fontWeight: 500,
+                },
+                "&.MuiChip-root": {
+                  backgroundColor: `${theme.palette.grey[600]} !important`,
                   color: `${theme.palette.common.white} !important`,
                 },
               }}
