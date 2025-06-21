@@ -211,18 +211,18 @@ Implement support for multiple entity types per questionnaire template to enable
   - Add efficient LINQ queries for entity type filtering
   - Consider performance with large entity datasets
 
-#### ⏳ **Task 11: Add Entity Type Validation Services [IV][REH]**
+#### ✅ **Task 11: Add Entity Type Validation Services [IV][REH]**
 
-- **Status**: ⏳ Pending
+- **Status**: ✅ Complete
 - **Priority**: 🟢 Low
 - **Estimated Time**: 1 hour
 - **Assignee**: AI
 - **Dependencies**: Task 10
 - **Description**: Create validation service for entity type business rules
 - **Acceptance Criteria**:
-  - [ ] Service validates entity type combinations
-  - [ ] Business rules for valid entity type selections
-  - [ ] Reusable validation across application layers
+  - [x] Service validates entity type combinations
+  - [x] Business rules for valid entity type selections
+  - [x] Reusable validation across application layers
 - **Implementation Notes**:
   - Consider future business rules for entity type restrictions
   - Make service extensible for additional validation rules
