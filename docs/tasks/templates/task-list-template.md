@@ -10,6 +10,8 @@
 
 Brief description of the overall goal and scope of this task list.
 
+**Business Context**: [Optional - describe business requirements and rationale for technical changes]
+
 ## 📊 **Progress Summary**
 
 - **Total Tasks**: [X]
@@ -38,6 +40,10 @@ Brief description of the overall goal and scope of this task list.
   - [ ] Specific measurable outcome 2
   - [ ] Specific measurable outcome 3
 - **Implementation Notes**: Any specific technical considerations
+- **Database Changes**: [For tasks involving schema changes]
+- **API Changes**: [For tasks affecting API contracts]
+- **Breaking Changes**: [Any backward compatibility impacts]
+- **Migration Strategy**: [For data migration tasks]
 - **Commit**: [commit-hash] (when completed)
 
 #### 🚧 **Task 2: [Task Name] [Rule Tags]**
@@ -97,8 +103,10 @@ Brief description of the overall goal and scope of this task list.
 - **Average Task Time**: [X] hours
 - **Quality Metrics**: [Relevant quality measures]
 - **Technical Debt**: [Any technical debt created or resolved]
+- **Code Coverage**: [For development tasks]
+- **Performance Impact**: [For optimization tasks]
 
-## 🎯 **Next Steps**
+## �� **Next Steps**
 
 1. [Next immediate action]
 2. [Following action]
@@ -110,6 +118,9 @@ Brief description of the overall goal and scope of this task list.
 - **What Could Be Improved**: [Areas for improvement]
 - **Lessons Learned**: [Key takeaways for future work]
 - **Recommendations**: [Suggestions for similar future tasks]
+- **Risk Assessment**: [Technical and business risks identified]
+- **Performance Considerations**: [Performance impacts and optimizations]
+- **Backward Compatibility**: [Compatibility requirements and strategy]
 
 ---
 
@@ -129,3 +140,31 @@ Brief description of the overall goal and scope of this task list.
 - **[AC]** - Atomic Changes
 - **[CD]** - Commit Discipline
 - **[TDT]** - Test-Driven Thinking
+- **[RP]** - Readability Priority
+- **[CDiP]** - Continuous Documentation in Progress
+
+## 🔧 **Template Sections for Technical Tasks**
+
+### **For Database/Migration Tasks:**
+
+- **Migration Strategy**: Describe data preservation and rollback approach
+- **Database Changes**: Detail schema modifications
+- **Performance Impact**: Consider indexing and query performance
+
+### **For API Tasks:**
+
+- **API Changes**: Document endpoint modifications
+- **Breaking Changes**: Identify backward compatibility impacts
+- **Versioning Strategy**: Plan for API version management
+
+### **For Frontend Tasks:**
+
+- **UI/UX Requirements**: Reference design system compliance
+- **Responsive Design**: Ensure mobile/desktop compatibility
+- **Accessibility**: Confirm WCAG compliance
+
+### **For Testing Tasks:**
+
+- **Test Coverage**: Set minimum coverage requirements
+- **Test Types**: Specify unit, integration, E2E test needs
+- **Test Data**: Plan realistic test scenarios

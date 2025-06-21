@@ -151,21 +151,36 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
         </Grid>
 
         <Grid item xs={12} md={6}>
-          <TextField
+          <FormControl
             fullWidth
-            type="number"
-            label="Target Entity Type ID"
-            value={templateData.targetEntityTypeId || 1}
-            onChange={(e) =>
-              handleFieldChange(
-                "targetEntityTypeId",
-                parseInt(e.target.value) || 1
-              )
-            }
             required
-            inputProps={{ min: 1 }}
-            helperText="ID of the entity type this template applies to"
-          />
+            error={errors.some(
+              (e) => e.includes("target") || e.includes("entity")
+            )}
+          >
+            <InputLabel>Target Entity Type</InputLabel>
+            <Select
+              value={templateData.targetEntityTypeId || 1}
+              onChange={(e) =>
+                handleFieldChange("targetEntityTypeId", e.target.value)
+              }
+              label="Target Entity Type"
+            >
+              <MenuItem value={1}>Supplier</MenuItem>
+              <MenuItem value={2}>Sub-Supplier</MenuItem>
+              <MenuItem value={3}>Site/Facility</MenuItem>
+              <MenuItem value={4}>Person/Contact</MenuItem>
+              <MenuItem value={5}>Company Group</MenuItem>
+            </Select>
+          </FormControl>
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ mt: 0.5, fontSize: "0.75rem" }}
+          >
+            Select the type of supply network entity this questionnaire template
+            is designed for
+          </Typography>
         </Grid>
       </Grid>
     </Box>
