@@ -564,28 +564,96 @@ export const useTemplateWizard = (
 
   // Actions
   const saveDraft = useCallback(async () => {
-    if (!templateId) {
-      throw new Error("Cannot save draft: no template ID");
+    try {
+      let currentTemplateId = templateId;
+
+      // If no templateId exists, create the template first
+      if (!currentTemplateId) {
+        log.debug("saveDraft: No templateId, creating template first...", {
+          hook: "useTemplateWizard",
+        });
+
+        const templateRequest = {
+          title: state.templateData.title || "",
+          description: state.templateData.description || "",
+          targetEntityTypeId: state.templateData.targetEntityTypeId || 1,
+          targetEntityTypes: state.templateData.targetEntityTypes || [],
+          primaryLanguage: state.templateData.primaryLanguage || "en",
+          expirationMonths: state.templateData.expirationMonths || 12,
+          certificateType:
+            state.templateData.certificateType || ("SelfAssessment" as any),
+          sections: state.sections.map((section) => ({
+            title: section.title,
+            description: section.description || "",
+            order: section.order,
+            translations: section.translations,
+          })),
+        };
+
+        log.debug("saveDraft: Creating template with data:", {
+          hook: "useTemplateWizard",
+          templateRequest,
+        });
+
+        const createdTemplate = await questionnaireTemplatesApi.createTemplate(
+          templateRequest
+        );
+        currentTemplateId = createdTemplate.id;
+
+        // Update state with the new template ID
+        setState((prev) => ({
+          ...prev,
+          templateData: { ...prev.templateData, id: currentTemplateId },
+        }));
+
+        log.debug("saveDraft: Template created with ID:", {
+          hook: "useTemplateWizard",
+          currentTemplateId,
+        });
+      } else {
+        // If template exists, use the saveDraft API
+        const saveRequest: SaveDraftRequest = {
+          templateId: currentTemplateId,
+          title: state.templateData.title || "",
+          description: state.templateData.description || "",
+          expirationMonths: state.templateData.expirationMonths || 12,
+          certificateType: state.templateData.certificateType,
+        };
+
+        log.debug("saveDraft: Saving draft for existing template:", {
+          hook: "useTemplateWizard",
+          currentTemplateId,
+        });
+
+        await questionnaireTemplatesApi.saveDraft(saveRequest);
+      }
+
+      setState((prev) => ({
+        ...prev,
+        isDirty: false,
+        lastSaved: new Date().toISOString(),
+      }));
+
+      onSave?.(currentTemplateId);
+
+      log.info("saveDraft: Draft saved successfully", {
+        hook: "useTemplateWizard",
+        currentTemplateId,
+      });
+    } catch (error) {
+      log.error("saveDraft: Error:", {
+        hook: "useTemplateWizard",
+        error,
+      });
+      throw error;
     }
-
-    const saveRequest: SaveDraftRequest = {
-      templateId,
-      title: state.templateData.title || "",
-      description: state.templateData.description || "",
-      expirationMonths: state.templateData.expirationMonths || 12,
-      certificateType: state.templateData.certificateType,
-    };
-
-    await questionnaireTemplatesApi.saveDraft(saveRequest);
-
-    setState((prev) => ({
-      ...prev,
-      isDirty: false,
-      lastSaved: new Date().toISOString(),
-    }));
-
-    onSave?.(templateId);
-  }, [templateId, state.templateData, onSave]);
+  }, [
+    templateId,
+    state.templateData,
+    state.sections,
+    questionnaireTemplatesApi,
+    onSave,
+  ]);
 
   const publishTemplate = useCallback(async () => {
     try {

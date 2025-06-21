@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Typography,
-  Button,
   Card,
   CardContent,
   Alert,
@@ -14,14 +13,9 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
 } from "@mui/material";
 import {
   ExpandMore as ExpandMoreIcon,
-  Publish as PublishIcon,
   Warning as WarningIcon,
 } from "@mui/icons-material";
 import {
@@ -32,14 +26,12 @@ import {
   QuestionType,
   CertificateType,
 } from "../../../types/questionnaire-templates";
-import { log } from "@/utils/logger";
 
 interface ReviewStepProps {
   templateData: Partial<QuestionnaireTemplate>;
   sections: QuestionnaireSection[];
   questions: TemplateQuestion[];
   conditions: QuestionCondition[];
-  onPublish: () => Promise<void>;
   errors: string[];
 }
 
@@ -64,28 +56,8 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
   sections,
   questions,
   conditions,
-  onPublish,
   errors,
 }) => {
-  const [publishDialogOpen, setPublishDialogOpen] = useState(false);
-  const [isPublishing, setIsPublishing] = useState(false);
-
-  const handlePublishClick = () => {
-    setPublishDialogOpen(true);
-  };
-
-  const handleConfirmPublish = async () => {
-    setIsPublishing(true);
-    try {
-      await onPublish();
-      setPublishDialogOpen(false);
-    } catch (error) {
-      log.error("Failed to publish:", { component: "ReviewStep", error });
-    } finally {
-      setIsPublishing(false);
-    }
-  };
-
   const getQuestionById = (id: string) => {
     return questions.find((q) => q.id === id);
   };
@@ -125,6 +97,14 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
               <li key={index}>{error}</li>
             ))}
           </ul>
+        </Alert>
+      )}
+
+      {errors.length === 0 && (
+        <Alert severity="success" sx={{ mb: 3 }}>
+          <Typography variant="subtitle2">
+            Template validation passed! Ready for publishing.
+          </Typography>
         </Alert>
       )}
 
@@ -395,73 +375,28 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
         </Card>
       )}
 
-      {/* Publish Button */}
+      {/* Publishing Instructions */}
       <Card>
         <CardContent>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Box>
-              <Typography variant="h6" gutterBottom>
-                Ready to Publish?
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Publishing will make this template available for creating
-                questionnaires.
-              </Typography>
-            </Box>
-
-            <Button
-              variant="contained"
-              size="large"
-              startIcon={<PublishIcon />}
-              onClick={handlePublishClick}
-              disabled={errors.length > 0 || isPublishing}
-            >
-              {isPublishing ? "Publishing..." : "Publish Template"}
-            </Button>
-          </Box>
+          <Typography variant="h6" gutterBottom>
+            Ready to Publish?
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Use the <strong>&ldquo;Publish Template&rdquo;</strong> button in
+            the wizard controls below to make this template available for
+            creating questionnaires.
+          </Typography>
+          {errors.length > 0 ? (
+            <Typography variant="body2" color="error">
+              Please resolve all validation errors above before publishing.
+            </Typography>
+          ) : (
+            <Typography variant="body2" color="success.main">
+              All validations passed. You can now publish this template.
+            </Typography>
+          )}
         </CardContent>
       </Card>
-
-      {/* Publish Confirmation Dialog */}
-      <Dialog
-        open={publishDialogOpen}
-        onClose={() => !isPublishing && setPublishDialogOpen(false)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>Confirm Publication</DialogTitle>
-        <DialogContent>
-          <Typography variant="body1" gutterBottom>
-            Are you sure you want to publish this template?
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Once published, the template will be available for creating
-            questionnaires. You can still edit the template after publishing,
-            but changes will create a new version.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => setPublishDialogOpen(false)}
-            disabled={isPublishing}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleConfirmPublish}
-            variant="contained"
-            disabled={isPublishing}
-          >
-            {isPublishing ? "Publishing..." : "Confirm Publish"}
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 };

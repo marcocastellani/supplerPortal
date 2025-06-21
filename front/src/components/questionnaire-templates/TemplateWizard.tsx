@@ -98,10 +98,25 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
       setSnackbarMessage("Template published successfully");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
-    } catch (error) {
-      setSnackbarMessage(
-        error instanceof Error ? error.message : "Failed to publish template"
-      );
+    } catch (error: any) {
+      let errorMessage = "Failed to publish template";
+
+      // Handle specific error types
+      if (error?.response?.status === 404) {
+        errorMessage =
+          "Publish endpoint not available yet. This feature is currently under development.";
+      } else if (error?.response?.status === 400) {
+        errorMessage =
+          error?.response?.data?.error ||
+          "Template validation failed. Please check all required fields.";
+      } else if (error?.response?.status === 500) {
+        errorMessage =
+          "Server error occurred while publishing. Please try again later.";
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
+      setSnackbarMessage(errorMessage);
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }
@@ -171,7 +186,6 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
             sections={state.sections}
             questions={state.questions}
             conditions={state.conditions}
-            onPublish={handlePublish}
             errors={getStepErrors(WizardStep.Review)}
           />
         );
