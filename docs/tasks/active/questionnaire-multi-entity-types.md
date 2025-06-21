@@ -138,19 +138,19 @@ Implement support for multiple entity types per questionnaire template to enable
 
 ### **Phase 3: Frontend Implementation** (Estimated: 6 hours)
 
-#### ⏳ **Task 7: Update TypeScript Interfaces [IV][DRY]**
+#### ✅ **Task 7: Update TypeScript Interfaces [IV][DRY]**
 
-- **Status**: ⏳ Pending
+- **Status**: ✅ Complete
 - **Priority**: 🔴 High
 - **Estimated Time**: 1 hour
 - **Assignee**: AI
 - **Dependencies**: Task 4
 - **Description**: Modify frontend types to support entity types array
 - **Acceptance Criteria**:
-  - [ ] `QuestionnaireTemplate` interface uses `targetEntityTypes: EntityType[]`
-  - [ ] `CreateTemplateRequest` interface updated
-  - [ ] Form validation types support array validation
-  - [ ] Backward compatibility maintained during transition
+  - [x] `QuestionnaireTemplate` interface uses `targetEntityTypes: EntityType[]`
+  - [x] `CreateTemplateRequest` interface updated
+  - [x] Form validation types support array validation
+  - [x] Backward compatibility maintained during transition
 - **Implementation Notes**:
   - Import EntityType from existing supply network entities types
   - Ensure type safety with proper validation
