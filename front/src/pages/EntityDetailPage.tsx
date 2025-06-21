@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Container, Grid, Text } from "@remira/unifiedui";
@@ -7,6 +7,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { PageHeader } from "../components/LayoutComponents";
 import { log } from "@/utils/logger";
+import { useTab } from "@/stores/uiStore";
 
 import {
   EntityHeroSection,
@@ -31,12 +32,15 @@ import { useEntityDetail, useEntityUpdate } from "../hooks";
  * - Separated concerns: data, rendering, state [CA]
  * - Reusable components throughout [DRY]
  * - Easily testable in isolation [TDT]
+ * - Using Zustand for tab state management
  */
 const EntityDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState(0);
+
+  // Use Zustand store for tab state
+  const { activeTab, setActiveTab } = useTab("entity-detail", 0);
 
   // Custom hooks for data and updates [CA]
   const { entity, parentEntity, isLoading, error, fetchEntity } =
@@ -181,7 +185,7 @@ const EntityDetailPage: React.FC = () => {
         {/* Tab Navigation */}
         <Grid item xs={12}>
           <EntityTabNavigation
-            activeTab={activeTab}
+            activeTab={typeof activeTab === "number" ? activeTab : 0}
             onTabChange={handleTabChange}
           />
         </Grid>

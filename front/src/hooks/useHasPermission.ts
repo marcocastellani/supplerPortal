@@ -1,20 +1,15 @@
-import { useDispatch, useSelector } from "react-redux";
-import { checkPermission } from "../redux/slices/rbacSlice";
-import type { AppDispatch, RootState } from "../redux/store";
 import { useState, useEffect, useMemo } from "react";
+import { useRbacStore } from "../stores/rbacStore";
 
 const pendingRequests = new Set<string>();
 
 const useHasPermission = (permissionKeys: string[]) => {
-  const dispatch: AppDispatch = useDispatch();
-
-  const permissions = useSelector((state: RootState) => state.rbac.permissions);
-  const checkedPermissions = useSelector(
-    (state: RootState) => state.rbac.checkedPermissions
-  );
-  const deniedPermissions = useSelector(
-    (state: RootState) => state.rbac.deniedPermissions
-  );
+  const { 
+    permissions, 
+    checkedPermissions, 
+    deniedPermissions, 
+    checkPermission 
+  } = useRbacStore();
 
   const checkedPermissionsSet = useMemo(
     () => new Set(checkedPermissions),
@@ -47,24 +42,31 @@ const useHasPermission = (permissionKeys: string[]) => {
   );
 
   useEffect(() => {
-    if (newPermissionsToCheck.length > 0) {
-      newPermissionsToCheck.forEach((key) => pendingRequests.add(key));
-
-      setLoading(true);
-
-      dispatch(checkPermission(newPermissionsToCheck))
-        .unwrap()
-        .catch(() => {
-          setError("Failed to fetch permissions.");
-        })
-        .finally(() => {
-          newPermissionsToCheck.forEach((key) => pendingRequests.delete(key));
-          setLoading(false);
-        });
-    } else {
+    if (newPermissionsToCheck.length === 0) {
       setLoading(false);
+      return;
     }
-  }, [newPermissionsToCheck, dispatch]);
+
+    const checkNewPermissions = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Add permissions to global tracking
+        newPermissionsToCheck.forEach((key: string) => pendingRequests.add(key));
+
+        await checkPermission(newPermissionsToCheck);
+      } catch (err: any) {
+        setError(err.message || "Error checking permissions");
+      } finally {
+        // Remove from global tracking
+        newPermissionsToCheck.forEach((key: string) => pendingRequests.delete(key));
+        setLoading(false);
+      }
+    };
+
+    checkNewPermissions();
+  }, [newPermissionsToCheck, checkPermission]);
 
   return {
     permissions: permissionStatus,
