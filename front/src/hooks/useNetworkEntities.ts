@@ -71,7 +71,7 @@ export function useNetworkEntities(): UseNetworkEntitiesReturn {
     currentPage: DATA_CONSTANTS.FIRST_PAGE,
   });
 
-  // Create stable debounced function to prevent infinite loops [PA]
+ 
   const debouncedFetch = useCallback(
     debounce(
       async (

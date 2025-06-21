@@ -121,76 +121,7 @@ public class SupplyNetworkEntitiesController : MediatrBaseController
         });
     }
 
-    /// <summary>
-    /// Validate if external code is unique
-    /// </summary>
-    /// <param name="externalCode">External code to validate</param>
-    /// <returns>Validation result</returns>
-    [HttpGet("validate/external-code/{externalCode}")]
-    [ProducesResponseType(200)]
-    public async Task<ActionResult> ValidateExternalCode(string externalCode)
-    {
-        var query = new GetSupplyNetworkEntitiesQuery
-        {
-            SearchTerm = externalCode,
-            PageSize = 1
-        };
 
-        var result = await Mediator.Send(query);
-        var exists = result.Items.Any(x => x.ExternalCode.Equals(externalCode, StringComparison.OrdinalIgnoreCase));
-
-        return Ok(new { isUnique = !exists });
-    }
-
-    /// <summary>
-    /// Validate if VAT code is unique
-    /// </summary>
-    /// <param name="vatCode">VAT code to validate</param>
-    /// <returns>Validation result</returns>
-    [HttpGet("validate/vat-code/{vatCode}")]
-    [ProducesResponseType(200)]
-    public async Task<ActionResult> ValidateVatCode(string vatCode)
-    {
-        var query = new GetSupplyNetworkEntitiesQuery
-        {
-            PageSize = 100 // Might need to increase if many entities
-        };
-
-        var result = await Mediator.Send(query);
-        var exists = result.Items.Any(x => x.VatCode.Equals(vatCode, StringComparison.OrdinalIgnoreCase));
-
-        return Ok(new { isUnique = !exists });
-    }
-
-    /// <summary>
-    /// Search supply network entities with typeahead functionality
-    /// </summary>
-    /// <param name="searchTerm">Search term (minimum 3 characters)</param>
-    /// <param name="entityType">Filter by entity type (default: Supplier)</param>
-    /// <param name="maxResults">Maximum number of results (default: 15)</param>
-    /// <param name="activeOnly">Include only active entities (default: true)</param>
-    /// <returns>List of matching entities</returns>
-    [HttpGet("search")]
-    [ProducesResponseType(typeof(List<SupplyNetworkEntitySearchResultDto>), 200)]
-    [ProducesResponseType(400)]
-    public async Task<ActionResult<List<SupplyNetworkEntitySearchResultDto>>> SearchSupplyNetworkEntities(
-        [FromQuery] string searchTerm,
-        [FromQuery] EntityType? entityType = null,
-        [FromQuery] int maxResults = 15,
-        [FromQuery] bool activeOnly = true)
-    {
-        // Set default entity type to Supplier if not specified
-        var query = new SearchSupplyNetworkEntitiesQuery
-        {
-            SearchTerm = searchTerm ?? string.Empty,
-            EntityType = entityType ?? EntityType.Supplier,
-            MaxResults = Math.Min(maxResults, 50), // Cap at 50 for performance
-            ActiveOnly = activeOnly
-        };
-
-        var result = await Mediator.Send(query);
-        return Ok(result);
-    }
 
     /// <summary>
     /// Get a paginated list of suppliers with optional filtering
