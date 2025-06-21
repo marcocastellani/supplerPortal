@@ -1,0 +1,3 @@
+import{j as s}from"./index-DrhACB-D.js";import{M as m,C as p}from"./ChartsDocs-DRQTwweD.js";import{C as n}from"./Upload-ChF5xKSK.js";import"./index-DQDNmYQF.js";import"./index-BGiqdwja.js";import"./index-DmqVK_gK.js";import"./docs-CJ9d-umt.js";import"./theming-C7i7v1dL.js";import"./tiny-invariant-CopsF_GD.js";const g={title:"UnifiedUI/Charts",component:n,parameters:{docs:{page:m}}},r={render:a=>s.jsx(p,{...a})};var o,e,t;r.parameters={...r.parameters,docs:{...(o=r.parameters)==null?void 0:o.docs,source:{originalSource:`{
+  render: (args: any) => <ComposedChartExample {...args} />
+}`,...(t=(e=r.parameters)==null?void 0:e.docs)==null?void 0:t.source}}};const E=["BaseComposedChart"];export{r as BaseComposedChart,E as __namedExportsOrder,g as default};

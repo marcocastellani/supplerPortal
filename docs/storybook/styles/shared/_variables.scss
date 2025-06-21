@@ -1,0 +1,84 @@
+@use 'sass:map' as map;
+
+/* RESPONSIVE BREAKPOINTS */
+$layout-breakpoint-small: 1080px;
+
+/* SHADOWS */
+$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+$shadow-md: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+$shadow-nav: 0px 5px 4px 0px rgba(0, 0, 0, 0.1);
+
+/* BORDERS */
+$radius-sm: 4px;
+$radius-md: 16px;
+$radius-lg: 1em;
+
+/* COLORS */
+$primary: rgb(57, 180, 191); //#39B4BF
+$primary-dark: rgb(0, 93, 107); //#005D6B
+$primary-lo: rgba(57, 180, 191, 0.2);
+$base-text: rgb(236, 239, 241);
+$secondary: rgb(235, 247, 248);
+$body-bg: rgb(255, 255, 255);
+$error: rgb(255, 88, 105);
+$error-dark: rgb(245, 0, 25);
+$warning: rgb(255, 178, 91);
+$warning-dark: rgba(248, 132, 0, 1);
+$success: rgb(92, 184, 92);
+$success-dark: rgb(72, 165, 72);
+$info: rgb(91, 192, 222);
+$info-dark: rgba(43, 173, 212, 1);
+$light-error: rgb(255, 238, 239);
+$light-warning: rgb(247, 244, 240);
+$light-success: rgb(240, 247, 240);
+$light-info: rgb(240, 246, 247);
+$black: rgb(0, 0, 0);
+$grey-50: #eceff1;
+$grey-100: #cfd8dc;
+$grey-200: #b0bec5;
+$grey-300: #90a4ae;
+$grey-400: #78909c;
+$grey-600: #546e7a;
+$grey-900: #263238;
+
+$themes: (
+	light: (
+		background: #eceff1,
+		bgHover: rgb(224, 224, 224),
+		color: #263238,
+		navbarBackground: #263238,
+		navbarColor: #fff,
+	),
+	dark: (
+		background: #36474f,
+		bgHover: rgb(44, 43, 43),
+		color: #ffffff,
+		navbarBackground: #263238,
+		navbarColor: #bcc0c2,
+	),
+);
+
+$theme-map: ();
+
+@mixin themify($themes) {
+	@each $theme, $map in $themes {
+		.theme-#{$theme} & {
+			@each $key, $submap in $map {
+				$value: map.get(map.get($themes, $theme), '#{$key}');
+				$theme-map: map.merge(
+					$theme-map,
+					(
+						$key: $value,
+					)
+				);
+			}
+			@content;
+		}
+	}
+
+	$theme-map: null;
+}
+
+@function themed($key) {
+	@return map.get($theme-map, $key);
+}

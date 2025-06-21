@@ -1,0 +1,353 @@
+@use './variables' as *;
+
+:root {
+	/**
+   * @tokens Colors
+   * @presenter Color
+   */
+
+	/* PRIMARY COLORS */
+	--primary: rgb(57, 180, 191);
+	--primary-light: rgb(235, 247, 248);
+
+	/* NEUTRAL COLORS */
+	--white: rgb(255, 255, 255);
+	--light-grey: rgb(236, 239, 241);
+	--dark-grey: rgb(38, 50, 56);
+	--disabled: rgb(176, 190, 197);
+
+	/* SIGNAL COLORS */
+	--error: rgb(255, 88, 105);
+	--error-light: rgb(255, 238, 239);
+	--warning: rgb(255, 178, 91);
+	--warning-light: rgb(247, 244, 240);
+	--success: rgb(92, 184, 92);
+	--success-light: rgb(240, 247, 240);
+	--info: rgb(91, 192, 222);
+	--info-light: rgb(240, 246, 247);
+
+	/* CHART COLORS */
+	--dark-warning: rgb(255, 130, 0);
+	--yellow: rgb(255, 205, 0);
+	--dark-petrol: rgb(0, 93, 107);
+	--blue: rgb(0, 94, 184);
+
+	/**
+  * @tokens FontFamilies
+  * @presenter FontFamily
+  */
+	--font-sans-pro: 'Source Sans 3', 'Helvetica Neue', 'Helvetica', 'Arial',
+		sans-serif;
+
+	/**
+  * @tokens FontWeights
+  * @presenter FontWeight
+  */
+	--light: 300;
+	--regular: 400;
+	--bold: 600;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
+
+* {
+	font-family: 'Source Sans 3', sans-serif !important;
+}
+
+.fal {
+	font-family: 'Font Awesome 6 Pro' !important;
+}
+
+h1,
+.h1 {
+	font-size: 2rem;
+	font-family: 'Source Sans 3' !important;
+	font-weight: 300 !important;
+}
+
+h1 small {
+	text-transform: uppercase;
+	font-family: 'Source Sans 3';
+	font-weight: 500;
+	font-size: 70%;
+	color: $grey-600;
+	vertical-align: bottom;
+}
+
+i.fal.fa-check {
+	color: $primary !important;
+	font-size: 1.5em;
+}
+
+i.fal.fa-times {
+	font-size: 1.5em;
+}
+
+// Enf of Fonts
+
+// Start of basic styles
+
+body {
+	background-color: $grey-900;
+	font-family: 'Source Sans 3';
+}
+
+.main {
+	@include themify($themes) {
+		background-color: themed('background');
+	}
+}
+
+.layout {
+	@include themify($themes) {
+		background-color: themed('background');
+	}
+	height: 100vh;
+	width: 100vw;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.float-right {
+	float: right;
+}
+
+li {
+	cursor: pointer !important;
+}
+
+.label {
+	height: 24px;
+	min-width: 24px;
+	line-height: 0;
+	border-radius: 6px;
+	cursor: default;
+	-webkit-box-align: center;
+	align-items: center;
+	white-space: nowrap;
+	display: inline-flex;
+	-webkit-box-pack: center;
+	justify-content: center;
+	padding: 0px 6px;
+	font-size: 14px !important;
+	font-weight: 700;
+	margin: 0 5px !important;
+	color: #90a4ae;
+	&.label-success {
+		color: #48a548;
+		background: rgba(72, 165, 72, 0.12);
+	}
+	&.label-warning {
+		color: #df7011;
+		background: rgba(248, 132, 42, 0.12);
+	}
+	&.label-danger {
+		color: #d32f2f;
+		background: rgba(211, 47, 47, 0.12);
+	}
+	&.label-default {
+		background: rgba(176, 190, 197, 0.2);
+	}
+	&.label-primary {
+		color: #005d6b;
+		background: rgba(57, 180, 191, 0.2);
+	}
+}
+
+.label-info {
+	background: rgba(91, 192, 222, 0.3);
+	border-radius: 6px;
+	border-color: $info;
+	color: $primary-dark;
+	font-size: 0.85em;
+	padding: 10px;
+}
+
+.small {
+	color: $grey-600;
+}
+
+small {
+	color: $grey-600;
+	&.text-end {
+		font-weight: 600;
+		font-size: 70%;
+		color: $grey-600;
+		vertical-align: bottom;
+	}
+	span.text-danger {
+		font-size: 1rem;
+		vertical-align: sub;
+	}
+}
+
+.category {
+	text-transform: uppercase;
+	color: $grey-300;
+}
+
+hr {
+	color: $grey-100;
+	opacity: 1;
+}
+
+a {
+	color: $primary !important;
+	text-decoration: none;
+}
+
+.cursor-pointer {
+	cursor: pointer;
+}
+
+tr.Logging td:nth-child(4) {
+	border-bottom-left-radius: 20px;
+	border-bottom-right-radius: 20px;
+}
+
+.text-primary,
+i.fal.fa-circle-info {
+	color: $primary !important;
+}
+
+p.text-light {
+	color: $grey-300 !important;
+}
+
+// End of basic styles
+
+// Start of dark theme
+
+.bg-dark {
+	background-color: $grey-900 !important;
+	color: $grey-50 !important;
+}
+
+// End of dark theme
+
+footer .text-white {
+	color: $grey-200 !important;
+}
+
+.is-booked {
+	display: none;
+}
+
+.listview-header {
+	color: $grey-600;
+	font-size: 24px;
+}
+
+.dropdown-menu {
+	@include themify($themes) {
+		background-color: themed('background');
+	}
+
+	.dropdown-item {
+		&:hover {
+			@include themify($themes) {
+				background-color: themed('bgHover');
+			}
+		}
+	}
+}
+
+// Copied from UCP
+
+.remira__notificationsContainer {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 0;
+	padding-right: 5px;
+	max-height: 500px;
+	overflow: auto;
+
+	.remira__notifications {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+}
+
+.remira__notificationsContainer::-webkit-scrollbar {
+	width: 5px;
+	height: 8px;
+	background-color: $body-bg;
+	/* or add it to the track */
+}
+
+.remira__notificationsContainer::-webkit-scrollbar-thumb {
+	background-color: #aaa;
+	/* or add it to the track */
+}
+
+.remira__navLogoBlockedService {
+	color: $grey-200;
+}
+
+.square {
+	height: 48px;
+	width: 48px;
+	border-radius: 12px;
+	background-color: rgb(244, 246, 248);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	i {
+		font-size: 28px;
+	}
+}
+
+footer.remira__footer {
+	position: unset !important;
+	margin-top: auto;
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: 3rem;
+	font-size: 0.85em;
+	padding: 5px 0;
+
+	a {
+		transition: all 0.2s;
+		text-decoration: none !important;
+		color: #6c757d !important;
+
+		&:hover {
+			color: #39b4bf !important;
+			transition: all 0.2s;
+		}
+	}
+}
+
+hr.dashed {
+	border: 1px dashed rgb(241, 243, 244);
+	margin: 0;
+}
+
+.MuiTooltip-tooltip {
+	font-size: 1em !important;
+}
+
+// MaterialUI STYLE OVERIDES
+
+::-webkit-scrollbar {
+	width: 20px;
+}
+
+::-webkit-scrollbar-track {
+	background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: #d6dee1;
+	border-radius: 20px;
+	border: 6px solid transparent;
+	background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background-color: #a8bbbf;
+}

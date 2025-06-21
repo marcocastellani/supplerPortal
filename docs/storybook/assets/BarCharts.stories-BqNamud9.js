@@ -1,0 +1,3 @@
+import{j as s}from"./index-DrhACB-D.js";import{M as m,B as p}from"./ChartsDocs-DRQTwweD.js";import{B as n}from"./Upload-ChF5xKSK.js";import"./index-DQDNmYQF.js";import"./index-BGiqdwja.js";import"./index-DmqVK_gK.js";import"./docs-CJ9d-umt.js";import"./theming-C7i7v1dL.js";import"./tiny-invariant-CopsF_GD.js";const u={title:"UnifiedUI/Charts",component:n,parameters:{docs:{page:m}}},r={render:o=>s.jsx(p,{...o})};var a,t,e;r.parameters={...r.parameters,docs:{...(a=r.parameters)==null?void 0:a.docs,source:{originalSource:`{
+  render: (args: any) => <BarChartExample {...args} />
+}`,...(e=(t=r.parameters)==null?void 0:t.docs)==null?void 0:e.source}}};const g=["BaseBarChart"];export{r as BaseBarChart,g as __namedExportsOrder,u as default};

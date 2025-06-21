@@ -1,0 +1,3 @@
+import{j as s}from"./index-DrhACB-D.js";import{S as m}from"./Upload-ChF5xKSK.js";import{M as p,S as c}from"./ChartsDocs-DRQTwweD.js";import"./index-DQDNmYQF.js";import"./index-BGiqdwja.js";import"./theming-C7i7v1dL.js";import"./tiny-invariant-CopsF_GD.js";import"./index-DmqVK_gK.js";import"./docs-CJ9d-umt.js";const u={title:"UnifiedUI/Charts",component:m,parameters:{docs:{page:p}}},r={render:o=>s.jsx(c,{...o})};var t,a,e;r.parameters={...r.parameters,docs:{...(t=r.parameters)==null?void 0:t.docs,source:{originalSource:`{
+  render: (args: any) => <ScatterChartExample {...args} />
+}`,...(e=(a=r.parameters)==null?void 0:a.docs)==null?void 0:e.source}}};const g=["BaseScatterChart"];export{r as BaseScatterChart,g as __namedExportsOrder,u as default};

@@ -1,0 +1,3 @@
+import{j as s}from"./index-DrhACB-D.js";import{P as m}from"./Upload-ChF5xKSK.js";import{M as i,P as p}from"./ChartsDocs-DRQTwweD.js";import"./index-DQDNmYQF.js";import"./index-BGiqdwja.js";import"./theming-C7i7v1dL.js";import"./tiny-invariant-CopsF_GD.js";import"./index-DmqVK_gK.js";import"./docs-CJ9d-umt.js";const l={title:"UnifiedUI/Charts",component:m,parameters:{docs:{page:i}}},r={render:o=>s.jsx(p,{...o})};var e,t,a;r.parameters={...r.parameters,docs:{...(e=r.parameters)==null?void 0:e.docs,source:{originalSource:`{
+  render: (args: any) => <PieChartExample {...args} />
+}`,...(a=(t=r.parameters)==null?void 0:t.docs)==null?void 0:a.source}}};const g=["RadiusPieChart"];export{r as RadiusPieChart,g as __namedExportsOrder,l as default};

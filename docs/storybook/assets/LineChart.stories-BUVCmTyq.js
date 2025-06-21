@@ -1,0 +1,3 @@
+import{j as s}from"./index-DrhACB-D.js";import{L as m}from"./Upload-ChF5xKSK.js";import{M as n,L as p}from"./ChartsDocs-DRQTwweD.js";import"./index-DQDNmYQF.js";import"./index-BGiqdwja.js";import"./theming-C7i7v1dL.js";import"./tiny-invariant-CopsF_GD.js";import"./index-DmqVK_gK.js";import"./docs-CJ9d-umt.js";const u={title:"UnifiedUI/Charts",component:m,parameters:{docs:{page:n}}},r={render:o=>s.jsx(p,{...o})};var e,t,a;r.parameters={...r.parameters,docs:{...(e=r.parameters)==null?void 0:e.docs,source:{originalSource:`{
+  render: (args: any) => <LineChartExample {...args} />
+}`,...(a=(t=r.parameters)==null?void 0:t.docs)==null?void 0:a.source}}};const g=["BaseLineChart"];export{r as BaseLineChart,g as __namedExportsOrder,u as default};
