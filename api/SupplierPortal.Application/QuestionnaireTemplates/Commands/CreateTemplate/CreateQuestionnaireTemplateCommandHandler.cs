@@ -35,10 +35,15 @@ public class CreateQuestionnaireTemplateCommandHandler : IRequestHandler<CreateQ
     {
         // Validate input
         ArgumentNullException.ThrowIfNull(request);
-        
+
         if (string.IsNullOrWhiteSpace(request.Title))
         {
             throw new ArgumentException("Template title cannot be empty", nameof(request));
+        }
+
+        if (request.TargetEntityTypes == null || !request.TargetEntityTypes.Any())
+        {
+            throw new ArgumentException("At least one target entity type must be specified", nameof(request));
         }
 
         // Create the main template entity
@@ -47,7 +52,7 @@ public class CreateQuestionnaireTemplateCommandHandler : IRequestHandler<CreateQ
             Id = Guid.NewGuid(),
             Title = request.Title,
             Description = request.Description,
-            TargetEntityTypeId = request.TargetEntityTypeId,
+            TargetEntityTypeId = request.TargetEntityTypeId, // Keep for backward compatibility
             PrimaryLanguage = request.PrimaryLanguage,
             ExpirationMonths = request.ExpirationMonths,
             CertificateType = request.CertificateType,
@@ -58,6 +63,19 @@ public class CreateQuestionnaireTemplateCommandHandler : IRequestHandler<CreateQ
         };
 
         _context.QuestionnaireTemplates.Add(template);
+
+        // Create entity type associations
+        foreach (var entityType in request.TargetEntityTypes)
+        {
+            var templateEntityType = new QuestionnaireTemplateEntityType
+            {
+                Id = Guid.NewGuid(),
+                QuestionnaireTemplateId = template.Id,
+                EntityType = entityType
+            };
+
+            _context.QuestionnaireTemplateEntityTypes.Add(templateEntityType);
+        }
 
         // Create sections if provided
         if (request.Sections != null)
@@ -71,8 +89,8 @@ public class CreateQuestionnaireTemplateCommandHandler : IRequestHandler<CreateQ
                     Description = sectionDto.Description,
                     Order = sectionDto.Order,
                     QuestionnaireTemplateId = template.Id,
-                    TranslationsJson = sectionDto.Translations != null 
-                        ? JsonSerializer.Serialize(sectionDto.Translations) 
+                    TranslationsJson = sectionDto.Translations != null
+                        ? JsonSerializer.Serialize(sectionDto.Translations)
                         : null
                 };
 
@@ -84,7 +102,7 @@ public class CreateQuestionnaireTemplateCommandHandler : IRequestHandler<CreateQ
 
         // Map to response
         var response = _mapper.Map<QuestionnaireTemplateResponse>(template);
-        
+
         // For unit testing, we'll set empty sections list
         // The sections will be populated in integration tests or real usage
         response.Sections = new List<SectionResponse>();

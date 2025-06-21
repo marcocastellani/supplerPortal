@@ -100,20 +100,20 @@ Implement support for multiple entity types per questionnaire template to enable
   - Keep old properties for API versioning
   - Add AutoMapper profiles for entity type conversion
 
-#### ⏳ **Task 5: Update MediatR Commands and Handlers [REH][TDT]**
+#### ✅ **Task 5: Update MediatR Commands and Handlers [REH][TDT]**
 
-- **Status**: ⏳ Pending
+- **Status**: ✅ Complete
 - **Priority**: 🔴 High
 - **Estimated Time**: 4 hours
 - **Assignee**: AI
 - **Dependencies**: Task 4
 - **Description**: Modify all template-related commands to handle multiple entity types
 - **Acceptance Criteria**:
-  - [ ] `CreateQuestionnaireTemplateCommand` handles entity types array
-  - [ ] `UpdateQuestionnaireTemplateCommand` supports entity types modification
-  - [ ] `GetQuestionnaireTemplateQuery` returns entity types in response
-  - [ ] Validation ensures at least one entity type is selected
-  - [ ] Error handling for invalid entity type combinations
+  - [x] `CreateQuestionnaireTemplateCommand` handles entity types array
+  - [x] `UpdateQuestionnaireTemplateCommand` supports entity types modification
+  - [x] `GetQuestionnaireTemplateQuery` returns entity types in response
+  - [x] Validation ensures at least one entity type is selected
+  - [x] Error handling for invalid entity type combinations
 - **Implementation Notes**:
   - Use FluentValidation for entity type validation
   - Ensure proper transaction handling for junction table operations

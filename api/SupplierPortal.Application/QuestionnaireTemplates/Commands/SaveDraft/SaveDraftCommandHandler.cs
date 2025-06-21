@@ -46,6 +46,12 @@ public class SaveDraftCommandHandler : IRequestHandler<SaveDraftCommand, Unit>
         if (request.CertificateType.HasValue)
             template.CertificateType = request.CertificateType.Value;
 
+        // Update target entity types if provided
+        if (request.TargetEntityTypes != null)
+        {
+            await UpdateTargetEntityTypes(template.Id, request.TargetEntityTypes, cancellationToken);
+        }
+
         template.LastModified = _dateTime.Now;
 
         // Update sections if provided
@@ -182,6 +188,29 @@ public class SaveDraftCommandHandler : IRequestHandler<SaveDraftCommand, Unit>
 
                 _context.TemplateQuestions.Add(newQuestion);
             }
+        }
+    }
+
+    private async Task UpdateTargetEntityTypes(Guid templateId, List<Domain.Enums.EntityType> targetEntityTypes, CancellationToken cancellationToken)
+    {
+        // Remove existing entity type associations
+        var existingEntityTypes = await _context.QuestionnaireTemplateEntityTypes
+            .Where(te => te.QuestionnaireTemplateId == templateId)
+            .ToListAsync(cancellationToken);
+
+        _context.QuestionnaireTemplateEntityTypes.RemoveRange(existingEntityTypes);
+
+        // Add new entity type associations
+        foreach (var entityType in targetEntityTypes)
+        {
+            var templateEntityType = new QuestionnaireTemplateEntityType
+            {
+                Id = Guid.NewGuid(),
+                QuestionnaireTemplateId = templateId,
+                EntityType = entityType
+            };
+
+            _context.QuestionnaireTemplateEntityTypes.Add(templateEntityType);
         }
     }
 }

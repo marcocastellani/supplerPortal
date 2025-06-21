@@ -26,6 +26,7 @@ public class GetQuestionnaireTemplateQueryHandler : IRequestHandler<GetQuestionn
     public async Task<QuestionnaireTemplateResponse> Handle(GetQuestionnaireTemplateQuery request, CancellationToken cancellationToken)
     {
         var template = await _context.QuestionnaireTemplates
+            .Include(t => t.TargetEntityTypes)
             .FirstOrDefaultAsync(t => t.Id == request.Id, cancellationToken);
 
         if (template == null)
@@ -66,12 +67,12 @@ public class GetQuestionnaireTemplateQueryHandler : IRequestHandler<GetQuestionn
         foreach (var question in response.Questions)
         {
             var questionEntity = questions.First(q => q.Id == question.Id);
-            
+
             if (!string.IsNullOrEmpty(questionEntity.ConfigurationJson))
             {
                 question.Configuration = JsonSerializer.Deserialize<object>(questionEntity.ConfigurationJson);
             }
-            
+
             if (!string.IsNullOrEmpty(questionEntity.TranslationsJson))
             {
                 question.Translations = JsonSerializer.Deserialize<Dictionary<string, object>>(questionEntity.TranslationsJson);
