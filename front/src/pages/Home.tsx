@@ -7,7 +7,7 @@ import { appMenu } from "../configs/menu";
 import Dashboard from "./Dashboard";
 import { RBACExample } from "./RBACExample";
 import { RegionalSettingsExample } from "./RegionalSettingsExample";
-import { NewSupplyNetworkEntity } from "./NewSupplyNetworkEntity";
+import NewSupplyNetworkEntity from "./NewSupplyNetworkEntity";
 import { QuestionnaireTemplates } from "./QuestionnaireTemplates";
 import { TemplateWizard } from "../components/questionnaire-templates/TemplateWizard";
 import { QuestionnaireAssignments } from "./QuestionnaireAssignments";

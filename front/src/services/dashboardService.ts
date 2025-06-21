@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { DashboardFilters, UpcomingQuestionnaireDto } from '../types/dashboard';
+import { log } from '../utils/logger';
 
 // L'URL base è già configurato da setAxiosDefaultBaseUrl in App.tsx
 export const dashboardApi = {
@@ -30,10 +31,20 @@ export const dashboardApi = {
       params.append('weeksAhead', filters.weeksAhead.toString());
     }
 
+    log.api('GET', '/api/dashboard/questionnaires', { 
+      service: 'dashboardApi',
+      filters: Object.keys(filters).length > 0 ? filters : undefined
+    });
+
     const response = await axios.get('/api/dashboard/questionnaires', {
       params
     });
-    console.log("Response data:", response.data);
+    
+    log.apiResponse('GET', '/api/dashboard/questionnaires', response.status, {
+      service: 'dashboardApi',
+      itemCount: response.data?.length || 0
+    });
+    
     return response.data;
   }
 };

@@ -105,6 +105,7 @@ export interface UseTemplateWizardReturn {
   // State
   state: TemplateWizardState;
   isLoading: boolean;
+  currentTemplateId?: string;
   
   // Navigation
   currentStep: WizardStep;
@@ -482,18 +483,58 @@ export const useTemplateWizard = (options: UseTemplateWizardOptions = {}): UseTe
   }, [templateId, state.templateData, onSave]);
   
   const publishTemplate = useCallback(async () => {
-    if (!templateId) {
-      throw new Error('Cannot publish: no template ID');
+    try {
+      let currentTemplateId = templateId;
+      
+      // If no templateId exists, create the template first
+      if (!currentTemplateId) {
+        console.log('publishTemplate: No templateId, creating template first...');
+        
+        const templateRequest = {
+          title: state.templateData.title || '',
+          description: state.templateData.description || '',
+          targetEntityTypeId: state.templateData.targetEntityTypeId || 1,
+          primaryLanguage: state.templateData.primaryLanguage || 'en',
+          expirationMonths: state.templateData.expirationMonths || 12,
+          certificateType: state.templateData.certificateType || 'SelfAssessment' as any,
+          sections: state.sections.map(section => ({
+            title: section.title,
+            description: section.description || '',
+            order: section.order,
+            translations: section.translations
+          }))
+        };
+        
+        console.log('publishTemplate: Creating template with data:', templateRequest);
+        
+        const createdTemplate = await questionnaireTemplatesApi.createTemplate(templateRequest);
+        currentTemplateId = createdTemplate.id;
+        
+        // Update state with the new template ID
+        setState(prev => ({
+          ...prev,
+          templateData: { ...prev.templateData, id: currentTemplateId }
+        }));
+        
+        console.log('publishTemplate: Template created with ID:', currentTemplateId);
+      }
+      
+      // Now publish the template
+      console.log('publishTemplate: Publishing template with ID:', currentTemplateId);
+      await questionnaireTemplatesApi.publishTemplate(currentTemplateId);
+      
+      setState(prev => ({
+        ...prev,
+        templateData: { ...prev.templateData, status: TemplateStatus.Active },
+        isDirty: false,
+      }));
+      
+      console.log('publishTemplate: Template published successfully');
+    } catch (error) {
+      console.error('publishTemplate: Error:', error);
+      throw error;
     }
-    
-    await questionnaireTemplatesApi.publishTemplate(templateId);
-    
-    setState(prev => ({
-      ...prev,
-      templateData: { ...prev.templateData, status: TemplateStatus.Active },
-      isDirty: false,
-    }));
-  }, [templateId]);
+  }, [templateId, state.templateData, state.sections, questionnaireTemplatesApi]);
   
   const validateTemplate = useCallback(async (): Promise<boolean> => {
     if (!state.templateData.title || !state.templateData.description) {
@@ -659,6 +700,7 @@ export const useTemplateWizard = (options: UseTemplateWizardOptions = {}): UseTe
     // State
     state,
     isLoading,
+    currentTemplateId: state.templateData.id || templateId,
     
     // Navigation
     currentStep: state.currentStep,

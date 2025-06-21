@@ -48,6 +48,7 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
   const {
     state,
     isLoading,
+    currentTemplateId,
     currentStep,
     canGoNext,
     canGoPrevious,
@@ -93,7 +94,7 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
   const handlePublish = async () => {
     try {
       await publishTemplate();
-      onComplete?.(templateId!);
+      onComplete?.(currentTemplateId!);
       setSnackbarMessage("Template published successfully");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
@@ -199,7 +200,7 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
       <Card>
         <CardContent>
           <Typography variant="h4" component="h1" gutterBottom>
-            {templateId ? "Edit Template" : "Create New Template"}
+            {currentTemplateId ? "Edit Template" : "Create New Template"}
           </Typography>
 
           {/* Auto-save indicator */}
@@ -253,7 +254,7 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
             </Box>
 
             <Box>
-              {templateId && (
+              {currentTemplateId && (
                 <Button
                   variant="outlined"
                   onClick={handleSaveDraft}

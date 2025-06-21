@@ -204,7 +204,7 @@ describe('NetworkEntities', () => {
       expect(screen.getByText('Supplier One')).toBeInTheDocument();
     });
 
-    const filterSelect = screen.getByRole('combobox');
+    const filterSelect = screen.getByTestId('entity-type-filter');
     fireEvent.change(filterSelect, { target: { value: EntityType.Supplier } });
 
     await waitFor(() => {
@@ -213,6 +213,7 @@ describe('NetworkEntities', () => {
         entityType: EntityType.Supplier,
         page: 1,
         pageSize: 20,
+        active: undefined,
         sortBy: 'legalName',
         sortDescending: false,
       });

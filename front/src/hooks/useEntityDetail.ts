@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { SupplyNetworkEntityDto } from "../types/supplyNetworkEntities";
 import { SupplyNetworkEntitiesService } from "../services/supplyNetworkEntitiesService";
+import { log } from "../utils/logger";
+import { AppError } from "../types/ui";
 
 interface UseEntityDetailReturn {
   entity: SupplyNetworkEntityDto | null;
@@ -28,13 +30,18 @@ export const useEntityDetail = (id?: string): UseEntityDetailReturn => {
       return;
     }
 
-    console.log("Fetching entity with ID:", id);
+    log.debug("Fetching entity", { hook: 'useEntityDetail', entityId: id });
     setIsLoading(true);
     setError(null);
 
     try {
       const response = await SupplyNetworkEntitiesService.getSupplyNetworkEntity(id);
-      console.log("Entity fetched successfully:", response);
+      log.info("Entity fetched successfully", { 
+        hook: 'useEntityDetail', 
+        entityId: id,
+        entityType: response.entityType,
+        hasParent: !!response.parentId
+      });
       setEntity(response);
 
       // Fetch parent entity if exists [REH]
@@ -45,18 +52,27 @@ export const useEntityDetail = (id?: string): UseEntityDetailReturn => {
           );
           setParentEntity(parentResponse);
         } catch (parentError) {
-          console.warn("Failed to fetch parent entity:", parentError);
+          log.warn("Failed to fetch parent entity", { 
+            hook: 'useEntityDetail', 
+            entityId: id,
+            parentId: response.parentId 
+          }, parentError);
         }
       }
-    } catch (error: any) {
-      console.error("Failed to fetch entity details:", error);
+    } catch (error) {
+      const appError = error as AppError;
+      log.error("Failed to fetch entity details", { 
+        hook: 'useEntityDetail', 
+        entityId: id,
+        status: 'response' in appError ? appError.response?.status : undefined
+      }, appError);
       
       // Specific error handling [REH]
-      if (error?.response?.status === 404) {
+      if ('response' in appError && appError.response?.status === 404) {
         setError(t("entityDetail.notFound"));
-      } else if (error?.response?.status === 403) {
+      } else if ('response' in appError && appError.response?.status === 403) {
         setError(t("forbidden"));
-      } else if (error?.response?.status >= 500) {
+      } else if ('response' in appError && appError.response?.status && appError.response.status >= 500) {
         setError(t("serverError"));
       } else {
         setError(t("entityDetail.error"));
