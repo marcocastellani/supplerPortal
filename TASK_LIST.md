@@ -1,97 +1,140 @@
-# Task List - Supplier Portal Ghost
+# 🔧 Design System Compliance Task List
 
-## Current Feature: Standardize Page Headers
+**Project**: SupplierPortal Frontend Components  
+**Created**: 2024-06-21  
+**Priority**: Security & Design System Compliance
 
-### ✅ Completed Tasks
+## 📋 Task Status Legend
 
-1. **Analysis Phase**
-   - [x] Analyzed existing page header patterns across `/front/src/pages`
-   - [x] Identified 4 main header patterns: Simple, Dashboard, Complex, Form Wizard
-   - [x] Created feature branch: `feature/standardize-page-headers`
+- ✅ **Completed**
+- 🔄 **In Progress**
+- ⏳ **Pending**
+- ❌ **Blocked**
 
-2. **Component Development**
-   - [x] Created `PageHeader` component in `/front/src/components/LayoutComponents/PageHeader/`
-   - [x] Implemented flexible props system (title, subtitle, icons, actions)
-   - [x] **ENFORCED CONSISTENT STYLING**: Fixed h3 title, body1 subtitle (NO customization allowed)
-   - [x] Integrated with existing design system (@remira/unifiedui, @mui/material)
-   - [x] Updated LayoutComponents index exports
-   - [x] Fixed all TypeScript and ESLint errors
+---
 
-3. **Page Refactoring - COMPLETED ALL PAGES**
-   - [x] **Audits.tsx** - Converted to use PageHeader (simple pattern)
-   - [x] **Documents.tsx** - Converted to use PageHeader (simple pattern)
-   - [x] **Dashboard.tsx** - Converted to use PageHeader (with i18n support)
-   - [x] **EntityDetailPage.tsx** - Converted to use PageHeader (complex with back/refresh/breadcrumb)
-   - [x] **KPIDashboard.tsx** - Converted to use PageHeader (simple pattern)
-   - [x] **KPIThresholds.tsx** - Converted to use PageHeader (simple pattern)
-   - [x] **QuestionnaireAssignments.tsx** - Converted to use PageHeader (simple pattern)
-   - [x] **QuestionnaireTemplates.tsx** - Converted to use PageHeader (simple pattern)
-   - [x] **Roles.tsx** - Converted to use PageHeader (simple pattern)
-   - [x] **Taxonomies.tsx** - Converted to use PageHeader (simple pattern)
-   - [x] **RBACExample.tsx** - Converted to use PageHeader (simple pattern)
-   - [x] **RegionalSettingsExample.tsx** - Converted to use PageHeader (simple pattern)
+## 🔴 **PRIORITY 1: CRITICAL SECURITY & DESIGN SYSTEM FIXES**
 
-4. **Component Integration - COMPLETED**
-   - [x] **NetworkEntities.tsx** - Refactored to use PageHeader with icon
-   - [x] **FormWizard.tsx** - Refactored to use PageHeader (affects NewSupplyNetworkEntity)
-   - [x] **SupplyNetwork.tsx** - Uses NetworkEntities (already converted)
+### Task 1: Fix Hardcoded Colors in StatusChip Component [SF][CMV]
 
-5. **Code Quality & Testing**
-   - [x] Fixed all ESLint errors (npm run lint passes)
-   - [x] Fixed all TypeScript errors (npx tsc --noEmit passes)
-   - [x] Ensured proper import/export structure
-   - [x] Validated component prop types and interfaces
+- **Status**: ⏳ **Pending**
+- **Component**: `front/src/components/Dashboard/StatusChip.tsx`
+- **Issue**: Replace hardcoded color values with design tokens
+- **Estimated Effort**: 30 minutes
+- **Security Risk**: Medium - Breaks theme support and accessibility
 
-6. **Enhancement & Polish** - COMPLETED
-   - [x] Add icon support for different page types
-   - [x] Created comprehensive icon mapping documentation (PAGE_ICONS_MAPPING.md)
-   - [x] Ensured semantic icon selection for all page types
-   - [x] Maintained visual consistency across all icons
+### Task 2: Fix Hardcoded Colors in ErrorMessage Component [SF][CMV]
 
-7. **Testing & Documentation**
-   - [x] Create unit tests for PageHeader component
-   - [x] Add Storybook stories for PageHeader variants
-   - [x] Update component documentation
-   - [x] Test responsive behavior across devices
+- **Status**: ⏳ **Pending**
+- **Component**: `front/src/components/Forms/ErrorMessage.tsx`
+- **Issue**: Replace `#d32f2f` with `error.main` theme color
+- **Estimated Effort**: 15 minutes
+- **Security Risk**: Low - Theme consistency issue
 
-8. **Integration & Deployment**
-   - [x] Test all refactored pages in development
-   - [x] Create pull request with comprehensive description
-   - [x] Code review and feedback integration
-   - [x] Merge to master branch
+### Task 3: Replace Custom Buttons with UnifiedUI in FormWizard [DRY]
 
-## ✅ **TASK COMPLETATO AL 100%** - Standardizzazione Page Headers
+- **Status**: ⏳ **Pending**
+- **Component**: `front/src/components/SupplyNetworkEntities/FormWizard.tsx`
+- **Issue**: Custom styled buttons instead of UnifiedUI Button components
+- **Estimated Effort**: 45 minutes
+- **Security Risk**: Medium - Inconsistent UI patterns
 
-- **13/13 Pagine Refactorizzate** con PageHeader standardizzato
-- **13/13 Icone Semantiche** implementate per migliorare UX
-- **Styling Fisso** applicato (h3 + body1) per consistenza totale
-- **Zero Errori** ESLint e TypeScript
-- **Documentazione Completa** con mappatura icone e rationale
-- **Qualità Codice** garantita con controlli automatici
+### Task 4: Add Input Sanitization to EntityTable [IV][REH]
 
-### 🔄 In Progress Tasks
+- **Status**: ⏳ **Pending**
+- **Component**: `front/src/components/NetworkEntities/EntityTable.tsx`
+- **Issue**: User data displayed without proper sanitization (XSS risk)
+- **Estimated Effort**: 30 minutes
+- **Security Risk**: High - Potential XSS vulnerability
 
-**NONE - ALL TASKS COMPLETED**
+### Task 5: Add Input Sanitization to QuestionnaireCard [IV][REH]
 
-### 📋 Pending Tasks
+- **Status**: ⏳ **Pending**
+- **Component**: `front/src/components/Dashboard/QuestionnaireCard.tsx`
+- **Issue**: User content displayed without validation (XSS risk)
+- **Estimated Effort**: 20 minutes
+- **Security Risk**: High - Potential XSS vulnerability
 
-**NONE - PROJECT COMPLETED SUCCESSFULLY**
+---
 
-## Architecture Notes
+## 🟡 **PRIORITY 2: ACCESSIBILITY & TYPE SAFETY**
 
-### PageHeader Component Features
-- **Flexible Layout**: Supports title, subtitle, icons, and custom actions
-- **Navigation**: Built-in back button and refresh functionality  
-- **Responsive**: Adapts to different screen sizes
-- **Accessible**: Proper ARIA labels and semantic structure
-- **Consistent**: Follows design system guidelines
+### Task 6: Add ARIA Labels to Interactive Elements [REH]
 
-### Design Patterns Applied
-- **Single Responsibility** [SF]: Component focuses only on header layout
-- **Clean Architecture** [CA]: Separated concerns between layout and business logic
-- **DRY Principle** [DRY]: Eliminates duplicate header code across pages
-- **Industry Standards** [ISA]: Follows React and Material-UI conventions
+- **Status**: ⏳ **Pending**
+- **Components**: Multiple (QuestionnaireCard, EntityTable, FormWizard)
+- **Issue**: Missing accessibility attributes
+- **Estimated Effort**: 60 minutes
+- **Impact**: Accessibility compliance (WCAG 2.1 AA)
 
-## Next Session Goals
-1. Review and refine the PageHeader component
-2. Plan for future enhancements and improvements
+### Task 7: Fix TypeScript Interfaces [IV]
+
+- **Status**: ⏳ **Pending**
+- **Components**: `EntityFilters.tsx`, `FormWizard.tsx`
+- **Issue**: Generic `any` types instead of proper interfaces
+- **Estimated Effort**: 45 minutes
+- **Impact**: Type safety and developer experience
+
+### Task 8: Implement Theme Support [TH]
+
+- **Status**: ⏳ **Pending**
+- **Components**: Components using hardcoded colors
+- **Issue**: Not compatible with light/dark theme switching
+- **Estimated Effort**: 30 minutes
+- **Impact**: Design system consistency
+
+---
+
+## 🟢 **PRIORITY 3: TESTING & DOCUMENTATION**
+
+### Task 9: Add Component Tests for New Components [TDT]
+
+- **Status**: ⏳ **Pending**
+- **Components**: ErrorBoundary, ErrorNotification, EntityTable
+- **Issue**: Missing test coverage for critical components
+- **Estimated Effort**: 120 minutes
+- **Impact**: Code quality and reliability
+
+### Task 10: Add Accessibility Tests [REH]
+
+- **Status**: ⏳ **Pending**
+- **Components**: All user-facing components
+- **Issue**: No automated accessibility testing
+- **Estimated Effort**: 90 minutes
+- **Impact**: Accessibility compliance validation
+
+### Task 11: Update Component Documentation [SD]
+
+- **Status**: ⏳ **Pending**
+- **Components**: All modified components
+- **Issue**: JSDoc comments need updates for new interfaces
+- **Estimated Effort**: 60 minutes
+- **Impact**: Developer experience
+
+---
+
+## 📊 **SUMMARY**
+
+**Total Tasks**: 11  
+**Estimated Total Effort**: ~8-10 hours  
+**Critical Security Tasks**: 5  
+**Design System Tasks**: 8
+
+**Next Action**: Start with Task 1 (StatusChip hardcoded colors)
+
+---
+
+## 🔄 **EXECUTION PLAN**
+
+1. **Phase 1** (Tasks 1-5): Critical security and design system fixes
+2. **Phase 2** (Tasks 6-8): Accessibility and type safety improvements
+3. **Phase 3** (Tasks 9-11): Testing and documentation
+
+Each task will be completed with:
+
+- ✅ Code changes following DESIGN_SYSTEM.md guidelines
+- ✅ Testing of the changes
+- ✅ Git commit with descriptive message
+- ✅ Update of this task list
+
+**Let's begin! 🚀**
