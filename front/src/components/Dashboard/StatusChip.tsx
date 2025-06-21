@@ -1,5 +1,5 @@
 import React from "react";
-import { Chip, ChipProps } from "@mui/material";
+import { Chip, ChipProps, useTheme } from "@mui/material";
 
 type QuestionnaireStatus =
   | "Draft"
@@ -13,10 +13,10 @@ interface StatusChipProps extends Omit<ChipProps, "color"> {
 }
 
 /**
- * StatusChip component for displaying questionnaire status with design system compliant colors [SF][CMV]
+ * StatusChip component for displaying questionnaire status with improved contrast [SF][CMV]
  *
  * Features:
- * - Uses Material-UI theme tokens instead of hardcoded colors for accessibility
+ * - Uses solid theme colors with white text for better readability
  * - Supports all questionnaire status types with semantic color mapping
  * - Fully responsive design with consistent typography
  * - WCAG 2.1 AA compliant color contrast ratios
@@ -33,32 +33,34 @@ interface StatusChipProps extends Omit<ChipProps, "color"> {
  * ```
  */
 export const StatusChip: React.FC<StatusChipProps> = ({ status, ...props }) => {
+  const theme = useTheme(); // ✅ Access theme for light/dark mode support [TH]
+
   const getStatusConfig = (status: QuestionnaireStatus) => {
-    // ✅ Using design tokens instead of hardcoded colors [SF][CMV]
+    // ✅ Using solid theme colors with white text for better contrast [SF][CMV]
     const configs = {
       Draft: {
-        color: "text.secondary", // Instead of #757575
-        bg: "grey.50", // Instead of #f5f5f5
+        color: theme.palette.common.white, // White text for better contrast
+        bg: theme.palette.grey[600], // Darker grey for contrast
         label: "Draft",
       },
       Published: {
-        color: "primary.main", // Instead of #1976d2
-        bg: "primary.light", // Instead of #e3f2fd
+        color: theme.palette.common.white, // White text for better contrast
+        bg: theme.palette.primary.main, // Solid primary color
         label: "Published",
       },
       InProgress: {
-        color: "warning.main", // Instead of #f57c00
-        bg: "warning.light", // Instead of #fff3e0
+        color: theme.palette.common.white, // White text for better contrast
+        bg: theme.palette.warning.main, // Solid warning color
         label: "In Progress",
       },
       Completed: {
-        color: "success.main", // Instead of #388e3c
-        bg: "success.light", // Instead of #e8f5e8
+        color: theme.palette.common.white, // White text for better contrast
+        bg: theme.palette.success.main, // Solid success color
         label: "Completed",
       },
       Overdue: {
-        color: "error.main", // Instead of #d32f2f
-        bg: "error.light", // Instead of #ffebee
+        color: theme.palette.common.white, // White text for better contrast
+        bg: theme.palette.error.main, // Solid error color
         label: "Overdue",
       },
     };
@@ -72,12 +74,14 @@ export const StatusChip: React.FC<StatusChipProps> = ({ status, ...props }) => {
       label={config.label}
       size="small"
       sx={{
-        backgroundColor: config.bg,
-        color: config.color,
+        backgroundColor: `${config.bg} !important`,
+        color: `${config.color} !important`,
         fontWeight: 500,
         fontSize: "0.75rem",
+        border: `1px solid ${config.bg}`,
         "& .MuiChip-label": {
           px: 1.5,
+          color: `${config.color} !important`,
         },
       }}
       {...props}

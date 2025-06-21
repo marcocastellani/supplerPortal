@@ -8,6 +8,7 @@ import {
   IconButton,
   Stack,
   Divider,
+  useTheme,
 } from "@mui/material";
 import {
   Business,
@@ -73,6 +74,8 @@ export const QuestionnaireCard: React.FC<QuestionnaireCardProps> = ({
   questionnaire,
   onActionClick,
 }) => {
+  const theme = useTheme(); // ✅ Access theme for better chip styling [TH]
+
   // ✅ Sanitize all user-generated content to prevent XSS [IV][REH]
   const sanitizedTitle = sanitizeAndTruncate(questionnaire.title, 80);
   const sanitizedType = sanitizeUserInput(questionnaire.type);
@@ -171,13 +174,16 @@ export const QuestionnaireCard: React.FC<QuestionnaireCardProps> = ({
             <Chip
               label={sanitizedType}
               size="small"
-              variant="outlined"
               aria-label={`Tipo di questionario: ${sanitizedType}`}
               sx={{
                 fontSize: "0.75rem",
                 height: 24,
-                borderColor: "primary.main",
-                color: "primary.main",
+                backgroundColor: `${theme.palette.primary.main} !important`,
+                color: `${theme.palette.common.white} !important`,
+                border: `1px solid ${theme.palette.primary.main}`,
+                "& .MuiChip-label": {
+                  color: `${theme.palette.common.white} !important`,
+                },
               }}
             />
           </Box>
@@ -229,11 +235,16 @@ export const QuestionnaireCard: React.FC<QuestionnaireCardProps> = ({
             <Chip
               label={sanitizedSupplierCode}
               size="small"
-              variant="outlined"
               aria-label={`Codice fornitore: ${sanitizedSupplierCode}`}
               sx={{
                 fontSize: "0.7rem",
                 height: 20,
+                backgroundColor: `${theme.palette.grey[600]} !important`,
+                color: `${theme.palette.common.white} !important`,
+                border: `1px solid ${theme.palette.grey[600]}`,
+                "& .MuiChip-label": {
+                  color: `${theme.palette.common.white} !important`,
+                },
               }}
             />
           </Box>
