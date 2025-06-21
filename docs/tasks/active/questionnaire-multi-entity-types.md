@@ -44,20 +44,20 @@ Implement support for multiple entity types per questionnaire template to enable
   - Ensure cascade delete when template is removed
   - Add to IApplicationDbContext interface
 
-#### ⏳ **Task 2: Database Migration with Backward Compatibility [REH][AC]**
+#### ✅ **Task 2: Database Migration with Backward Compatibility [REH][AC]**
 
-- **Status**: ⏳ Pending
+- **Status**: ✅ Complete
 - **Priority**: 🔴 High
 - **Estimated Time**: 3 hours
 - **Assignee**: AI
 - **Dependencies**: Task 1
 - **Description**: Create migration that preserves existing data while adding new structure
 - **Acceptance Criteria**:
-  - [ ] Migration creates new junction table
-  - [ ] Existing `TargetEntityTypeId` data migrated to new table
-  - [ ] Old field marked as obsolete but not removed
-  - [ ] Migration is reversible
-  - [ ] No data loss during migration
+  - [x] Migration creates new junction table
+  - [x] Existing `TargetEntityTypeId` data migrated to new table
+  - [x] Old field marked as obsolete but not removed
+  - [x] Migration is reversible
+  - [x] No data loss during migration
 - **Implementation Notes**:
   - Test migration on sample data
   - Add SQL script to populate junction table from existing data
