@@ -328,16 +328,14 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
             </Box>
 
             <Box>
-              {currentTemplateId && (
-                <Button
-                  variant="outlined"
-                  onClick={handleSaveDraft}
-                  disabled={!state.isDirty}
-                  sx={{ mr: 2 }}
-                >
-                  Save Draft
-                </Button>
-              )}
+              <Button
+                variant="outlined"
+                onClick={handleSaveDraft}
+                disabled={!state.isDirty || state.isAutoSaving}
+                sx={{ mr: 2 }}
+              >
+                Save Draft
+              </Button>
 
               {canGoNext ? (
                 <Button
