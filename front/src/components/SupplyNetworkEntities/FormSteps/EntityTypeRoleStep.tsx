@@ -95,6 +95,7 @@ export const EntityTypeRoleStep: React.FC<EntityTypeRoleStepProps> = ({
               label: et.display,
             }))}
             fullWidth
+            useAutocomplete={true}
           />
         </Grid>
 
@@ -112,6 +113,7 @@ export const EntityTypeRoleStep: React.FC<EntityTypeRoleStepProps> = ({
               label: role.display,
             }))}
             fullWidth
+            useAutocomplete={true}
           />
         </Grid>
 
