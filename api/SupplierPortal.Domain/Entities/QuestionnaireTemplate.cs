@@ -80,4 +80,22 @@ public class QuestionnaireTemplate : BaseAuditableEntity
     /// Target entity types for this template (many-to-many relationship)
     /// </summary>
     public ICollection<QuestionnaireTemplateEntityType> TargetEntityTypes { get; set; } = new List<QuestionnaireTemplateEntityType>();
+
+    /// <summary>
+    /// Validates that the template has at least one target entity type
+    /// </summary>
+    /// <returns>True if template is valid, false otherwise</returns>
+    public bool HasValidTargetEntityTypes()
+    {
+        return TargetEntityTypes != null && TargetEntityTypes.Any();
+    }
+
+    /// <summary>
+    /// Gets the list of target entity types for this template
+    /// </summary>
+    /// <returns>List of EntityType enums</returns>
+    public List<EntityType> GetTargetEntityTypes()
+    {
+        return TargetEntityTypes?.Select(te => te.EntityType).ToList() ?? new List<EntityType>();
+    }
 }

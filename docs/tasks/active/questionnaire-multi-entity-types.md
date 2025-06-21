@@ -63,19 +63,19 @@ Implement support for multiple entity types per questionnaire template to enable
   - Add SQL script to populate junction table from existing data
   - Keep old field temporarily for rollback capability
 
-#### ⏳ **Task 3: Update QuestionnaireTemplate Domain Entity [DRY]**
+#### ✅ **Task 3: Update QuestionnaireTemplate Domain Entity [DRY]**
 
-- **Status**: ⏳ Pending
+- **Status**: ✅ Complete
 - **Priority**: 🔴 High
 - **Estimated Time**: 1 hour
 - **Assignee**: AI
 - **Dependencies**: Task 1
 - **Description**: Add navigation property and mark old property as obsolete
 - **Acceptance Criteria**:
-  - [ ] `TargetEntityTypes` collection property added
-  - [ ] `TargetEntityTypeId` marked with [Obsolete] attribute
-  - [ ] Navigation properties configured correctly
-  - [ ] Entity validates at least one target entity type is required
+  - [x] `TargetEntityTypes` collection property added
+  - [x] `TargetEntityTypeId` marked with [Obsolete] attribute
+  - [x] Navigation properties configured correctly
+  - [x] Entity validates at least one target entity type is required
 - **Implementation Notes**:
   - Use ICollection<QuestionnaireTemplateEntityType> for navigation
   - Add validation attribute for minimum 1 entity type
