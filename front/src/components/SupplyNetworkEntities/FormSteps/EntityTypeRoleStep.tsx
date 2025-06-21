@@ -10,14 +10,30 @@ import {
   SupplyNetworkEntitySearchResultDto,
 } from "../../../types/supplyNetworkEntities";
 
+// ✅ Proper TypeScript interfaces instead of any types [IV]
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
 interface EntityTypeRoleStepProps {
   formData: SupplyNetworkEntityFormData;
   enumValues: EnumValues;
   selectedParent: SupplyNetworkEntitySearchResultDto | null;
-  onInputChange: (field: keyof SupplyNetworkEntityFormData, value: any) => void;
+  /** Handler for form field changes with proper typing [IV] */
+  onInputChange: (
+    field: keyof SupplyNetworkEntityFormData,
+    value: string | boolean
+  ) => void;
   onParentChange: (entity: SupplyNetworkEntitySearchResultDto | null) => void;
 }
 
+/**
+ * EntityTypeRoleStep component with proper TypeScript interfaces [IV]
+ *
+ * Form step for selecting entity type and role in supply chain
+ * with type-safe event handlers and proper interface definitions.
+ */
 export const EntityTypeRoleStep: React.FC<EntityTypeRoleStepProps> = ({
   formData,
   enumValues,
@@ -25,6 +41,36 @@ export const EntityTypeRoleStep: React.FC<EntityTypeRoleStepProps> = ({
   onInputChange,
   onParentChange,
 }) => {
+  // ✅ Type-safe event handlers [IV]
+  const handleEntityTypeChange = (
+    event: React.SyntheticEvent,
+    option: SelectOption | null
+  ) => {
+    const newValue =
+      option?.value || (event?.target as HTMLSelectElement)?.value;
+    onInputChange("entityType", newValue as EntityType);
+  };
+
+  const handleRoleChange = (
+    event: React.SyntheticEvent,
+    option: SelectOption | null
+  ) => {
+    const newValue =
+      option?.value || (event?.target as HTMLSelectElement)?.value;
+    onInputChange("roleInSupplyChain", newValue as RoleInSupplyChain);
+  };
+
+  const handleSubEntityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onInputChange("isSubEntity", e.target.checked);
+  };
+
+  const handleParentEntityChange = (
+    entity: SupplyNetworkEntitySearchResultDto | null
+  ) => {
+    onParentChange(entity);
+    onInputChange("parentId", entity?.id || "");
+  };
+
   return (
     <>
       <RequiredFieldsLegend />
@@ -43,10 +89,7 @@ export const EntityTypeRoleStep: React.FC<EntityTypeRoleStepProps> = ({
               </FormLabel>
             }
             value={formData.entityType || ""}
-            onChange={(event, option: any) => {
-              const newValue = option?.value || event?.target?.value;
-              onInputChange("entityType", newValue as EntityType);
-            }}
+            onChange={handleEntityTypeChange}
             options={enumValues.entityTypes.map((et) => ({
               value: et.value,
               label: et.display,
@@ -63,10 +106,7 @@ export const EntityTypeRoleStep: React.FC<EntityTypeRoleStepProps> = ({
               </FormLabel>
             }
             value={formData.roleInSupplyChain || ""}
-            onChange={(event, option: any) => {
-              const newValue = option?.value || event?.target?.value;
-              onInputChange("roleInSupplyChain", newValue as RoleInSupplyChain);
-            }}
+            onChange={handleRoleChange}
             options={enumValues.rolesInSupplyChain.map((role) => ({
               value: role.value,
               label: role.display,
@@ -87,7 +127,7 @@ export const EntityTypeRoleStep: React.FC<EntityTypeRoleStepProps> = ({
             <input
               type="checkbox"
               checked={formData.isSubEntity}
-              onChange={(e) => onInputChange("isSubEntity", e.target.checked)}
+              onChange={handleSubEntityChange}
               style={{ marginRight: "8px" }}
             />
             <Text variant="body1">
@@ -101,10 +141,7 @@ export const EntityTypeRoleStep: React.FC<EntityTypeRoleStepProps> = ({
             <EntitySelector
               label="Parent Entity"
               value={selectedParent}
-              onChange={(entity) => {
-                onParentChange(entity);
-                onInputChange("parentId", entity?.id || "");
-              }}
+              onChange={handleParentEntityChange}
               entityType={EntityType.Supplier}
               placeholder="Type at least 3 characters to search for parent entity..."
               helperText="Search by name, code, VAT number, city, or contact person"
