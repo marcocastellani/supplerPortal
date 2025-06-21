@@ -71,85 +71,73 @@ export function useNetworkEntities(): UseNetworkEntitiesReturn {
     currentPage: DATA_CONSTANTS.FIRST_PAGE,
   });
 
-  // Fetch entities function
-  const fetchEntities = useCallback(
-    async (
-      search: string,
-      type: EntityType | "all",
-      status: "all" | "active" | "inactive",
-      page: number
-    ) => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        log.info("Fetching network entities", {
-          component: "useNetworkEntities",
-          search,
-          type,
-          status,
-          page,
-        });
-
-        const entityType = type === "all" ? undefined : (type as EntityType);
-        const activeFilter = status === "all" ? undefined : status === "active";
-
-        const result =
-          await SupplyNetworkEntitiesService.getSupplyNetworkEntities({
-            searchTerm: search || undefined,
-            entityType,
-            active: activeFilter,
-            page,
-            pageSize: DATA_CONSTANTS.DEFAULT_PAGE_SIZE,
-            sortBy: "legalName",
-            sortDescending: false,
-          });
-
-        setEntities(result.items || []);
-        setTotalPages(result.totalPages || 1);
-        setTotalCount(result.totalCount || 0);
-
-        log.info("Network entities fetched successfully", {
-          component: "useNetworkEntities",
-          count: result.items?.length || 0,
-          totalCount: result.totalCount || 0,
-        });
-      } catch (err) {
-        handleApiError(err, "/supply-network-entities", "GET");
-        log.error("Failed to fetch network entities", {
-          component: "useNetworkEntities",
-          error: err,
-          search,
-          type,
-          status,
-          page,
-        });
-        setError(t("networkEntities.errorFetching"));
-        setEntities([]);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [t, handleApiError]
-  );
-
-  // Debounced search function
+ 
   const debouncedFetch = useCallback(
     debounce(
-      (
+      async (
         search: string,
         type: EntityType | "all",
         status: "all" | "active" | "inactive",
         page: number
       ) => {
-        fetchEntities(search, type, status, page);
+        setIsLoading(true);
+        setError(null);
+
+        try {
+          log.info("Fetching network entities", {
+            component: "useNetworkEntities",
+            search,
+            type,
+            status,
+            page,
+          });
+
+          const entityType = type === "all" ? undefined : (type as EntityType);
+          const activeFilter =
+            status === "all" ? undefined : status === "active";
+
+          const result =
+            await SupplyNetworkEntitiesService.getSupplyNetworkEntities({
+              searchTerm: search || undefined,
+              entityType,
+              active: activeFilter,
+              page,
+              pageSize: DATA_CONSTANTS.DEFAULT_PAGE_SIZE,
+              sortBy: "legalName",
+              sortDescending: false,
+            });
+
+          setEntities(result.items || []);
+          setTotalPages(result.totalPages || 1);
+          setTotalCount(result.totalCount || 0);
+
+          log.info("Network entities fetched successfully", {
+            component: "useNetworkEntities",
+            count: result.items?.length || 0,
+            totalCount: result.totalCount || 0,
+          });
+        } catch (err) {
+          handleApiError(err, "/supply-network-entities", "GET");
+          log.error("Failed to fetch network entities", {
+            component: "useNetworkEntities",
+            error: err,
+            search,
+            type,
+            status,
+            page,
+          });
+          setError(t("networkEntities.errorFetching"));
+          setEntities([]);
+        } finally {
+          setIsLoading(false);
+        }
       },
       TIMING.DEBOUNCE_DELAY
     ),
-    [fetchEntities]
+    [t, handleApiError] // Minimal dependencies to prevent recreating debounced function
   );
 
-  // Effect to fetch data when filters change
+  // Effect to fetch data when filters change - remove debouncedFetch from dependencies [PA]
   useEffect(() => {
     debouncedFetch(
       filters.searchQuery,
@@ -162,7 +150,7 @@ export function useNetworkEntities(): UseNetworkEntitiesReturn {
     return () => {
       debouncedFetch.cancel();
     };
-  }, [filters, debouncedFetch]);
+  }, [filters]); // Remove debouncedFetch from dependencies to prevent infinite loop
 
   // Actions
   const setSearchQuery = useCallback((query: string) => {
@@ -205,13 +193,13 @@ export function useNetworkEntities(): UseNetworkEntitiesReturn {
   );
 
   const refetch = useCallback(() => {
-    fetchEntities(
+    debouncedFetch(
       filters.searchQuery,
       filters.filterType,
       filters.filterStatus,
       filters.currentPage
     );
-  }, [fetchEntities, filters]);
+  }, [debouncedFetch, filters]);
 
   return {
     // State

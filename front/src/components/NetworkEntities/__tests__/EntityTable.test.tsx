@@ -97,6 +97,7 @@ describe("EntityTable", () => {
       currentPage: 1,
       pageSize: 20,
       totalPages: 1,
+      isLoading: false,
       sortBy: "legalName",
       sortDescending: false,
       onPageChange: mockOnPageChange,

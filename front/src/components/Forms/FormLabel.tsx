@@ -1,7 +1,8 @@
 import React from "react";
+import { useTheme } from "@mui/material/styles";
 
 interface FormLabelProps {
-  children: string;
+  children: React.ReactNode;
   required?: boolean;
   hasError?: boolean;
 }
@@ -11,11 +12,14 @@ export const FormLabel: React.FC<FormLabelProps> = ({
   required = false,
   hasError = false,
 }) => {
+  const theme = useTheme();
   const baseLabel = required ? `${children} *` : children;
 
   if (hasError) {
     return (
-      <span style={{ color: "#d32f2f", fontWeight: "bold" }}>{baseLabel}</span>
+      <span style={{ color: theme.palette.error.main, fontWeight: "bold" }}>
+        {baseLabel}
+      </span>
     );
   }
 

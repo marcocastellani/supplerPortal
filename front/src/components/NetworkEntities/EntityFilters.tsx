@@ -114,11 +114,13 @@ const EntityFilters: React.FC<EntityFiltersProps> = ({
         </Grid>
 
         {/* Results Count */}
-        {!isLoading && (
-          <Box mt={2}>
-            <Text variant="body2">{resultsText}</Text>
+        <Grid item xs={12}>
+          <Box sx={{ mt: 1, mb: 2, px: 1 }}>
+            <Text variant="body2" sx={{ color: "text.secondary" }}>
+              {resultsText}
+            </Text>
           </Box>
-        )}
+        </Grid>
       </Grid>
     </Card>
   );

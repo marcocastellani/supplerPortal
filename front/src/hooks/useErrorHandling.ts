@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { log } from '../utils/logger';
-import { ApiError, NetworkError, AppError } from '../types/ui';
+import { useState, useCallback } from "react";
+import { log } from "../utils/logger";
+import { ApiError, NetworkError, AppError } from "../types/ui";
 
 export type ErrorType = "network" | "validation" | "server" | "unknown";
 
@@ -12,14 +12,14 @@ interface ErrorState {
 export const useErrorHandling = () => {
   const [error, setError] = useState<ErrorState>({
     message: null,
-    type: "unknown"
+    type: "unknown",
   });
 
-  const handleError = (err: AppError) => {
+  const handleError = useCallback((err: AppError) => {
     let errorMessage = "";
     let errorCategory: ErrorType = "unknown";
 
-    log.error("Error caught in handleError", { hook: 'useErrorHandling' }, err);
+    log.error("Error caught in handleError", { hook: "useErrorHandling" }, err);
 
     // Handle axios errors specifically
     if (err && typeof err === "object" && "response" in err) {
@@ -27,11 +27,15 @@ export const useErrorHandling = () => {
       const status = axiosError.response?.status;
       const responseData = axiosError.response?.data;
 
-      log.debug("Axios error details", { 
-        hook: 'useErrorHandling', 
-        status, 
-        hasResponseData: !!responseData 
-      }, { status, responseData });
+      log.debug(
+        "Axios error details",
+        {
+          hook: "useErrorHandling",
+          status,
+          hasResponseData: !!responseData,
+        },
+        { status, responseData }
+      );
 
       if (status === 400) {
         // Validation errors from server
@@ -107,17 +111,17 @@ export const useErrorHandling = () => {
       errorMessage = "An unexpected error occurred. Please try again.";
     }
 
-    log.info("Error categorized", { 
-      hook: 'useErrorHandling', 
-      errorCategory, 
-      hasMessage: !!errorMessage 
+    log.info("Error categorized", {
+      hook: "useErrorHandling",
+      errorCategory,
+      hasMessage: !!errorMessage,
     });
     setError({ message: errorMessage, type: errorCategory });
-  };
+  }, []);
 
-  const clearError = () => {
+  const clearError = useCallback(() => {
     setError({ message: null, type: "unknown" });
-  };
+  }, []);
 
   return {
     error: error.message,

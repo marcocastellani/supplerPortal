@@ -30,16 +30,16 @@ export const EntityStatusChip: React.FC<EntityStatusChipProps> = ({
   const { t } = useTranslation();
   const theme = useTheme(); // ✅ Access theme for light/dark mode support [TH]
 
-  // ✅ Theme-aware color scheme [TH]
+  // ✅ Theme-aware color scheme with improved contrast [TH]
   const colorScheme = active
     ? {
-        color: theme.palette.success.main, // ✅ Instead of #2e7d32 [TH]
-        backgroundColor: theme.palette.success.light, // ✅ Instead of #e8f5e8 [TH]
+        color: theme.palette.common.white, // ✅ White text for better contrast [TH]
+        backgroundColor: theme.palette.success.main, // ✅ Solid success color [TH]
         borderColor: theme.palette.success.main, // ✅ Instead of #4caf50 [TH]
       }
     : {
-        color: theme.palette.error.main, // ✅ Instead of #d32f2f [TH]
-        backgroundColor: theme.palette.error.light, // ✅ Instead of #ffebee [TH]
+        color: theme.palette.common.white, // ✅ White text for better contrast [TH]
+        backgroundColor: theme.palette.error.main, // ✅ Solid error color [TH]
         borderColor: theme.palette.error.main, // ✅ Instead of #f44336 [TH]
       };
 
@@ -101,6 +101,9 @@ export const EntityStatusChip: React.FC<EntityStatusChipProps> = ({
               color: `${colorScheme.color} !important`,
               marginLeft: "4px",
               marginRight: "8px",
+            },
+            "& .MuiChip-label": {
+              color: `${colorScheme.color} !important`,
             },
           }),
         ...(!minimal &&

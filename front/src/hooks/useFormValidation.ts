@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { SupplyNetworkEntitiesService } from '../services/supplyNetworkEntitiesService';
-import { SupplyNetworkEntityFormData } from '../types/supplyNetworkEntities';
+import { useState } from "react";
+import { SupplyNetworkEntitiesService } from "../services/supplyNetworkEntitiesService";
+import { SupplyNetworkEntityFormData } from "../types/supplyNetworkEntities";
+import { log } from "@/utils/logger";
 
 interface FieldErrors {
   legalName?: string;
@@ -16,7 +17,8 @@ interface ValidationProgress {
 
 export const useFormValidation = () => {
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const [validationInProgress, setValidationInProgress] = useState<ValidationProgress>({});
+  const [validationInProgress, setValidationInProgress] =
+    useState<ValidationProgress>({});
 
   // Email validation
   const validateEmail = (email: string): string | null => {
@@ -64,7 +66,11 @@ export const useFormValidation = () => {
 
       return null;
     } catch (error) {
-      console.error(`Error validating ${field}:`, error);
+      log.error(`Error validating ${field}:`, {
+        hook: "useFormValidation",
+        field,
+        error,
+      });
       return `Error validating ${field}. Please try again.`;
     } finally {
       setValidationInProgress((prev) => ({ ...prev, [field]: false }));
@@ -77,7 +83,7 @@ export const useFormValidation = () => {
     value: string
   ): Promise<void> => {
     // Only handle validation for supported fields
-    const supportedFields = ['email', 'legalName', 'externalCode'] as const;
+    const supportedFields = ["email", "legalName", "externalCode"] as const;
     if (!supportedFields.includes(field as any)) {
       return;
     }

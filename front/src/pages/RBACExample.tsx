@@ -3,10 +3,11 @@ import { Container, Grid } from "@remira/unifiedui";
 import { PageHeader } from "../components/LayoutComponents";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import { t } from "i18next";
+import { log } from "@/utils/logger";
 
 export const RBACExample = () => {
   const rbac = useHasPermission(["admin", "owner", "user", "whatever"]);
-  console.log(rbac);
+  log.debug("RBAC data:", { component: "RBACExample", rbac });
   return (
     <Container type="page">
       <Grid container rowSpacing={3} sx={{ paddingTop: 5 }}>

@@ -196,8 +196,10 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
   }
 
   return (
-    <Box sx={{ maxWidth: 1200, mx: "auto", p: 3 }}>
-      <Card>
+    <Box
+      sx={{ maxWidth: 1200, width: "100%", mx: "auto", p: { xs: 2, md: 3 } }}
+    >
+      <Card elevation={1}>
         <CardContent>
           <Typography variant="h4" component="h1" gutterBottom>
             {currentTemplateId ? "Edit Template" : "Create New Template"}
@@ -217,12 +219,70 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
           )}
 
           {/* Stepper */}
-          <Stepper activeStep={steps.indexOf(currentStep)} sx={{ mb: 4 }}>
+          <Stepper
+            activeStep={steps.indexOf(currentStep)}
+            sx={{
+              mb: 4,
+              px: { xs: 1, md: 2 },
+              width: "100%",
+              "& .MuiStepperHorizontal-root": {
+                width: "100%",
+              },
+              "& .MuiStep-root": {
+                flex: "1 1 0px !important", // Force equal flex basis
+                minWidth: "0 !important",
+                maxWidth: "none !important",
+                width: `${100 / steps.length}% !important`, // Force equal width
+                padding: "0 !important",
+                margin: "0 !important",
+                display: "flex !important",
+                justifyContent: "center !important",
+              },
+              "& .MuiStepLabel-root": {
+                textAlign: "center !important",
+                flexDirection: "column !important",
+                width: "100% !important",
+                minWidth: "0 !important",
+                padding: "8px 4px !important",
+                margin: "0 !important",
+                "& .MuiStepLabel-labelContainer": {
+                  width: "100% !important",
+                  justifyContent: "center !important",
+                  display: "flex !important",
+                  margin: "0 !important",
+                },
+              },
+              "& .MuiStepLabel-label": {
+                fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                fontWeight: "400 !important",
+                whiteSpace: "nowrap !important",
+                overflow: "hidden !important",
+                textOverflow: "ellipsis !important",
+                width: "100% !important",
+                textAlign: "center !important",
+                margin: "0 !important",
+              },
+              "& .MuiStepConnector-root": {
+                flex: "0 0 16px !important",
+                minWidth: "16px !important",
+                maxWidth: "16px !important",
+                width: "16px !important",
+                margin: "0 !important",
+                padding: "0 !important",
+              },
+              "& .MuiStepConnector-line": {
+                minHeight: "1px !important",
+                borderTopWidth: "1px !important",
+              },
+            }}
+          >
             {steps.map((step) => (
               <Step key={step}>
                 <StepLabel
                   onClick={() => goToStep(step)}
-                  sx={{ cursor: "pointer" }}
+                  sx={{
+                    cursor: "pointer",
+                  }}
                   error={getStepErrors(step).length > 0}
                 >
                   {stepLabels[step]}

@@ -12,6 +12,7 @@ import {
   SupplyNetworkEntitySearchResultDto,
   EntityType,
 } from "../../types/supplyNetworkEntities";
+import { log } from "@/utils/logger";
 
 // Simple debounce utility
 function useDebounce<T extends any[]>(
@@ -77,6 +78,7 @@ export const EntitySelector: React.FC<EntitySelectorProps> = ({
   // Search function
   const performSearch = useCallback(
     async (searchTerm: string) => {
+      // Fix issue: search should start at exactly 3 characters, not after [AC]
       if (searchTerm.length < 3) {
         setOptions([]);
         setNoResults(false);
@@ -96,7 +98,7 @@ export const EntitySelector: React.FC<EntitySelectorProps> = ({
         setOptions(results);
         setNoResults(results.length === 0);
       } catch (error) {
-        console.error("Search failed:", error);
+        log.error("Search failed:", { component: "EntitySelector", error });
         setOptions([]);
         setNoResults(true);
       } finally {
@@ -109,25 +111,39 @@ export const EntitySelector: React.FC<EntitySelectorProps> = ({
   // Debounced search function
   const debouncedSearch = useDebounce(performSearch, 300);
 
-  // Trigger search when input changes
-  useEffect(() => {
-    debouncedSearch(inputValue);
-  }, [inputValue, debouncedSearch]);
-
-  // Clear options when input is too short
-  useEffect(() => {
-    if (inputValue.length < 3) {
-      setOptions([]);
-      setNoResults(false);
-    }
-  }, [inputValue]);
+  // Note: Search is now triggered directly in handleInputChange to avoid state update delays [AC]
 
   const handleInputChange = (
     event: React.SyntheticEvent,
     newInputValue: string
   ) => {
     setInputValue(newInputValue);
+
+    // Set loading state immediately when we have enough characters for search [AC]
+    if (newInputValue.length >= 3 && newInputValue !== inputValue) {
+      setLoading(true);
+      // Trigger search with the new value directly to avoid state update delay [AC]
+      debouncedSearch(newInputValue);
+    } else if (newInputValue.length < 3) {
+      // Clear options and loading when input is too short [AC]
+      setOptions([]);
+      setNoResults(false);
+      setLoading(false);
+    }
   };
+
+  // Handle paste events to ensure search triggers immediately [AC]
+  const handlePaste = useCallback(
+    (event: React.ClipboardEvent<HTMLDivElement>) => {
+      // Get pasted text
+      const pastedText = event.clipboardData.getData("text");
+      if (pastedText && pastedText.length >= 3) {
+        // Trigger search immediately for paste with sufficient length
+        performSearch(pastedText);
+      }
+    },
+    [performSearch]
+  );
 
   const handleValueChange = (
     event: React.SyntheticEvent,
@@ -150,6 +166,8 @@ export const EntitySelector: React.FC<EntitySelectorProps> = ({
       noOptionsText={
         inputValue.length < 3
           ? "Type at least 3 characters to search"
+          : loading
+          ? "Searching..."
           : noResults
           ? "No entities found"
           : "Start typing to search..."
@@ -161,6 +179,7 @@ export const EntitySelector: React.FC<EntitySelectorProps> = ({
           placeholder={placeholder}
           error={error}
           helperText={helperText}
+          onPaste={handlePaste}
           InputProps={{
             ...params.InputProps,
             endAdornment: (

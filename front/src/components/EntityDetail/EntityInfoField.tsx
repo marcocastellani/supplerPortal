@@ -4,6 +4,7 @@ import { Text } from "@remira/unifiedui";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
+import { log } from "@/utils/logger";
 
 interface EntityInfoFieldProps {
   label: string;
@@ -58,12 +59,15 @@ export const EntityInfoField: React.FC<EntityInfoFieldProps> = ({
       }
 
       await onUpdate(fieldName, finalValue);
-      
+
       // Update local state immediately for optimistic UI [SF]
       setCurrentValue(finalValue);
       setIsEditing(false);
     } catch (error) {
-      console.error("Failed to update field:", error);
+      log.error("Failed to update field:", {
+        component: "EntityInfoField",
+        error,
+      });
     } finally {
       setIsUpdating(false);
     }

@@ -6,7 +6,6 @@ import {
   Card,
   CardContent,
   Grid,
-  Chip,
   IconButton,
   CircularProgress,
   Alert,
@@ -16,6 +15,7 @@ import { Text } from "@remira/unifiedui";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import AddIcon from "@mui/icons-material/Add";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { log } from "@/utils/logger";
 
 import { SupplyNetworkEntityDto } from "../../types/supplyNetworkEntities";
 import { SupplyNetworkEntitiesService } from "../../services/supplyNetworkEntitiesService";
@@ -50,7 +50,10 @@ export const SubEntitiesList: React.FC<SubEntitiesListProps> = ({
       );
       setSubEntities(entities);
     } catch (error) {
-      console.error("Failed to load sub-entities:", error);
+      log.error("Failed to load sub-entities:", {
+        component: "SubEntitiesList",
+        error,
+      });
       setError(t("entityDetail.subEntities.loadError"));
     } finally {
       setIsLoading(false);

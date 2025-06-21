@@ -1,10 +1,11 @@
 import { SupplyNetworkEntityDto } from "../types/supplyNetworkEntities";
 import { SupplyNetworkEntitiesService } from "../services/supplyNetworkEntitiesService";
+import { log } from "@/utils/logger";
 
 interface UseEntityUpdateReturn {
   updateField: (
     entityId: string,
-    fieldName: string, 
+    fieldName: string,
     fieldValue: string | boolean | null
   ) => Promise<SupplyNetworkEntityDto>;
 }
@@ -19,14 +20,15 @@ export const useEntityUpdate = (): UseEntityUpdateReturn => {
     fieldValue: string | boolean | null
   ): Promise<SupplyNetworkEntityDto> => {
     try {
-      const updatedEntity = await SupplyNetworkEntitiesService.updateEntityField(
-        entityId,
-        fieldName,
-        fieldValue
-      );
+      const updatedEntity =
+        await SupplyNetworkEntitiesService.updateEntityField(
+          entityId,
+          fieldName,
+          fieldValue
+        );
       return updatedEntity;
     } catch (error) {
-      console.error("Failed to update field:", error);
+      log.error("Failed to update field:", { hook: "useEntityUpdate", error });
       throw error;
     }
   };

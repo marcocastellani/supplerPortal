@@ -1,8 +1,13 @@
-import { useState, useEffect } from 'react';
-import { SupplyNetworkEntitiesService } from '../services/supplyNetworkEntitiesService';
-import { EnumValues, EntityType, RoleInSupplyChain, AccreditationStatus } from '../types/supplyNetworkEntities';
-import { useErrorHandling } from './useErrorHandling';
-import { log } from '../utils/logger';
+import { useState, useEffect, useMemo } from "react";
+import { SupplyNetworkEntitiesService } from "../services/supplyNetworkEntitiesService";
+import {
+  EnumValues,
+  EntityType,
+  RoleInSupplyChain,
+  AccreditationStatus,
+} from "../types/supplyNetworkEntities";
+import { useErrorHandling } from "./useErrorHandling";
+import { log } from "../utils/logger";
 
 export interface DefaultEnumValues {
   entityType: EntityType;
@@ -19,53 +24,30 @@ export interface UseEntityEnumsReturn {
 
 export const useEntityEnums = (): UseEntityEnumsReturn => {
   const [enumValues, setEnumValues] = useState<EnumValues | null>(null);
-  const [defaultValues, setDefaultValues] = useState<DefaultEnumValues | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { handleError, error } = useErrorHandling();
 
   useEffect(() => {
     const loadEnumValues = async () => {
       setIsLoading(true);
-      
-      log.info('Loading entity enum values', { component: 'useEntityEnums' });
+
+      log.info("Loading entity enum values", { component: "useEntityEnums" });
 
       try {
         const enums = await SupplyNetworkEntitiesService.getEnumValues();
-        
-        log.info('Entity enum values loaded successfully', {
-          component: 'useEntityEnums',
+
+        log.info("Entity enum values loaded successfully", {
+          component: "useEntityEnums",
           entityTypesCount: enums.entityTypes.length,
           rolesCount: enums.rolesInSupplyChain.length,
-          statusesCount: enums.accreditationStatuses.length
+          statusesCount: enums.accreditationStatuses.length,
         });
 
         setEnumValues(enums);
-
-        // Calculate default values
-        if (
-          enums.entityTypes.length > 0 &&
-          enums.rolesInSupplyChain.length > 0 &&
-          enums.accreditationStatuses.length > 0
-        ) {
-          const defaults: DefaultEnumValues = {
-            entityType: enums.entityTypes[0].value as EntityType,
-            roleInSupplyChain: enums.rolesInSupplyChain[0].value as RoleInSupplyChain,
-            accreditationStatus: 
-              (enums.accreditationStatuses.find((s) => s.value === 'Approved')?.value as AccreditationStatus) ||
-              (enums.accreditationStatuses[0].value as AccreditationStatus),
-          };
-
-          setDefaultValues(defaults);
-          
-          log.debug('Default enum values calculated', {
-            component: 'useEntityEnums',
-            defaults
-          });
-        }
       } catch (err) {
-        log.error('Failed to load entity enum values', {
-          component: 'useEntityEnums',
-          error: err
+        log.error("Failed to load entity enum values", {
+          component: "useEntityEnums",
+          error: err,
         });
         handleError(err as Error);
       } finally {
@@ -75,6 +57,35 @@ export const useEntityEnums = (): UseEntityEnumsReturn => {
 
     loadEnumValues();
   }, [handleError]);
+
+  // Memoize default values calculation to prevent infinite loops [DRY, PA]
+  const defaultValues = useMemo((): DefaultEnumValues | null => {
+    if (
+      !enumValues ||
+      enumValues.entityTypes.length === 0 ||
+      enumValues.rolesInSupplyChain.length === 0 ||
+      enumValues.accreditationStatuses.length === 0
+    ) {
+      return null;
+    }
+
+    const defaults: DefaultEnumValues = {
+      entityType: enumValues.entityTypes[0].value as EntityType,
+      roleInSupplyChain: enumValues.rolesInSupplyChain[0]
+        .value as RoleInSupplyChain,
+      accreditationStatus:
+        (enumValues.accreditationStatuses.find((s) => s.value === "Approved")
+          ?.value as AccreditationStatus) ||
+        (enumValues.accreditationStatuses[0].value as AccreditationStatus),
+    };
+
+    log.debug("Default enum values calculated", {
+      component: "useEntityEnums",
+      defaults,
+    });
+
+    return defaults;
+  }, [enumValues]);
 
   return {
     enumValues,

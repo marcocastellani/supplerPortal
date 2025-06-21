@@ -1,15 +1,21 @@
 import React from "react";
 import { TemplateWizard } from "./TemplateWizard";
+import { log } from "@/utils/logger";
 
 export const TemplateWizardPage: React.FC = () => {
   const handleComplete = (templateId: string) => {
-    console.log("Template completed:", templateId);
-    // Here you would typically navigate to a success page or template list
+    log.info("Template completed:", {
+      component: "TemplateWizardPage",
+      templateId,
+    });
+    // Navigate to the completed template or show success message
   };
 
   const handleCancel = () => {
-    console.log("Template creation cancelled");
-    // Here you would typically navigate back to template list
+    log.info("Template creation cancelled", {
+      component: "TemplateWizardPage",
+    });
+    // Navigate back or show cancellation message
   };
 
   return <TemplateWizard onComplete={handleComplete} onCancel={handleCancel} />;
