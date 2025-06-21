@@ -1,14 +1,16 @@
+import { EntityType } from "./supplyNetworkEntities";
+
 // Enums that match the backend C# enums
 export enum TemplateStatus {
   Draft = 1,
   Active = 2,
-  Archived = 3
+  Archived = 3,
 }
 
 export enum CertificateType {
   SelfAssessment = 1,
   InspectorRequired = 2,
-  Both = 3
+  Both = 3,
 }
 
 export enum QuestionType {
@@ -18,7 +20,7 @@ export enum QuestionType {
   SingleChoice = 4,
   MultiChoice = 5,
   Date = 6,
-  FileUpload = 7
+  FileUpload = 7,
 }
 
 // Base interfaces
@@ -40,7 +42,9 @@ export interface TranslationData {
 export interface QuestionnaireTemplate extends BaseEntity {
   title: string;
   description: string;
+  /** @deprecated Use targetEntityTypes instead */
   targetEntityTypeId: number;
+  targetEntityTypes: EntityType[];
   primaryLanguage: string;
   expirationMonths: number;
   certificateType: CertificateType;
@@ -111,7 +115,9 @@ export interface ChoiceOption {
 export interface CreateTemplateRequest {
   title: string;
   description: string;
+  /** @deprecated Use targetEntityTypes instead */
   targetEntityTypeId: number;
+  targetEntityTypes: EntityType[];
   primaryLanguage: string;
   expirationMonths: number;
   certificateType: CertificateType;
@@ -129,6 +135,7 @@ export interface SaveDraftRequest {
   templateId: string;
   title?: string;
   description?: string;
+  targetEntityTypes?: EntityType[];
   expirationMonths?: number;
   certificateType?: CertificateType;
   sections?: UpdateSectionRequest[];
@@ -160,7 +167,9 @@ export interface QuestionnaireTemplateResponse {
   id: string;
   title: string;
   description: string;
+  /** @deprecated Use targetEntityTypes instead */
   targetEntityTypeId: number;
+  targetEntityTypes: EntityType[];
   primaryLanguage: string;
   expirationMonths: number;
   certificateType: CertificateType;
@@ -221,11 +230,11 @@ export interface TemplateWizardState {
 }
 
 export enum WizardStep {
-  BasicInfo = 'basic-info',
-  Sections = 'sections',
-  Questions = 'questions',
-  Conditions = 'conditions',
-  Review = 'review'
+  BasicInfo = "basic-info",
+  Sections = "sections",
+  Questions = "questions",
+  Conditions = "conditions",
+  Review = "review",
 }
 
 export interface ValidationErrors {

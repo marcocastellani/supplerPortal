@@ -13,6 +13,11 @@ public class SaveDraftCommand : IRequest<Unit>
     public string? Description { get; set; }
     public int? ExpirationMonths { get; set; }
     public CertificateType? CertificateType { get; set; }
+
+    /// <summary>
+    /// Optional list of target entity types for updating
+    /// </summary>
+    public List<EntityType>? TargetEntityTypes { get; set; }
     public List<UpdateSectionDto>? Sections { get; set; }
     public List<UpdateQuestionDto>? Questions { get; set; }
 }

@@ -14,12 +14,13 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<AgentAssignment> AgentAssignments => Set<AgentAssignment>();
     public DbSet<Questionnaire> Questionnaires => Set<Questionnaire>();
     public DbSet<Remediation> Remediations => Set<Remediation>();
-    
+
     // Questionnaire Template Management
     public DbSet<QuestionnaireTemplate> QuestionnaireTemplates => Set<QuestionnaireTemplate>();
     public DbSet<QuestionnaireSection> QuestionnaireSections => Set<QuestionnaireSection>();
     public DbSet<TemplateQuestion> TemplateQuestions => Set<TemplateQuestion>();
     public DbSet<QuestionCondition> QuestionConditions => Set<QuestionCondition>();
+    public DbSet<QuestionnaireTemplateEntityType> QuestionnaireTemplateEntityTypes => Set<QuestionnaireTemplateEntityType>();
 
     private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
 

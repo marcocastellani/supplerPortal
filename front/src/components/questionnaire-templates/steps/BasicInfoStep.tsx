@@ -9,17 +9,38 @@ import {
   Alert,
   Typography,
   Grid,
+  Chip,
+  FormHelperText,
 } from "@mui/material";
 import {
   QuestionnaireTemplate,
   CertificateType,
 } from "../../../types/questionnaire-templates";
+import { EntityType } from "../../../types/supplyNetworkEntities";
 
 interface BasicInfoStepProps {
   templateData: Partial<QuestionnaireTemplate>;
   onUpdate: (data: Partial<QuestionnaireTemplate>) => void;
   errors: string[];
 }
+
+// Helper function to get user-friendly labels for entity types
+const getEntityTypeLabel = (entityType: EntityType): string => {
+  switch (entityType) {
+    case EntityType.Supplier:
+      return "Supplier";
+    case EntityType.SubSupplier:
+      return "Sub-Supplier";
+    case EntityType.Site:
+      return "Site/Facility";
+    case EntityType.Person:
+      return "Person/Contact";
+    case EntityType.CompanyGroup:
+      return "Company Group";
+    default:
+      return entityType;
+  }
+};
 
 export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
   templateData,
@@ -151,21 +172,57 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
         </Grid>
 
         <Grid item xs={12} md={6}>
-          <TextField
+          <FormControl
             fullWidth
-            type="number"
-            label="Target Entity Type ID"
-            value={templateData.targetEntityTypeId || 1}
-            onChange={(e) =>
-              handleFieldChange(
-                "targetEntityTypeId",
-                parseInt(e.target.value) || 1
-              )
-            }
             required
-            inputProps={{ min: 1 }}
-            helperText="ID of the entity type this template applies to"
-          />
+            error={errors.some(
+              (e) => e.includes("target") || e.includes("entity")
+            )}
+          >
+            <InputLabel>Target Entity Types</InputLabel>
+            <Select
+              multiple
+              value={templateData.targetEntityTypes || []}
+              onChange={(e) => {
+                const value = e.target.value;
+                const selectedTypes =
+                  typeof value === "string" ? value.split(",") : value;
+                handleFieldChange(
+                  "targetEntityTypes",
+                  selectedTypes as EntityType[]
+                );
+              }}
+              label="Target Entity Types"
+              renderValue={(selected) => (
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                  {(selected as EntityType[]).map((value) => (
+                    <Chip
+                      key={value}
+                      label={getEntityTypeLabel(value)}
+                      size="small"
+                      color="primary"
+                      variant="outlined"
+                    />
+                  ))}
+                </Box>
+              )}
+            >
+              <MenuItem value={EntityType.Supplier}>Supplier</MenuItem>
+              <MenuItem value={EntityType.SubSupplier}>Sub-Supplier</MenuItem>
+              <MenuItem value={EntityType.Site}>Site/Facility</MenuItem>
+              <MenuItem value={EntityType.Person}>Person/Contact</MenuItem>
+              <MenuItem value={EntityType.CompanyGroup}>Company Group</MenuItem>
+            </Select>
+            <FormHelperText
+              error={errors.some(
+                (e) => e.includes("target") || e.includes("entity")
+              )}
+            >
+              {errors.some((e) => e.includes("target") || e.includes("entity"))
+                ? "At least one target entity type must be selected"
+                : "Select the types of supply network entities this questionnaire targets"}
+            </FormHelperText>
+          </FormControl>
         </Grid>
       </Grid>
     </Box>

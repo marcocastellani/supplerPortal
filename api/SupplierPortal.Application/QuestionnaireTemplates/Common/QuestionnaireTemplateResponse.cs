@@ -14,7 +14,15 @@ public class QuestionnaireTemplateResponse : IMapFrom<QuestionnaireTemplate>
     public Guid Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
+
+    [Obsolete("Use TargetEntityTypes instead")]
     public int TargetEntityTypeId { get; set; }
+
+    /// <summary>
+    /// List of target entity types for this template
+    /// </summary>
+    public List<EntityType> TargetEntityTypes { get; set; } = new();
+
     public string PrimaryLanguage { get; set; } = string.Empty;
     public int ExpirationMonths { get; set; }
     public CertificateType CertificateType { get; set; }
@@ -23,7 +31,7 @@ public class QuestionnaireTemplateResponse : IMapFrom<QuestionnaireTemplate>
     public DateTime CreatedAt { get; set; }
     public DateTime? LastModified { get; set; }
     public string? CreatedBy { get; set; }
-    
+
     public List<SectionResponse> Sections { get; set; } = new();
     public List<QuestionResponse> Questions { get; set; } = new();
     public List<QuestionConditionResponse> Conditions { get; set; } = new();
@@ -32,6 +40,7 @@ public class QuestionnaireTemplateResponse : IMapFrom<QuestionnaireTemplate>
     {
         profile.CreateMap<QuestionnaireTemplate, QuestionnaireTemplateResponse>()
             .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.Created))
-            .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy));
+            .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
+            .ForMember(dest => dest.TargetEntityTypes, opt => opt.MapFrom(src => src.TargetEntityTypes.Select(te => te.EntityType).ToList()));
     }
 }
