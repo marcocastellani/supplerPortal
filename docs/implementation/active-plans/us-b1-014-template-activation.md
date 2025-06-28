@@ -25,6 +25,13 @@
 - [x] **Task 1.4**: Register services in DI container (ConfigureServices.cs)
 - [x] **Task 1.5**: Add PublishTemplate endpoint to QuestionnaireTemplatesController
 
+### 🚨 **CRITICAL BUG FIX PHASE** - **HIGH PRIORITY**
+
+- [ ] **🔥 Task CRITICAL-1**: Fix questions not being saved on "Save Draft" button
+- [ ] **🔥 Task CRITICAL-2**: Fix questions not being saved on "Publish" button
+- [ ] **🔥 Task CRITICAL-3**: Investigate and fix template data persistence issues
+- [ ] **🔥 Task CRITICAL-4**: Test complete save/publish workflow with questions
+
 ### ✅ Phase 2: Backend Integration & Testing
 
 - [x] **Task 2.1**: Update existing endpoint routing to match frontend expectations
@@ -66,6 +73,12 @@
 
 ## 🎯 Acceptance Criteria Validation
 
+**🚨 CRITICAL BUG BLOCKING ALL CRITERIA:**
+
+- ❌ **Questions not being saved** - Save Draft and Publish buttons fail to persist questions
+
+**Once bug is fixed:**
+
 - [ ] Template validation before activation (all required fields, translations)
 - [ ] Status change from Draft to Active with activation timestamp
 - [ ] Version increment (simple integer: 1 → 2 → 3...)
@@ -101,10 +114,11 @@
 
 ## 🚀 Current Status
 
+**🚨 CRITICAL BUG PHASE**: ❌ 0/4 tasks - **BLOCKING PRODUCTION**  
 **Phase 1**: ✅ 5/5 tasks completed  
 **Phase 2**: ✅ 5/5 tasks completed  
 **Phase 3**: 🚧 Ready to implement  
-**Overall Progress**: ✅ 65% complete - **Core functionality with proper UX is working!**
+**Overall Progress**: 🚨 **CRITICAL BUG FOUND** - Questions not saving breaks core functionality!
 
 ## 📝 Notes
 
@@ -116,7 +130,7 @@
 
 ---
 
-**Next Step**: Task 2.5 - Create integration tests for full workflow
+**🚨 IMMEDIATE NEXT STEP**: Fix critical bug - Questions not being saved on Save Draft/Publish buttons
 
 ## 🎓 Key Learnings
 
@@ -127,3 +141,4 @@
 - **Validation Success**: 400 Bad Request with "Template must have at least one question" proves our validation works perfectly!
 - **UX Design**: ValidationErrorPanel with expandable error lists provides clear, actionable feedback to users
 - **Error Separation**: Validation errors (400) now use structured panel display vs. generic errors use snackbar
+- **🚨 CRITICAL DISCOVERY**: Questions are not being saved when using Save Draft or Publish buttons - fundamental data persistence issue discovered during testing
