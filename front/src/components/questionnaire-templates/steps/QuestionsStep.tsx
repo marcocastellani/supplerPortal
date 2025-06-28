@@ -24,6 +24,7 @@ import {
   ListItemSecondaryAction,
   Chip,
   Grid,
+  Paper,
 } from "@mui/material";
 import {
   Add as AddIcon,
@@ -35,6 +36,7 @@ import {
   TemplateQuestion,
   QuestionnaireSection,
   QuestionType,
+  ChoiceOption,
 } from "../../../types/questionnaire-templates";
 
 interface QuestionsStepProps {
@@ -92,6 +94,9 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
     configuration: {},
   });
   const [formErrors, setFormErrors] = useState<string[]>([]);
+  const [options, setOptions] = useState<ChoiceOption[]>([]);
+  const [newOptionKey, setNewOptionKey] = useState("");
+  const [newOptionValue, setNewOptionValue] = useState("");
 
   const handleOpenDialog = (question?: TemplateQuestion) => {
     if (question) {
@@ -104,6 +109,10 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
         isRequired: question.isRequired,
         configuration: question.configuration || {},
       });
+
+      // Load existing options if they exist
+      const existingOptions = question.configuration?.options || [];
+      setOptions(existingOptions);
     } else {
       setEditingQuestion(null);
       setFormData({
@@ -114,8 +123,11 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
         isRequired: false,
         configuration: {},
       });
+      setOptions([]);
     }
     setFormErrors([]);
+    setNewOptionKey("");
+    setNewOptionValue("");
     setDialogOpen(true);
   };
 
@@ -131,6 +143,46 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
       configuration: {},
     });
     setFormErrors([]);
+    setOptions([]);
+    setNewOptionKey("");
+    setNewOptionValue("");
+  };
+
+  const handleAddOption = () => {
+    if (!newOptionKey.trim() || !newOptionValue.trim()) {
+      return;
+    }
+
+    // Check if id already exists
+    if (options.some((option) => option.id === newOptionKey.trim())) {
+      setFormErrors((prev) => [...prev, "Option ID must be unique"]);
+      return;
+    }
+
+    const newOption: ChoiceOption = {
+      id: newOptionKey.trim(),
+      label: newOptionValue.trim(),
+      value: newOptionKey.trim(), // Use the same as ID for simplicity
+      order: options.length + 1,
+    };
+
+    setOptions((prev) => [...prev, newOption]);
+    setNewOptionKey("");
+    setNewOptionValue("");
+    setFormErrors((prev) =>
+      prev.filter((error) => error !== "Option ID must be unique")
+    );
+  };
+
+  const handleRemoveOption = (idToRemove: string) => {
+    setOptions((prev) => prev.filter((option) => option.id !== idToRemove));
+  };
+
+  const requiresOptions = (questionType: QuestionType): boolean => {
+    return (
+      questionType === QuestionType.SingleChoice ||
+      questionType === QuestionType.MultiChoice
+    );
   };
 
   const validateForm = (): boolean => {
@@ -152,6 +204,15 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
       errors.push("Question description must be less than 1000 characters");
     }
 
+    if (requiresOptions(formData.questionType)) {
+      if (options.length === 0) {
+        errors.push("At least one option is required for this question type");
+      }
+      if (options.length < 2) {
+        errors.push("At least two options are required for choice questions");
+      }
+    }
+
     setFormErrors(errors);
     return errors.length === 0;
   };
@@ -165,6 +226,11 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
       (q) => q.sectionId === formData.sectionId
     );
 
+    const configuration = { ...formData.configuration };
+    if (requiresOptions(formData.questionType)) {
+      configuration.options = options;
+    }
+
     const questionData = {
       title: formData.title.trim(),
       description: formData.description.trim(),
@@ -172,7 +238,7 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
       sectionId: formData.sectionId,
       isRequired: formData.isRequired,
       order: editingQuestion?.order || sectionQuestions.length + 1,
-      configuration: formData.configuration,
+      configuration,
       translations: {},
       conditions: [],
     };
@@ -205,6 +271,35 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
     return questions
       .filter((q) => q.sectionId === sectionId)
       .sort((a, b) => a.order - b.order);
+  };
+
+  const renderQuestionOptions = (question: TemplateQuestion) => {
+    if (!requiresOptions(question.questionType)) {
+      return null;
+    }
+
+    const questionOptions = question.configuration?.options || [];
+    if (questionOptions.length === 0) {
+      return null;
+    }
+
+    return (
+      <Box sx={{ mt: 1 }}>
+        <Typography variant="caption" color="text.secondary">
+          Options:
+        </Typography>
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 0.5 }}>
+          {questionOptions.map((option: ChoiceOption) => (
+            <Chip
+              key={option.id}
+              label={`${option.id}: ${option.label}`}
+              size="small"
+              variant="outlined"
+            />
+          ))}
+        </Box>
+      </Box>
+    );
   };
 
   return (
@@ -312,6 +407,7 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
                                 {question.description}
                               </Typography>
                             )}
+                            {renderQuestionOptions(question)}
                             <Typography
                               variant="caption"
                               color="text.secondary"
@@ -443,12 +539,17 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
                 <InputLabel>Question Type</InputLabel>
                 <Select
                   value={formData.questionType}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const newType = e.target.value as QuestionType;
                     setFormData({
                       ...formData,
-                      questionType: e.target.value as QuestionType,
-                    })
-                  }
+                      questionType: newType,
+                    });
+                    // Clear options if switching to a non-choice question type
+                    if (!requiresOptions(newType)) {
+                      setOptions([]);
+                    }
+                  }}
                   label="Question Type"
                 >
                   {Object.entries(questionTypeLabels).map(([value, label]) => (
@@ -473,6 +574,99 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
                 label="Required question"
               />
             </Grid>
+
+            {/* Options for Single Choice and Multiple Choice */}
+            {requiresOptions(formData.questionType) && (
+              <Grid item xs={12}>
+                <Paper sx={{ p: 2, bgcolor: "grey.50" }}>
+                  <Typography variant="h6" gutterBottom>
+                    Question Options
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 2 }}
+                  >
+                    Add the options that users can choose from. Each option
+                    needs a key (internal identifier) and a display value.
+                  </Typography>
+
+                  {/* Add new option */}
+                  <Grid container spacing={2} sx={{ mb: 2 }}>
+                    <Grid item xs={12} md={4}>
+                      <TextField
+                        fullWidth
+                        label="Option ID"
+                        value={newOptionKey}
+                        onChange={(e) => setNewOptionKey(e.target.value)}
+                        placeholder="e.g., option1"
+                        size="small"
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        fullWidth
+                        label="Option Label"
+                        value={newOptionValue}
+                        onChange={(e) => setNewOptionValue(e.target.value)}
+                        placeholder="e.g., First Option"
+                        size="small"
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={2}>
+                      <Button
+                        fullWidth
+                        variant="outlined"
+                        onClick={handleAddOption}
+                        disabled={
+                          !newOptionKey.trim() || !newOptionValue.trim()
+                        }
+                        size="small"
+                      >
+                        Add
+                      </Button>
+                    </Grid>
+                  </Grid>
+
+                  {/* Existing options */}
+                  {options.length > 0 && (
+                    <Box>
+                      <Typography variant="subtitle2" gutterBottom>
+                        Current Options:
+                      </Typography>
+                      <List dense>
+                        {options.map((option) => (
+                          <ListItem key={option.id} sx={{ px: 0 }}>
+                            <ListItemText
+                              primary={`${option.id}: ${option.label}`}
+                              secondary={`ID: ${option.id}`}
+                            />
+                            <ListItemSecondaryAction>
+                              <IconButton
+                                edge="end"
+                                onClick={() => handleRemoveOption(option.id)}
+                                size="small"
+                                color="error"
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </ListItemSecondaryAction>
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Box>
+                  )}
+
+                  {options.length === 0 && (
+                    <Alert severity="info">
+                      Add at least two options for{" "}
+                      {questionTypeLabels[formData.questionType].toLowerCase()}{" "}
+                      questions.
+                    </Alert>
+                  )}
+                </Paper>
+              </Grid>
+            )}
           </Grid>
         </DialogContent>
 
