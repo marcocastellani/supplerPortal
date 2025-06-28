@@ -679,7 +679,7 @@ export const useTemplateWizard = (
           const saveRequest: SaveDraftRequest = {
             templateId: currentTemplateId,
             sections: state.sections.map((section) => ({
-              id: section.id,
+              id: section.id.startsWith("temp-") ? undefined : section.id, // Send undefined for temporary IDs
               title: section.title,
               description: section.description || "",
               order: section.order,
@@ -724,7 +724,7 @@ export const useTemplateWizard = (
           expirationMonths: state.templateData.expirationMonths || 12,
           certificateType: state.templateData.certificateType,
           sections: state.sections.map((section) => ({
-            id: section.id,
+            id: section.id.startsWith("temp-") ? undefined : section.id, // Send undefined for temporary IDs
             title: section.title,
             description: section.description || "",
             order: section.order,
@@ -849,7 +849,7 @@ export const useTemplateWizard = (
           const saveRequest: SaveDraftRequest = {
             templateId: currentTemplateId,
             sections: state.sections.map((section) => ({
-              id: section.id,
+              id: section.id.startsWith("temp-") ? undefined : section.id, // Send undefined for temporary IDs
               title: section.title,
               description: section.description || "",
               order: section.order,
