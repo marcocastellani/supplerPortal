@@ -68,21 +68,22 @@ public class GetDraftQuestionnaireQueryHandler : IRequestHandler<GetDraftQuestio
         foreach (var question in response.Questions)
         {
             var questionEntity = questions.First(q => q.Id == question.Id);
-            
+
             if (!string.IsNullOrEmpty(questionEntity.ConfigurationJson))
             {
                 question.Configuration = JsonSerializer.Deserialize<object>(questionEntity.ConfigurationJson);
             }
-            
+
             if (!string.IsNullOrEmpty(questionEntity.TranslationsJson))
             {
                 question.Translations = JsonSerializer.Deserialize<Dictionary<string, object>>(questionEntity.TranslationsJson);
             }
         }
 
-        // Load and map conditions
+        // Load and map conditions (fix LINQ translation issue)
+        var questionIds = questions.Select(q => q.Id).ToList();
         var conditions = await _context.QuestionConditions
-            .Where(c => questions.Any(q => q.Id == c.TriggerQuestionId || q.Id == c.TargetQuestionId))
+            .Where(c => questionIds.Contains(c.TriggerQuestionId) || questionIds.Contains(c.TargetQuestionId))
             .ToListAsync(cancellationToken);
 
         response.Conditions = _mapper.Map<List<QuestionConditionResponse>>(conditions);

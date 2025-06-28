@@ -138,21 +138,26 @@ public class TemplateValidationService : ITemplateValidationService
 
     private async Task ValidateConditionalLogic(QuestionnaireTemplate template, TemplateValidationResult result, CancellationToken cancellationToken)
     {
+        // First get all question IDs for this template
+        var questionIds = await _context.TemplateQuestions
+            .Where(q => q.QuestionnaireTemplateId == template.Id)
+            .Select(q => q.Id)
+            .ToListAsync(cancellationToken);
+
+        if (!questionIds.Any())
+        {
+            return; // No questions to validate conditions for
+        }
+
+        // Then get conditions that reference these questions (split into simpler query)
         var conditions = await _context.QuestionConditions
-            .Where(c => _context.TemplateQuestions
-                .Any(q => q.QuestionnaireTemplateId == template.Id && (q.Id == c.TriggerQuestionId || q.Id == c.TargetQuestionId)))
+            .Where(c => questionIds.Contains(c.TriggerQuestionId) || questionIds.Contains(c.TargetQuestionId))
             .ToListAsync(cancellationToken);
 
         if (!conditions.Any())
         {
             return; // No conditions to validate
         }
-
-        // Check for circular dependencies in conditional logic
-        var questionIds = await _context.TemplateQuestions
-            .Where(q => q.QuestionnaireTemplateId == template.Id)
-            .Select(q => q.Id)
-            .ToListAsync(cancellationToken);
 
         foreach (var condition in conditions)
         {

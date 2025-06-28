@@ -100,9 +100,10 @@ public class PublishTemplateCommandHandler : IRequestHandler<PublishTemplateComm
 
         response.Questions = _mapper.Map<List<QuestionResponse>>(questions);
 
-        // Load conditions
+        // Load conditions (fix LINQ translation issue)
+        var questionIds = questions.Select(q => q.Id).ToList();
         var conditions = await _context.QuestionConditions
-            .Where(c => questions.Any(q => q.Id == c.TriggerQuestionId || q.Id == c.TargetQuestionId))
+            .Where(c => questionIds.Contains(c.TriggerQuestionId) || questionIds.Contains(c.TargetQuestionId))
             .ToListAsync(cancellationToken);
 
         response.Conditions = _mapper.Map<List<QuestionConditionResponse>>(conditions);
