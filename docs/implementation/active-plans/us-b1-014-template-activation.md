@@ -22,8 +22,8 @@
 - [x] **Task 1.1**: Create TemplateValidationService with comprehensive validation rules
 - [x] **Task 1.2**: Create PublishTemplateCommand with MediatR pattern
 - [x] **Task 1.3**: Create PublishTemplateCommandHandler with validation integration
-- [ ] **Task 1.4**: Register services in DI container (ConfigureServices.cs)
-- [ ] **Task 1.5**: Add PublishTemplate endpoint to QuestionnaireTemplatesController
+- [x] **Task 1.4**: Register services in DI container (ConfigureServices.cs)
+- [x] **Task 1.5**: Add PublishTemplate endpoint to QuestionnaireTemplatesController
 
 ### 🚧 Phase 2: Backend Integration & Testing
 
@@ -100,9 +100,9 @@
 
 ## 🚀 Current Status
 
-**Phase 1**: ✅ 3/5 tasks completed  
-**Phase 2**: 🔄 Ready to start  
-**Overall Progress**: 🚧 15% complete
+**Phase 1**: ✅ 5/5 tasks completed  
+**Phase 2**: 🔄 In Progress  
+**Overall Progress**: 🚧 25% complete
 
 ## 📝 Notes
 

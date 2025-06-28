@@ -64,7 +64,7 @@ public class TemplateValidationService : ITemplateValidationService
         }
 
         // Validate basic template information
-        await ValidateBasicInformation(template, result, cancellationToken);
+        ValidateBasicInformation(template, result);
 
         // Validate questions
         await ValidateQuestions(template, result, cancellationToken);
@@ -78,7 +78,7 @@ public class TemplateValidationService : ITemplateValidationService
         return result;
     }
 
-    private async Task ValidateBasicInformation(QuestionnaireTemplate template, TemplateValidationResult result, CancellationToken cancellationToken)
+    private void ValidateBasicInformation(QuestionnaireTemplate template, TemplateValidationResult result)
     {
         if (string.IsNullOrWhiteSpace(template.Title))
         {

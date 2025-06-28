@@ -132,7 +132,7 @@ public class QuestionnaireTemplatesController : MediatrBaseController
     /// <returns>Published template with updated status and version</returns>
     [HttpPost("{id:guid}/publish")]
     [ProducesResponseType(typeof(QuestionnaireTemplateResponse), 200)]
-    [ProducesResponseType(400)]
+    [ProducesResponseType(typeof(ValidationErrorResponse), 400)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     public async Task<ActionResult<QuestionnaireTemplateResponse>> PublishTemplate(Guid id)
@@ -145,11 +145,30 @@ public class QuestionnaireTemplatesController : MediatrBaseController
         }
         catch (InvalidOperationException ex)
         {
-            return BadRequest(new { error = ex.Message });
+            // Check if this is a validation error (contains multiple validation messages)
+            if (ex.Message.Contains("Template validation failed:"))
+            {
+                var errorPart = ex.Message.Replace("Template validation failed: ", "");
+                var errors = errorPart.Split("; ").ToList();
+                var validationResponse = ValidationErrorResponse.Failed(errors, "Template cannot be published due to validation errors");
+                return BadRequest(validationResponse);
+            }
+
+            // Single error case (template not found, already active, etc.)
+            var singleErrorResponse = ValidationErrorResponse.Failed(ex.Message);
+            return BadRequest(singleErrorResponse);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return StatusCode(500, new { error = "An error occurred while publishing the template." });
+            var errorResponse = ValidationErrorResponse.Failed(
+                "An unexpected error occurred while publishing the template. Please try again later.",
+                "Internal Server Error"
+            );
+
+            // Log the actual exception (in a real app, use proper logging)
+            // _logger.LogError(ex, "Error publishing template {TemplateId}", id);
+
+            return StatusCode(500, errorResponse);
         }
     }
 
