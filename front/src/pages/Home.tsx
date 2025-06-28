@@ -1,8 +1,9 @@
-import { Container, Grid, RoutingTabs } from "@remira/unifiedui";
+import { Container, Grid, RoutingTabs, CircularProgress, Box } from "@remira/unifiedui";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import { appMenu } from "../configs/menu";
+import { useAuthorization } from "@/hooks/useAuthorization";
 
 interface TabDefinition {
   title: string;
@@ -15,6 +16,7 @@ export const Home = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+  const { canViewMenuItem, loading: authLoading } = useAuthorization();
 
   // Flatten del menu per creare tabs
   const flattenedTabs = useMemo(() => {
@@ -23,17 +25,19 @@ export const Home = () => {
 
     appMenu.forEach((menuItem) => {
       if (menuItem.children) {
-        // Se ha children, aggiungi ogni child come tab
+        // Se ha children, aggiungi ogni child come tab (se autorizzato)
         menuItem.children.forEach((child) => {
-          tabs.push({
-            title: child.label,
-            value: index++,
-            path: child.path,
-            call: () => navigate(child.path),
-          });
+          if (canViewMenuItem(child.path)) {
+            tabs.push({
+              title: child.label,
+              value: index++,
+              path: child.path,
+              call: () => navigate(child.path),
+            });
+          }
         });
-      } else if (menuItem.path) {
-        // Se è un elemento semplice con path
+      } else if (menuItem.path && canViewMenuItem(menuItem.path)) {
+        // Se è un elemento semplice con path e autorizzato
         tabs.push({
           title: menuItem.label,
           value: index++,
@@ -43,7 +47,7 @@ export const Home = () => {
       }
     });
 
-    // Aggiungi i tabs degli esempi esistenti
+    // Aggiungi i tabs degli esempi esistenti (sempre visibili per ora)
     tabs.push(
       {
         title: t("tableExample"),
@@ -66,7 +70,7 @@ export const Home = () => {
     );
 
     return tabs;
-  }, [t, navigate]);
+  }, [t, navigate, canViewMenuItem]);
 
   // Calcola il tab attivo basato sull'URL corrente
   const activeTab = useMemo(() => {
@@ -111,10 +115,21 @@ export const Home = () => {
     }
   };
 
+  // Don't render until authorization is loaded
+  if (authLoading) {
+    return (
+      <Container type="page" maxWidth={false}>
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+          <CircularProgress />
+        </Box>
+      </Container>
+    );
+  }
+
   return (
     <Container type="page" maxWidth={false}>
       <RoutingTabs
-        tabs={flattenedTabs.map((tab) => ({
+        tabs={flattenedTabs.map((tab: TabDefinition) => ({
           title: tab.title,
           value: tab.value,
           call: tab.call,

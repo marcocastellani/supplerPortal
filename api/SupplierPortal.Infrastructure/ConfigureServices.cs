@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Remira.UCP.SupplierPortal.Application.Interfaces;
@@ -12,24 +14,26 @@ public static class ConfigureServices
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        // DbContext
-        var connectionString = configuration.GetSection("UcpSupplierPortal").GetConnectionString("SupplierPortalDb")!;
+        var jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = true,
+            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+        };
 
-        services.AddDbContext<ApplicationDbContext>(
-            options => options.UseSqlServer(
-               connectionString,
-                sqlServerOptionsAction: sqlOptions =>
-                {
-                    sqlOptions.EnableRetryOnFailure(
-                    maxRetryCount: 10,
-                    maxRetryDelay: TimeSpan.FromSeconds(30),
-                    errorNumbersToAdd: null);
-                }));
-
+        services.AddSingleton(jsonOptions);
         services.AddScoped<AuditableEntitySaveChangesInterceptor>();
-        services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
-        // Others
-        services.AddTransient<IDateTime, DateTimeService>();
+
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(
+                configuration.GetSection("UcpSupplierPortal").GetConnectionString("SupplierPortalDb"),
+                builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+
+        services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+        services.AddScoped<IDateTime, DateTimeService>();
+        
+        // Register OpenFGA Authorization Service
+        services.AddScoped<IAuthorizationService, OpenFgaAuthorizationService>();
 
         return services;
     }

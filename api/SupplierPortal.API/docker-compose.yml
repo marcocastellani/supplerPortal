@@ -20,6 +20,63 @@ services:
       retries: 5
       start_period: 30s
 
+  postgres:
+    image: postgres:15
+    container_name: supplierportal-postgres
+    environment:
+      - POSTGRES_USER=openfga
+      - POSTGRES_PASSWORD=openfga123!
+      - POSTGRES_DB=openfga
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U openfga"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    image: openfga/openfga:latest
+    container_name: supplierportal-migrate
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: migrate
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=postgres
+      - OPENFGA_DATASTORE_URI=postgres://openfga:openfga123!@postgres:5432/openfga?sslmode=disable
+    restart: on-failure
+
+  openfga:
+    image: openfga/openfga:latest
+    container_name: supplierportal-openfga
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=postgres
+      - OPENFGA_DATASTORE_URI=postgres://openfga:openfga123!@postgres:5432/openfga?sslmode=disable
+      - OPENFGA_LOG_LEVEL=info
+      - OPENFGA_HTTP_ADDR=0.0.0.0:8080
+      - OPENFGA_GRPC_ADDR=0.0.0.0:8081
+      - OPENFGA_PLAYGROUND_ENABLED=true
+      - OPENFGA_PLAYGROUND_PORT=8082
+    ports:
+      - "8080:8080"  # HTTP API
+      - "8081:8081"  # gRPC API
+      - "8082:8082"  # Playground
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/grpc_health_probe", "-addr=:8081"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 volumes:
   sqlserver_data:
+    driver: local
+  postgres_data:
     driver: local

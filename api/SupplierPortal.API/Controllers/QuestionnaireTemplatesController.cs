@@ -1,12 +1,18 @@
+using System.Net.Mime;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Remira.UCP.SupplierPortal.API.Authorization;
 using Remira.UCP.SupplierPortal.API.Controllers.Base;
-using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.CreateTemplate;
-using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.SaveDraft;
+using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.AssignQuestionnaire;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.CreateSection;
-using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetTemplate;
-using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetDraft;
-using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetTemplates;
+using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.CreateTemplate;
+using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.PublishTemplate;
+using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.SaveDraft;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Common;
+using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetDraft;
+using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetTemplate;
+using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetTemplates;
 using Remira.UCP.SupplierPortal.Domain.Enums;
 using Asp.Versioning;
 
@@ -16,14 +22,30 @@ namespace Remira.UCP.SupplierPortal.API.Controllers;
 /// API Controller for managing questionnaire templates
 /// </summary>
 [ApiVersion("2025-06-01")]
+[ApiController]
+[Authorize]
+[Route("api/[controller]")]
 public class QuestionnaireTemplatesController : MediatrBaseController
 {
+    private readonly ISender _mediator;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="QuestionnaireTemplatesController"/> class.
+    /// </summary>
+    /// <param name="mediator">The mediator instance for sending commands and queries.</param>
+    public QuestionnaireTemplatesController(ISender mediator)
+    {
+        _mediator = mediator;
+    }
+
     /// <summary>
     /// Create a new questionnaire template with multiple target entity types
     /// </summary>
     /// <param name="command">Template creation data including target entity types array</param>
     /// <returns>Created template with sections and entity type associations</returns>
     [HttpPost]
+    [RequireRole("administrator", "sustainability_manager")]
+    [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(typeof(QuestionnaireTemplateResponse), 201)]
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
@@ -32,7 +54,7 @@ public class QuestionnaireTemplatesController : MediatrBaseController
     {
         try
         {
-            var result = await Mediator.Send(command);
+            var result = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetTemplate), new { id = result.Id }, result);
         }
         catch (Exception ex)
@@ -47,6 +69,7 @@ public class QuestionnaireTemplatesController : MediatrBaseController
     /// <param name="id">Template ID</param>
     /// <returns>Complete template with sections, questions, and conditions</returns>
     [HttpGet("{id:guid}")]
+    [RequireRole("administrator", "sustainability_manager")]
     [ProducesResponseType(typeof(QuestionnaireTemplateResponse), 200)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
@@ -55,7 +78,7 @@ public class QuestionnaireTemplatesController : MediatrBaseController
         try
         {
             var query = new GetQuestionnaireTemplateQuery(id);
-            var result = await Mediator.Send(query);
+            var result = await _mediator.Send(query);
             return Ok(result);
         }
         catch (InvalidOperationException)
@@ -74,6 +97,7 @@ public class QuestionnaireTemplatesController : MediatrBaseController
     /// <param name="id">Template ID</param>
     /// <returns>Draft template with all current data</returns>
     [HttpGet("{id:guid}/draft")]
+    [RequireRole("administrator", "sustainability_manager")]
     [ProducesResponseType(typeof(QuestionnaireTemplateResponse), 200)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
@@ -82,7 +106,7 @@ public class QuestionnaireTemplatesController : MediatrBaseController
         try
         {
             var query = new GetDraftQuestionnaireQuery(id);
-            var result = await Mediator.Send(query);
+            var result = await _mediator.Send(query);
             return Ok(result);
         }
         catch (InvalidOperationException)
@@ -102,6 +126,8 @@ public class QuestionnaireTemplatesController : MediatrBaseController
     /// <param name="command">Draft save data</param>
     /// <returns>Success confirmation</returns>
     [HttpPut("{id:guid}/auto-save")]
+    [RequireRole("administrator", "sustainability_manager")]
+    [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(204)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
@@ -111,7 +137,7 @@ public class QuestionnaireTemplatesController : MediatrBaseController
         try
         {
             command.TemplateId = id; // Ensure ID consistency
-            await Mediator.Send(command);
+            await _mediator.Send(command);
             return NoContent();
         }
         catch (InvalidOperationException)
@@ -138,6 +164,7 @@ public class QuestionnaireTemplatesController : MediatrBaseController
     /// <param name="sortDirection">Sort direction (asc/desc, default: asc)</param>
     /// <returns>Paginated list of templates with metadata</returns>
     [HttpGet]
+    [RequireRole("administrator", "sustainability_manager")]
     [ProducesResponseType(typeof(PaginatedTemplatesResponse), 200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
@@ -167,7 +194,7 @@ public class QuestionnaireTemplatesController : MediatrBaseController
                 SortDirection = sortDirection
             };
 
-            var result = await Mediator.Send(query);
+            var result = await _mediator.Send(query);
             return Ok(result);
         }
         catch (ArgumentException ex)
@@ -187,6 +214,8 @@ public class QuestionnaireTemplatesController : MediatrBaseController
     /// <param name="command">Section creation data</param>
     /// <returns>Created section</returns>
     [HttpPost("{id:guid}/sections")]
+    [RequireRole("administrator", "sustainability_manager")]
+    [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(typeof(SectionResponse), 201)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
@@ -196,12 +225,47 @@ public class QuestionnaireTemplatesController : MediatrBaseController
         try
         {
             command.TemplateId = id; // Ensure ID consistency
-            var result = await Mediator.Send(command);
+            var result = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetTemplate), new { id = id }, result);
         }
         catch (Exception ex)
         {
             return BadRequest(new { error = ex.Message });
         }
+    }
+
+    /// <summary>
+    /// Publish a template (make it available for use).
+    /// Accessible by: Administrator, Sustainability Manager
+    /// </summary>
+    /// <param name="templateId">The template ID</param>
+    /// <returns>No content</returns>
+    [HttpPost("{templateId}/publish")]
+    [RequireRole("administrator", "sustainability_manager")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> PublishTemplate(Guid templateId)
+    {
+        var command = new PublishTemplateCommand { TemplateId = templateId };
+        await _mediator.Send(command);
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Assign a questionnaire template to a supply network entity.
+    /// Accessible by: Administrator, Supply Chain Operator, Sustainability Manager
+    /// </summary>
+    /// <param name="command">Assignment data</param>
+    /// <returns>Created questionnaire ID</returns>
+    [HttpPost("assign")]
+    [RequireRole("administrator", "supply_chain_operator", "sustainability_manager")]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<Guid>> AssignQuestionnaire([FromBody] AssignQuestionnaireCommand command)
+    {
+        var questionnaireId = await _mediator.Send(command);
+        return Created($"/api/questionnaires/{questionnaireId}", questionnaireId);
     }
 }
