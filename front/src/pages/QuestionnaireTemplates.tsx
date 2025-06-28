@@ -50,21 +50,21 @@ export const QuestionnaireTemplates: React.FC = () => {
    * Handles creating a new template [SF]
    */
   const handleCreateTemplate = () => {
-    navigate("/questionnaire-templates/create");
+    navigate("/questionnaires/templates/new");
   };
 
   /**
    * Handles viewing template details [SF]
    */
   const handleViewTemplate = (templateId: string) => {
-    navigate(`/questionnaire-templates/${templateId}`);
+    navigate(`/questionnaires/templates/${templateId}`);
   };
 
   /**
    * Handles editing template [SF]
    */
   const handleEditTemplate = (templateId: string) => {
-    navigate(`/questionnaire-templates/${templateId}/edit`);
+    navigate(`/questionnaires/templates/${templateId}/edit`);
   };
 
   return (

@@ -212,3 +212,48 @@ const activeTab = useMemo(() => {
 
 **Refactoring completed successfully following React Router best practices** ✅  
 **All tests passing, navigation working correctly** ✅
+
+---
+
+## 🔧 **Post-Implementation Bug Fixes**
+
+### **Fixed Questionnaire Template Edit Links** (2024-06-21)
+
+**Issue**: Edit links in QuestionnaireTemplates page were broken due to URL pattern mismatches after navigation refactoring.
+
+**Root Cause**:
+
+- Navigation URLs used `/questionnaire-templates/...` pattern
+- Actual routes were configured as `/questionnaires/templates/...`
+- Missing routes for template viewing and editing
+
+**Solution Applied**:
+
+1. ✅ **Fixed URL patterns** in `QuestionnaireTemplates.tsx`:
+
+   - Changed `/questionnaire-templates/create` → `/questionnaires/templates/new`
+   - Changed `/questionnaire-templates/${id}` → `/questionnaires/templates/${id}`
+   - Changed `/questionnaire-templates/${id}/edit` → `/questionnaires/templates/${id}/edit`
+
+2. ✅ **Added missing routes** in `AppRoutes.tsx`:
+
+   - Added `/questionnaires/templates/:id` for template details
+   - Added `/questionnaires/templates/:id/edit` for template editing
+   - Created `TemplateEditor` wrapper component to pass `templateId` from URL params
+
+3. ✅ **Fixed TemplatesList component** URLs to match route structure
+
+**Files Modified**:
+
+- `front/src/pages/QuestionnaireTemplates.tsx`
+- `front/src/routes/AppRoutes.tsx`
+- `front/src/components/questionnaire-templates/TemplatesList.tsx`
+
+**Testing**:
+
+- ✅ Template listing page loads correctly
+- ✅ Edit buttons navigate to correct URLs
+- ✅ TemplateWizard receives templateId for editing mode
+- ✅ URL patterns consistent across application
+
+**Impact**: Fixed broken edit functionality, ensuring users can properly edit questionnaire templates from the listing page.

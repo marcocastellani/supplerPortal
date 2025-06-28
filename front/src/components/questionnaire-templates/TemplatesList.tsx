@@ -191,7 +191,7 @@ const TemplatesList: React.FC<TemplatesListProps> = ({
               <Typography
                 variant="h6"
                 component={Link}
-                to={`/questionnaire-templates/${template.id}`}
+                to={`/questionnaires/templates/${template.id}`}
                 sx={{
                   textDecoration: "none",
                   color: "primary.main",

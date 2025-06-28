@@ -19,12 +19,18 @@ import { TableExample } from "@/pages/TableExample";
 import { AuthenticatedRoutes } from "@/routes/AuthenticatedRoutes";
 import { Loader } from "@remira/unifiedui";
 import { Suspense } from "react";
-import { Route, Routes as Router } from "react-router-dom";
+import { Route, Routes as Router, useParams } from "react-router-dom";
 import EntityDetailPage from "@/pages/EntityDetailPage";
 
 interface RoutesProps {
   isMicrofrontend: boolean;
 }
+
+// Wrapper component for editing templates
+const TemplateEditor = () => {
+  const { id } = useParams<{ id: string }>();
+  return <TemplateWizard templateId={id} />;
+};
 
 export const Routes = ({ isMicrofrontend }: RoutesProps) => {
   return (
@@ -59,6 +65,14 @@ export const Routes = ({ isMicrofrontend }: RoutesProps) => {
               <Route
                 path="questionnaires/templates/new"
                 element={<TemplateWizard />}
+              />
+              <Route
+                path="questionnaires/templates/:id"
+                element={<div>Template Details View - TODO</div>}
+              />
+              <Route
+                path="questionnaires/templates/:id/edit"
+                element={<TemplateEditor />}
               />
               <Route
                 path="questionnaires/assignments"
