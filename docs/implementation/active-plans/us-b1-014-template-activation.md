@@ -31,6 +31,7 @@
 - [x] **🔥 Task CRITICAL-2**: Fix questions not being saved on "Publish" button ✅ **FIXED**
 - [x] **🔥 Task CRITICAL-3**: Investigate and fix template data persistence issues ✅ **FIXED**
 - [x] **🔥 Task CRITICAL-4**: Fix property mapping for SaveDraftRequest ✅ **FIXED**
+- [x] **🔥 Task CRITICAL-5**: Fix EF Core LINQ translation errors for conditions ✅ **FIXED**
 
 ### ✅ Phase 2: Backend Integration & Testing
 
@@ -114,7 +115,7 @@
 
 ## 🚀 Current Status
 
-**✅ CRITICAL BUG PHASE**: ✅ 4/4 tasks - **ALL BUGS FIXED!**  
+**✅ CRITICAL BUG PHASE**: ✅ 5/5 tasks - **ALL BUGS FIXED!**  
 **Phase 1**: ✅ 5/5 tasks completed  
 **Phase 2**: ✅ 5/5 tasks completed  
 **Phase 3**: 🚧 Ready to implement  
@@ -145,4 +146,5 @@
   1. Missing fields in SaveDraftRequest and incomplete API workflow
   2. Property name mismatch between frontend and backend DTOs (title→text, questionType→type, etc.)
   3. Temporary IDs causing backend validation failures
-  - Fixed by proper property mapping, sending undefined for new items, and complete API workflow
+  4. EF Core LINQ translation errors for complex condition queries (nested Any() statements)
+  - Fixed by proper property mapping, sending undefined for new items, complete API workflow, and simplified LINQ queries
