@@ -383,6 +383,11 @@ export const useTemplateWizard = (
         templateData: { ...prev.templateData, ...data },
         isDirty: true,
       }));
+
+      // Trigger validation after state update to clear stale errors
+      setTimeout(() => {
+        validateCurrentStep();
+      }, 0);
     },
     []
   );
@@ -408,6 +413,11 @@ export const useTemplateWizard = (
         sections: [...prev.sections, newSection],
         isDirty: true,
       }));
+
+      // Trigger validation after state update
+      setTimeout(() => {
+        validateCurrentStep();
+      }, 0);
     },
     [templateId]
   );
@@ -421,6 +431,11 @@ export const useTemplateWizard = (
         ),
         isDirty: true,
       }));
+
+      // Trigger validation after state update
+      setTimeout(() => {
+        validateCurrentStep();
+      }, 0);
     },
     []
   );
@@ -441,6 +456,11 @@ export const useTemplateWizard = (
       ),
       isDirty: true,
     }));
+
+    // Trigger validation after state update
+    setTimeout(() => {
+      validateCurrentStep();
+    }, 0);
   }, []);
 
   const reorderSections = useCallback((fromIndex: number, toIndex: number) => {
@@ -484,6 +504,11 @@ export const useTemplateWizard = (
         questions: [...prev.questions, newQuestion],
         isDirty: true,
       }));
+
+      // Trigger validation after state update
+      setTimeout(() => {
+        validateCurrentStep();
+      }, 0);
     },
     [templateId]
   );
@@ -497,6 +522,11 @@ export const useTemplateWizard = (
         ),
         isDirty: true,
       }));
+
+      // Trigger validation after state update
+      setTimeout(() => {
+        validateCurrentStep();
+      }, 0);
     },
     []
   );
