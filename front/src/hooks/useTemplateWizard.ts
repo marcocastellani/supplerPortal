@@ -74,11 +74,11 @@ const mapResponseToCondition = (
   response: QuestionConditionResponse
 ): QuestionCondition => ({
   id: response.id,
-  sourceQuestionId: response.sourceQuestionId,
+  sourceQuestionId: response.triggerQuestionId,
   targetQuestionId: response.targetQuestionId,
   conditionType: response.conditionType,
-  expectedValue: response.expectedValue,
-  questionnaireTemplateId: response.questionnaireTemplateId,
+  expectedValue: response.triggerValue || "",
+  questionnaireTemplateId: "", // Not available in response, will be set by context
   createdAt: new Date().toISOString(), // Use current time as fallback
 });
 
@@ -191,6 +191,10 @@ export const useTemplateWizard = (
   // Auto-save refs
   const autoSaveTimeoutRef = useRef<NodeJS.Timeout>();
   const lastSaveDataRef = useRef<string>("");
+
+  // State ref for accessing latest state in callbacks
+  const stateRef = useRef(state);
+  stateRef.current = state;
 
   // Load template if templateId is provided
   useEffect(() => {
@@ -328,25 +332,14 @@ export const useTemplateWizard = (
 
   // Trigger autosave immediately when enabled with existing unsaved changes
   useEffect(() => {
-    console.log("Autosave effect triggered:", {
-      enabled: autoSaveConfig.enabled,
-      isDirty: state.isDirty,
-      templateId: state.templateData.id || templateId,
-    });
-
     if (autoSaveConfig.enabled && state.isDirty) {
       const currentTemplateId = state.templateData.id || templateId;
       if (currentTemplateId) {
-        console.log("Scheduling autosave for template:", currentTemplateId);
-        // Set a short timeout to trigger autosave when enabled
         const timeoutId = setTimeout(() => {
-          console.log("Executing delayed autosave");
           handleAutoSave();
         }, 1000); // 1 second delay when enabling autosave
 
         return () => clearTimeout(timeoutId);
-      } else {
-        console.log("No template ID available for autosave");
       }
     }
   }, [
@@ -818,10 +811,6 @@ export const useTemplateWizard = (
   }, []);
 
   // Validation functions
-  // Use ref to always access current state
-  const stateRef = useRef(state);
-  stateRef.current = state;
-
   const validateCurrentStep = useCallback((): boolean => {
     // Get the current state from ref to avoid stale closures
     const currentState = stateRef.current;

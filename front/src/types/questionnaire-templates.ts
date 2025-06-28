@@ -209,11 +209,12 @@ export interface QuestionResponse {
 
 export interface QuestionConditionResponse {
   id: string;
-  sourceQuestionId: string;
+  triggerQuestionId: string;
   targetQuestionId: string;
   conditionType: string;
-  expectedValue: string;
-  questionnaireTemplateId: string;
+  triggerValue?: string;
+  action?: string;
+  description?: string;
 }
 
 // UI State types for the wizard

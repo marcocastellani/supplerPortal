@@ -16,6 +16,7 @@ import { Taxonomies } from "@/pages/Taxonomies";
 import { Roles } from "@/pages/Roles";
 import { RegionalSettingsExample } from "@/pages/RegionalSettingsExample";
 import { TableExample } from "@/pages/TableExample";
+
 import { AuthenticatedRoutes } from "@/routes/AuthenticatedRoutes";
 import { Loader } from "@remira/unifiedui";
 import { Suspense } from "react";
@@ -74,6 +75,7 @@ export const Routes = ({ isMicrofrontend }: RoutesProps) => {
                 path="questionnaires/templates/:id/edit"
                 element={<TemplateEditor />}
               />
+
               <Route
                 path="questionnaires/assignments"
                 element={<QuestionnaireAssignments />}
