@@ -668,6 +668,48 @@ export const useTemplateWizard = (
           hook: "useTemplateWizard",
           currentTemplateId,
         });
+
+        // Now save questions using saveDraft API if we have any
+        if (state.questions.length > 0) {
+          log.debug("saveDraft: Saving questions after template creation:", {
+            hook: "useTemplateWizard",
+            questionsCount: state.questions.length,
+          });
+
+          const saveRequest: SaveDraftRequest = {
+            templateId: currentTemplateId,
+            sections: state.sections.map((section) => ({
+              id: section.id,
+              title: section.title,
+              description: section.description || "",
+              order: section.order,
+              translations: section.translations,
+            })),
+            questions: state.questions.map((question) => ({
+              id: question.id,
+              title: question.title,
+              description: question.description,
+              questionType: question.questionType,
+              isRequired: question.isRequired,
+              order: question.order,
+              sectionId: question.sectionId,
+              translations: question.translations,
+              configuration: question.configuration,
+            })),
+          };
+
+          await questionnaireTemplatesApi.saveDraft(
+            currentTemplateId,
+            saveRequest
+          );
+
+          log.debug(
+            "saveDraft: Questions saved successfully after template creation",
+            {
+              hook: "useTemplateWizard",
+            }
+          );
+        }
       } else {
         // If template exists, use the auto-save API
         const saveRequest: SaveDraftRequest = {
@@ -676,6 +718,24 @@ export const useTemplateWizard = (
           description: state.templateData.description || "",
           expirationMonths: state.templateData.expirationMonths || 12,
           certificateType: state.templateData.certificateType,
+          sections: state.sections.map((section) => ({
+            id: section.id,
+            title: section.title,
+            description: section.description || "",
+            order: section.order,
+            translations: section.translations,
+          })),
+          questions: state.questions.map((question) => ({
+            id: question.id,
+            title: question.title,
+            description: question.description,
+            questionType: question.questionType,
+            isRequired: question.isRequired,
+            order: question.order,
+            sectionId: question.sectionId,
+            translations: question.translations,
+            configuration: question.configuration,
+          })),
         };
 
         log.debug("saveDraft: Auto-saving existing template:", {
@@ -765,6 +825,48 @@ export const useTemplateWizard = (
           hook: "useTemplateWizard",
           currentTemplateId,
         });
+
+        // Now save questions using saveDraft API
+        if (state.questions.length > 0) {
+          log.debug(
+            "publishTemplate: Saving questions after template creation:",
+            {
+              hook: "useTemplateWizard",
+              questionsCount: state.questions.length,
+            }
+          );
+
+          const saveRequest: SaveDraftRequest = {
+            templateId: currentTemplateId,
+            sections: state.sections.map((section) => ({
+              id: section.id,
+              title: section.title,
+              description: section.description || "",
+              order: section.order,
+              translations: section.translations,
+            })),
+            questions: state.questions.map((question) => ({
+              id: question.id,
+              title: question.title,
+              description: question.description,
+              questionType: question.questionType,
+              isRequired: question.isRequired,
+              order: question.order,
+              sectionId: question.sectionId,
+              translations: question.translations,
+              configuration: question.configuration,
+            })),
+          };
+
+          await questionnaireTemplatesApi.saveDraft(
+            currentTemplateId,
+            saveRequest
+          );
+
+          log.debug("publishTemplate: Questions saved successfully", {
+            hook: "useTemplateWizard",
+          });
+        }
       }
 
       // Now publish the template
