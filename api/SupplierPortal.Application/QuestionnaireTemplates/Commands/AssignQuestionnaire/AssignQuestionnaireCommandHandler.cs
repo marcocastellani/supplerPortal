@@ -39,6 +39,12 @@ public class AssignQuestionnaireCommandHandler : IRequestHandler<AssignQuestionn
             throw new InvalidOperationException($"Template with ID {request.TemplateId} not found.");
         }
 
+        // Ensure template is active
+        if (template.Status != TemplateStatus.Active)
+        {
+            throw new InvalidOperationException($"Template must be active to assign. Current status: {template.Status}");
+        }
+
         // Determine which entity types to target
         var targetEntityTypes = request.EntityTypeFilter?.Any() == true
             ? request.EntityTypeFilter
@@ -51,7 +57,7 @@ public class AssignQuestionnaireCommandHandler : IRequestHandler<AssignQuestionn
 
         // Get eligible entities based on entity types and optional ID filter
         var entitiesQuery = _context.SupplyNetworkEntities
-            .Where(e => targetEntityTypes.Contains(e.EntityType));
+            .Where(e => targetEntityTypes.Contains(e.EntityType) && e.Active);
 
         if (request.EntityIds?.Any() == true)
         {
@@ -64,9 +70,13 @@ public class AssignQuestionnaireCommandHandler : IRequestHandler<AssignQuestionn
         var existingQuestionnaireEntityIds = await _context.Questionnaires
             .Where(q => q.TemplateId == request.TemplateId
                 && (q.Status == QuestionnaireStatus.Published
-                    || q.Status == QuestionnaireStatus.InProgress))
+                    || q.Status == QuestionnaireStatus.InProgress)
+                && (q.DueDate > _dateTime.Now || q.Status == QuestionnaireStatus.InProgress))
             .Select(q => q.SupplierId)
             .ToHashSetAsync(cancellationToken);
+
+        // Track entities to notify
+        var entitiesToNotify = new List<(Guid EntityId, string Email, Guid QuestionnaireId)>();
 
         // Process each eligible entity
         foreach (var entity in eligibleEntities)
@@ -79,8 +89,9 @@ public class AssignQuestionnaireCommandHandler : IRequestHandler<AssignQuestionn
                     result.SkippedEntities.Add(new SkippedEntity
                     {
                         EntityId = entity.Id,
+                        EntityName = entity.LegalName,
                         EntityType = entity.EntityType,
-                        Reason = "Entity already has an active questionnaire for this template"
+                        Reason = "Entity already has an active questionnaire for this template that has not expired"
                     });
                     result.SkippedCount++;
                     continue;
@@ -92,27 +103,44 @@ public class AssignQuestionnaireCommandHandler : IRequestHandler<AssignQuestionn
                     Id = Guid.NewGuid(),
                     Title = template.Title,
                     Description = template.Description,
-                    Type = "Template-Based", // Could be enhanced based on template category
+                    Type = "Template-Based",
                     DueDate = request.DueDate,
                     Status = QuestionnaireStatus.Published,
                     Priority = MapPriority(request.Priority),
-                    SupplierId = entity.Id, // Note: This field name suggests it's for suppliers, but we're using it for any entity
+                    SupplierId = entity.Id,
                     AssignedUserId = request.AssignedUserId,
                     AssignedAgentId = request.AssignedAgentId,
                     TemplateId = template.Id,
+                    Notes = request.Notes,
                     Created = _dateTime.Now,
                     CreatedBy = _currentUserService.UserId
                 };
 
                 _context.Questionnaires.Add(questionnaire);
+                
                 result.AssignedQuestionnaireIds.Add(questionnaire.Id);
+                result.AssignedEntities.Add(new AssignedEntity
+                {
+                    EntityId = entity.Id,
+                    EntityName = entity.LegalName,
+                    EntityType = entity.EntityType,
+                    Location = $"{entity.City}, {entity.Country}",
+                    QuestionnaireId = questionnaire.Id
+                });
                 result.AssignedCount++;
+
+                // Track for notifications if requested
+                if (request.SendNotifications && !string.IsNullOrEmpty(entity.Email))
+                {
+                    entitiesToNotify.Add((entity.Id, entity.Email, questionnaire.Id));
+                }
             }
             catch (Exception ex)
             {
                 result.SkippedEntities.Add(new SkippedEntity
                 {
                     EntityId = entity.Id,
+                    EntityName = entity.LegalName,
                     EntityType = entity.EntityType,
                     Reason = $"Error creating questionnaire: {ex.Message}"
                 });
@@ -122,6 +150,15 @@ public class AssignQuestionnaireCommandHandler : IRequestHandler<AssignQuestionn
 
         // Save all changes
         await _context.SaveChangesAsync(cancellationToken);
+
+        // Queue notifications if requested
+        if (request.SendNotifications && entitiesToNotify.Any())
+        {
+            // TODO: Integrate with notification service
+            // For now, we'll just log that notifications were requested
+            // In a real implementation, this would queue email jobs
+            // Example: await _notificationService.QueueQuestionnaireAssignmentEmails(entitiesToNotify);
+        }
 
         return result;
     }

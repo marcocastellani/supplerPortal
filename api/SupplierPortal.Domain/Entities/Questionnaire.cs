@@ -35,6 +35,11 @@ public class Questionnaire : BaseAuditableEntity
     /// </summary>
     public Guid? TemplateId { get; set; }
     
+    /// <summary>
+    /// Optional notes or instructions for the questionnaire assignment
+    /// </summary>
+    public string? Notes { get; set; }
+    
     // Navigation properties
     public SupplyNetworkEntities Supplier { get; set; } = null!;
     public User? AssignedUser { get; set; }

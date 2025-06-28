@@ -36,5 +36,9 @@ public class AssignQuestionnaireCommandValidator : AbstractValidator<AssignQuest
         RuleFor(v => v.AssignedAgentId)
             .NotEqual(Guid.Empty).WithMessage("Assigned Agent ID must be a valid GUID.")
             .When(v => v.AssignedAgentId.HasValue);
+
+        RuleFor(v => v.Notes)
+            .MaximumLength(1000).WithMessage("Notes must not exceed 1000 characters.")
+            .When(v => !string.IsNullOrEmpty(v.Notes));
     }
 }
