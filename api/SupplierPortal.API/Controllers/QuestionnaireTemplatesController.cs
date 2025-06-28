@@ -3,6 +3,7 @@ using Remira.UCP.SupplierPortal.API.Controllers.Base;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.CreateTemplate;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.SaveDraft;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.CreateSection;
+using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.PublishTemplate;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetTemplate;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetDraft;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetTemplates;
@@ -121,6 +122,34 @@ public class QuestionnaireTemplatesController : MediatrBaseController
         catch (Exception ex)
         {
             return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Publish/activate a questionnaire template
+    /// </summary>
+    /// <param name="id">Template ID to publish</param>
+    /// <returns>Published template with updated status and version</returns>
+    [HttpPost("{id:guid}/publish")]
+    [ProducesResponseType(typeof(QuestionnaireTemplateResponse), 200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
+    public async Task<ActionResult<QuestionnaireTemplateResponse>> PublishTemplate(Guid id)
+    {
+        try
+        {
+            var command = new PublishTemplateCommand(id);
+            var result = await Mediator.Send(command);
+            return Ok(result);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = "An error occurred while publishing the template." });
         }
     }
 
