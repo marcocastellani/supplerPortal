@@ -147,7 +147,7 @@ public class QuestionnaireTemplatesController : MediatrBaseController
         {
             return BadRequest(new { error = ex.Message });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, new { error = "An error occurred while publishing the template." });
         }
