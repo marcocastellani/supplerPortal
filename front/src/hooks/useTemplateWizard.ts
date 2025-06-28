@@ -684,17 +684,22 @@ export const useTemplateWizard = (
               description: section.description || "",
               order: section.order,
               translations: section.translations,
+              isDeleted: false,
             })),
             questions: state.questions.map((question) => ({
-              id: question.id,
-              title: question.title,
-              description: question.description,
-              questionType: question.questionType,
+              id: question.id.startsWith("temp-") ? undefined : question.id, // Send undefined for temporary IDs
+              text: question.title, // Backend expects 'text' not 'title'
+              type: question.questionType, // Backend expects 'type' not 'questionType'
               isRequired: question.isRequired,
               order: question.order,
+              helpText: question.description, // Backend expects 'helpText' not 'description'
               sectionId: question.sectionId,
               translations: question.translations,
               configuration: question.configuration,
+              allowDocumentUpload: false, // Default values for backend
+              maxDocuments: 5,
+              requireDocuments: false,
+              isDeleted: false,
             })),
           };
 
@@ -724,17 +729,22 @@ export const useTemplateWizard = (
             description: section.description || "",
             order: section.order,
             translations: section.translations,
+            isDeleted: false,
           })),
           questions: state.questions.map((question) => ({
-            id: question.id,
-            title: question.title,
-            description: question.description,
-            questionType: question.questionType,
+            id: question.id.startsWith("temp-") ? undefined : question.id, // Send undefined for temporary IDs
+            text: question.title, // Backend expects 'text' not 'title'
+            type: question.questionType, // Backend expects 'type' not 'questionType'
             isRequired: question.isRequired,
             order: question.order,
+            helpText: question.description, // Backend expects 'helpText' not 'description'
             sectionId: question.sectionId,
             translations: question.translations,
             configuration: question.configuration,
+            allowDocumentUpload: false, // Default values for backend
+            maxDocuments: 5,
+            requireDocuments: false,
+            isDeleted: false,
           })),
         };
 
@@ -844,17 +854,22 @@ export const useTemplateWizard = (
               description: section.description || "",
               order: section.order,
               translations: section.translations,
+              isDeleted: false,
             })),
             questions: state.questions.map((question) => ({
-              id: question.id,
-              title: question.title,
-              description: question.description,
-              questionType: question.questionType,
+              id: question.id.startsWith("temp-") ? undefined : question.id, // Send undefined for temporary IDs
+              text: question.title, // Backend expects 'text' not 'title'
+              type: question.questionType, // Backend expects 'type' not 'questionType'
               isRequired: question.isRequired,
               order: question.order,
+              helpText: question.description, // Backend expects 'helpText' not 'description'
               sectionId: question.sectionId,
               translations: question.translations,
               configuration: question.configuration,
+              allowDocumentUpload: false, // Default values for backend
+              maxDocuments: 5,
+              requireDocuments: false,
+              isDeleted: false,
             })),
           };
 
