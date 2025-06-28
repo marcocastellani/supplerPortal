@@ -28,7 +28,6 @@ public class GetQuestionnaireTemplateQueryHandler : IRequestHandler<GetQuestionn
         var template = await _context.QuestionnaireTemplates
             .Include(t => t.TargetEntityTypes)
             .FirstOrDefaultAsync(t => t.Id == request.Id, cancellationToken);
-
         if (template == null)
         {
             throw new InvalidOperationException($"Template with ID {request.Id} not found.");
@@ -80,8 +79,10 @@ public class GetQuestionnaireTemplateQueryHandler : IRequestHandler<GetQuestionn
         }
 
         // Load and map conditions
+        // Extract question IDs to avoid EF Core translation issues
+        var questionIds = questions.Select(q => q.Id).ToList();
         var conditions = await _context.QuestionConditions
-            .Where(c => questions.Any(q => q.Id == c.TriggerQuestionId || q.Id == c.TargetQuestionId))
+            .Where(c => questionIds.Contains(c.TriggerQuestionId) || questionIds.Contains(c.TargetQuestionId))
             .ToListAsync(cancellationToken);
 
         response.Conditions = _mapper.Map<List<QuestionConditionResponse>>(conditions);
