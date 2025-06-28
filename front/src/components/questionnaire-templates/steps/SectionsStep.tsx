@@ -186,17 +186,19 @@ export const SectionsStep: React.FC<SectionsStepProps> = ({
             <ListItemText
               primary={section.title}
               secondary={
-                <Box>
+                <>
                   {section.description && (
-                    <Typography variant="body2" sx={{ mb: 1 }}>
+                    <span style={{ display: "block", marginBottom: 4 }}>
                       {section.description}
-                    </Typography>
+                    </span>
                   )}
-                  <Typography variant="caption" color="text.secondary">
+                  <span
+                    style={{ fontSize: "0.75rem", color: "rgba(0, 0, 0, 0.6)" }}
+                  >
                     Order: {section.order} • Questions:{" "}
                     {section.questions?.length || 0}
-                  </Typography>
-                </Box>
+                  </span>
+                </>
               }
             />
 

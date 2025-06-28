@@ -262,18 +262,14 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
     }
   };
 
-  const getSectionName = (sectionId: string) => {
-    const section = sections.find((s) => s.id === sectionId);
-    return section?.title || "Unknown Section";
-  };
-
   const getQuestionsBySection = (sectionId: string) => {
     return questions
       .filter((q) => q.sectionId === sectionId)
       .sort((a, b) => a.order - b.order);
   };
 
-  const renderQuestionOptions = (question: TemplateQuestion) => {
+  // Simplified version for use in ListItemText secondary (inline-only)
+  const renderQuestionOptionsInline = (question: TemplateQuestion) => {
     if (!requiresOptions(question.questionType)) {
       return null;
     }
@@ -283,22 +279,21 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
       return null;
     }
 
+    const optionsText = questionOptions
+      .map((option: ChoiceOption) => `${option.id}: ${option.label}`)
+      .join(", ");
+
     return (
-      <Box sx={{ mt: 1 }}>
-        <Typography variant="caption" color="text.secondary">
-          Options:
-        </Typography>
-        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 0.5 }}>
-          {questionOptions.map((option: ChoiceOption) => (
-            <Chip
-              key={option.id}
-              label={`${option.id}: ${option.label}`}
-              size="small"
-              variant="outlined"
-            />
-          ))}
-        </Box>
-      </Box>
+      <span
+        style={{
+          display: "block",
+          fontSize: "0.75rem",
+          color: "rgba(0, 0, 0, 0.6)",
+          marginTop: 4,
+        }}
+      >
+        Options: {optionsText}
+      </span>
     );
   };
 
@@ -401,20 +396,24 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
                           </Box>
                         }
                         secondary={
-                          <Box>
+                          <>
                             {question.description && (
-                              <Typography variant="body2" sx={{ mb: 1 }}>
+                              <span
+                                style={{ display: "block", marginBottom: 4 }}
+                              >
                                 {question.description}
-                              </Typography>
+                              </span>
                             )}
-                            {renderQuestionOptions(question)}
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
+                            {renderQuestionOptionsInline(question)}
+                            <span
+                              style={{
+                                fontSize: "0.75rem",
+                                color: "rgba(0, 0, 0, 0.6)",
+                              }}
                             >
                               Order: {question.order}
-                            </Typography>
-                          </Box>
+                            </span>
+                          </>
                         }
                       />
 
