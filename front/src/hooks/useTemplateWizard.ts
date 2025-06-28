@@ -328,15 +328,25 @@ export const useTemplateWizard = (
 
   // Trigger autosave immediately when enabled with existing unsaved changes
   useEffect(() => {
+    console.log("Autosave effect triggered:", {
+      enabled: autoSaveConfig.enabled,
+      isDirty: state.isDirty,
+      templateId: state.templateData.id || templateId,
+    });
+
     if (autoSaveConfig.enabled && state.isDirty) {
       const currentTemplateId = state.templateData.id || templateId;
       if (currentTemplateId) {
+        console.log("Scheduling autosave for template:", currentTemplateId);
         // Set a short timeout to trigger autosave when enabled
         const timeoutId = setTimeout(() => {
+          console.log("Executing delayed autosave");
           handleAutoSave();
         }, 1000); // 1 second delay when enabling autosave
 
         return () => clearTimeout(timeoutId);
+      } else {
+        console.log("No template ID available for autosave");
       }
     }
   }, [

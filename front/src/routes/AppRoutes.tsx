@@ -6,6 +6,7 @@ import Dashboard from "@/pages/Dashboard";
 import { SupplyNetwork } from "@/pages/SupplyNetwork";
 import NewSupplyNetworkEntity from "@/pages/NewSupplyNetworkEntity";
 import { QuestionnaireTemplates } from "@/pages/QuestionnaireTemplates";
+import { TemplateWizard } from "@/components/questionnaire-templates/TemplateWizard";
 import { QuestionnaireAssignments } from "@/pages/QuestionnaireAssignments";
 import { KPIDashboard } from "@/pages/KPIDashboard";
 import { KPIThresholds } from "@/pages/KPIThresholds";
@@ -13,6 +14,8 @@ import { Audits } from "@/pages/Audits";
 import { Documents } from "@/pages/Documents";
 import { Taxonomies } from "@/pages/Taxonomies";
 import { Roles } from "@/pages/Roles";
+import { RegionalSettingsExample } from "@/pages/RegionalSettingsExample";
+import { TableExample } from "@/pages/TableExample";
 import { AuthenticatedRoutes } from "@/routes/AuthenticatedRoutes";
 import { Loader } from "@remira/unifiedui";
 import { Suspense } from "react";
@@ -34,32 +37,48 @@ export const Routes = ({ isMicrofrontend }: RoutesProps) => {
           <Route
             element={<AuthenticatedRoutes isMicrofrontend={isMicrofrontend} />}
           >
-            <Route path="" element={<Home />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="supply-network" element={<SupplyNetwork />} />
-            <Route
-              path="supply-network/new"
-              element={<NewSupplyNetworkEntity />}
-            />
-            <Route
-              path="questionnaires/templates"
-              element={<QuestionnaireTemplates />}
-            />
-            <Route
-              path="questionnaires/assignments"
-              element={<QuestionnaireAssignments />}
-            />
-            <Route path="kpi/dashboard" element={<KPIDashboard />} />
-            <Route path="kpi/thresholds" element={<KPIThresholds />} />
-            <Route path="audits" element={<Audits />} />
-            <Route path="documents" element={<Documents />} />
-            <Route path="settings/taxonomies" element={<Taxonomies />} />
-            <Route path="settings/roles" element={<Roles />} />
-            <Route path="rbacexample" element={<RBACExample />} />
-            <Route
-              path="supply-network/entity/:id"
-              element={<EntityDetailPage />}
-            />
+            <Route path="" element={<Home />}>
+              {/* Redirect root to dashboard */}
+              <Route index element={<Dashboard />} />
+
+              {/* Main application routes */}
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="supply-network" element={<SupplyNetwork />} />
+              <Route
+                path="supply-network/new"
+                element={<NewSupplyNetworkEntity />}
+              />
+              <Route
+                path="supply-network/entity/:id"
+                element={<EntityDetailPage />}
+              />
+              <Route
+                path="questionnaires/templates"
+                element={<QuestionnaireTemplates />}
+              />
+              <Route
+                path="questionnaires/templates/new"
+                element={<TemplateWizard />}
+              />
+              <Route
+                path="questionnaires/assignments"
+                element={<QuestionnaireAssignments />}
+              />
+              <Route path="kpi/dashboard" element={<KPIDashboard />} />
+              <Route path="kpi/thresholds" element={<KPIThresholds />} />
+              <Route path="audits" element={<Audits />} />
+              <Route path="documents" element={<Documents />} />
+              <Route path="settings/taxonomies" element={<Taxonomies />} />
+              <Route path="settings/roles" element={<Roles />} />
+
+              {/* Example routes */}
+              <Route path="table-example" element={<TableExample />} />
+              <Route path="rbac-example" element={<RBACExample />} />
+              <Route
+                path="regional-settings-example"
+                element={<RegionalSettingsExample />}
+              />
+            </Route>
           </Route>
           <Route path="*" element={<NotFound />} />
         </Route>
