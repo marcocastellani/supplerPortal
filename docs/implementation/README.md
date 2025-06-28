@@ -8,6 +8,7 @@ This section contains active implementation plans, completed features, developme
 
 Current implementation plans and feature development:
 
+- [`us-b1-015-template-assignment.md`](./active-plans/us-b1-015-template-assignment.md) - **NEW** Questionnaire template assignment wizard (US-B1-015)
 - [`questionnaire-template-builder.md`](./active-plans/questionnaire-template-builder.md) - Template builder wizard implementation
 
 ### ✅ **Completed Features**
@@ -39,6 +40,7 @@ Architecture decisions and technology choices:
 
 ### 🔥 **Currently Active**
 
+- [Questionnaire Template Assignment](./active-plans/us-b1-015-template-assignment.md) - **NEW** US-B1-015 assignment wizard implementation
 - [Questionnaire Template Builder](./active-plans/questionnaire-template-builder.md) - US-B1-017 implementation
 
 ### 🏆 **Recent Completions**
@@ -58,4 +60,4 @@ Architecture decisions and technology choices:
 
 ---
 
-**Last Updated**: 2024-06-21
+**Last Updated**: 2024-06-22
