@@ -58,94 +58,49 @@ curl -X POST "http://localhost:8080/stores/$STORE_ID/write" \
 
 # Create menu permissions
 echo "Setting up menu permissions..."
-curl -X POST "http://localhost:8080/stores/$STORE_ID/write" \
+curl -X POST "http://localhost:8080/stores/01JYXM00Z98XN52AGFAGRQ9R6E/write" \
   -H "Content-Type: application/json" \
   -d '{
     "writes": {
       "tuple_keys": [
         {
-          "user": "organization:remira#administrator",
+          "user": "user:c327394f-8f87-49a7-8fd9-a1bc6917e2e7",
           "relation": "can_view",
           "object": "menu_item:dashboard"
         },
         {
-          "user": "organization:remira#supply_chain_operator",
-          "relation": "can_view",
-          "object": "menu_item:dashboard"
-        },
-        {
-          "user": "organization:remira#sustainability_manager",
-          "relation": "can_view",
-          "object": "menu_item:dashboard"
-        },
-        {
-          "user": "organization:remira#administrator",
+          "user": "user:c327394f-8f87-49a7-8fd9-a1bc6917e2e7",
           "relation": "can_view",
           "object": "menu_item:supply-network"
         },
         {
-          "user": "organization:remira#supply_chain_operator",
-          "relation": "can_view",
-          "object": "menu_item:supply-network"
-        },
-        {
-          "user": "organization:remira#sustainability_manager",
-          "relation": "can_view",
-          "object": "menu_item:supply-network"
-        },
-        {
-          "user": "organization:remira#administrator",
+          "user": "user:c327394f-8f87-49a7-8fd9-a1bc6917e2e7",
           "relation": "can_view",
           "object": "menu_item:new-entity"
         },
         {
-          "user": "organization:remira#supply_chain_operator",
-          "relation": "can_view",
-          "object": "menu_item:new-entity"
-        },
-        {
-          "user": "organization:remira#administrator",
+          "user": "user:c327394f-8f87-49a7-8fd9-a1bc6917e2e7",
           "relation": "can_view",
           "object": "menu_item:questionnaire-templates"
         },
         {
-          "user": "organization:remira#sustainability_manager",
-          "relation": "can_view",
-          "object": "menu_item:questionnaire-templates"
-        },
-        {
-          "user": "organization:remira#administrator",
+          "user": "user:c327394f-8f87-49a7-8fd9-a1bc6917e2e7",
           "relation": "can_view",
           "object": "menu_item:template-creation"
         },
         {
-          "user": "organization:remira#sustainability_manager",
-          "relation": "can_view",
-          "object": "menu_item:template-creation"
-        },
-        {
-          "user": "organization:remira#administrator",
+          "user": "user:c327394f-8f87-49a7-8fd9-a1bc6917e2e7",
           "relation": "can_view",
           "object": "menu_item:questionnaire-assignments"
         },
-        {
-          "user": "organization:remira#supply_chain_operator",
-          "relation": "can_view",
-          "object": "menu_item:questionnaire-assignments"
-        },
-        {
-          "user": "organization:remira#sustainability_manager",
-          "relation": "can_view",
-          "object": "menu_item:questionnaire-assignments"
-        },
-        {
-          "user": "organization:remira#administrator",
+         {
+          "user": "user:c327394f-8f87-49a7-8fd9-a1bc6917e2e7",
           "relation": "can_view",
           "object": "menu_item:settings"
         }
       ]
     },
-    "authorization_model_id": "'$MODEL_ID'"
+    "authorization_model_id": "'01JYXMR4NCM68C7MK49Y2C3MP7'"
   }'
 
 echo "OpenFGA initialization complete!"

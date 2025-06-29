@@ -18,6 +18,10 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddCustomHealthChecks(builder.Configuration);
 builder.Services.AddApplicationInsightsTelemetry();
+
+// Add JWT Bearer authentication configuration [SFT]
+builder.Services.AddJwtAuthentication(builder.Configuration);
+
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApiServices();
