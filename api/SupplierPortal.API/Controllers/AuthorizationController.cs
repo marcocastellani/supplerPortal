@@ -3,15 +3,16 @@ using Microsoft.AspNetCore.Mvc;
 using Remira.UCP.SupplierPortal.API.Controllers.Base;
 using Remira.UCP.SupplierPortal.Application.Interfaces;
 using System.Security.Claims;
+using Asp.Versioning;
 
 namespace Remira.UCP.SupplierPortal.API.Controllers;
 
 /// <summary>
 /// Controller for authorization and permission checks
-/// </summary>
-[ApiController]
-[Authorize]
-[Route("api/[controller]")]
+/// </summary> 
+//[Authorize] 
+[ApiVersion("2025-06-01")]
+
 public class AuthorizationController : MediatrBaseController
 {
     private readonly IOpenFgaAuthorizationService _authorizationService;

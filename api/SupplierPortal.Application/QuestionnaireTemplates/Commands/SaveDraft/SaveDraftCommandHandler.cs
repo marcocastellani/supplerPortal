@@ -65,11 +65,7 @@ public class SaveDraftCommandHandler : IRequestHandler<SaveDraftCommand, Unit>
         {
             await UpdateQuestions(template.Id, request.Questions, cancellationToken);
         }
-        if(request.conditions != null)
-        {
-            // Assuming conditions are handled in a similar way, you can implement that logic here
-            // await UpdateConditions(template.Id, request.Conditions, cancellationToken);
-        }
+       
         
         if (request.Sections != null || request.Questions != null)
         {

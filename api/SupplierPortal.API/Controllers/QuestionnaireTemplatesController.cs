@@ -16,6 +16,8 @@ using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetTe
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetTemplates;
 using Remira.UCP.SupplierPortal.Domain.Enums;
 using Asp.Versioning;
+using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.CreateTemplate;
+using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.SaveDraft;
 
 namespace Remira.UCP.SupplierPortal.API.Controllers;
 
@@ -268,24 +270,6 @@ public class QuestionnaireTemplatesController : MediatrBaseController
         {
             return BadRequest(new { error = ex.Message });
         }
-    }
-
-    /// <summary>
-    /// Publish a template (make it available for use).
-    /// Accessible by: Administrator, Sustainability Manager
-    /// </summary>
-    /// <param name="templateId">The template ID</param>
-    /// <returns>No content</returns>
-    [HttpPost("{templateId}/publish")]
-    [RequireRole("administrator", "sustainability_manager")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> PublishTemplate(Guid templateId)
-    {
-        var command = new PublishTemplateCommand { TemplateId = templateId };
-        await Mediator.Send(command);
-        return NoContent();
     }
 
     /// <summary>

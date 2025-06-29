@@ -1,12 +1,12 @@
-import axios from 'axios';
-import { ucpVersions } from '@/utils/apiVersions';
+import axios from "axios";
+import { ucpVersions } from "@/utils/apiVersions";
 
 /**
  * Service for handling authorization and permission checks
  */
 class AuthorizationService {
-  private baseUrl = '/api/authorization';
-  private apiVersion = ucpVersions['2024-12-13-preview'];
+  private baseUrl = "/api/authorization";
+  private apiVersion = ucpVersions["2025-06-01"];
 
   /**
    * Gets the current user's roles
@@ -18,7 +18,7 @@ class AuthorizationService {
       );
       return response.data;
     } catch (error) {
-      console.error('Error fetching user roles:', error);
+      console.error("Error fetching user roles:", error);
       return [];
     }
   }
@@ -33,7 +33,7 @@ class AuthorizationService {
       );
       return response.data;
     } catch (error) {
-      console.error('Error fetching accessible menu items:', error);
+      console.error("Error fetching accessible menu items:", error);
       return [];
     }
   }
@@ -48,7 +48,10 @@ class AuthorizationService {
       );
       return response.data;
     } catch (error) {
-      console.error(`Error checking menu item permission for ${menuItemId}:`, error);
+      console.error(
+        `Error checking menu item permission for ${menuItemId}:`,
+        error
+      );
       return false;
     }
   }
@@ -63,7 +66,7 @@ class AuthorizationService {
       );
       return response.data;
     } catch (error) {
-      console.error('Error fetching accessible regions:', error);
+      console.error("Error fetching accessible regions:", error);
       return [];
     }
   }
@@ -82,12 +85,12 @@ class AuthorizationService {
         {
           relation,
           objectType,
-          objectId
+          objectId,
         }
       );
       return response.data;
     } catch (error) {
-      console.error('Error checking permission:', error);
+      console.error("Error checking permission:", error);
       return false;
     }
   }
