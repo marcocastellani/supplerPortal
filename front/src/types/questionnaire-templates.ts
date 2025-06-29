@@ -14,15 +14,12 @@ export enum CertificateType {
 }
 
 export enum QuestionType {
-  Text = 1,
-  Number = 2,
-  Boolean = 3,
-  SingleChoice = 4,
-  MultiChoice = 5,
-  Date = 6,
-  FileUpload = 7,
+  NonConformity = "NonConformity",
+  YesNo = "YesNo",
+  MultipleChoice = "MultipleChoice",
+  SingleOption = "SingleOption",
+  Text = "Text",
 }
-
 // Base interfaces
 export interface BaseEntity {
   id: string;
@@ -200,9 +197,9 @@ export interface SectionResponse {
 
 export interface QuestionResponse {
   id: string;
-  title: string;
-  description?: string;
-  questionType: QuestionType;
+  text: string;
+  helpText?: string;
+  type: QuestionType;
   isRequired: boolean;
   order: number;
   sectionId: string;
@@ -210,6 +207,9 @@ export interface QuestionResponse {
   translations?: TranslationData;
   configuration?: QuestionConfiguration;
   conditions: QuestionConditionResponse[];
+  allowDocumentUpload: boolean;
+  maxDocuments: number;
+  requireDocuments: boolean;
 }
 
 export interface QuestionConditionResponse {

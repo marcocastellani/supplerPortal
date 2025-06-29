@@ -38,7 +38,7 @@ import {
   QuestionType,
   ChoiceOption,
 } from "../../../types/questionnaire-templates";
-
+import { questionTypeLabels } from "../TemplateWizard";
 interface QuestionsStepProps {
   questions: TemplateQuestion[];
   sections: QuestionnaireSection[];
@@ -63,23 +63,12 @@ interface QuestionFormData {
   configuration: any;
 }
 
-const questionTypeLabels = {
-  [QuestionType.Text]: "Text",
-  [QuestionType.Number]: "Number",
-  [QuestionType.Boolean]: "Yes/No",
-  [QuestionType.SingleChoice]: "Single Choice",
-  [QuestionType.MultiChoice]: "Multiple Choice",
-  [QuestionType.Date]: "Date",
-  [QuestionType.FileUpload]: "File Upload",
-};
-
 export const QuestionsStep: React.FC<QuestionsStepProps> = ({
   questions,
   sections,
   onAdd,
   onUpdate,
   onDelete,
-  onReorder,
   errors,
 }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -180,8 +169,8 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
 
   const requiresOptions = (questionType: QuestionType): boolean => {
     return (
-      questionType === QuestionType.SingleChoice ||
-      questionType === QuestionType.MultiChoice
+      questionType === QuestionType.MultipleChoice ||
+      questionType === QuestionType.SingleOption
     );
   };
 
@@ -552,7 +541,7 @@ export const QuestionsStep: React.FC<QuestionsStepProps> = ({
                   label="Question Type"
                 >
                   {Object.entries(questionTypeLabels).map(([value, label]) => (
-                    <MenuItem key={value} value={parseInt(value)}>
+                    <MenuItem key={value} value={value}>
                       {label}
                     </MenuItem>
                   ))}

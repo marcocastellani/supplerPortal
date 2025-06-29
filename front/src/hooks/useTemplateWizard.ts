@@ -57,9 +57,9 @@ const mapResponseToQuestion = (
   response: QuestionResponse
 ): TemplateQuestion => ({
   id: response.id,
-  title: response.title,
-  description: response.description,
-  questionType: response.questionType,
+  title: response.text,
+  description: response.helpText,
+  questionType: response.type,
   isRequired: response.isRequired,
   order: response.order,
   sectionId: response.sectionId,
@@ -254,6 +254,8 @@ export const useTemplateWizard = (
       try {
         const template = await questionnaireTemplatesApi.getTemplate(id);
 
+        console.log("template", template);
+
         // Process sections and questions from the response
         const sections = template.sections?.map(mapResponseToSection) || [];
         const questions = template.questions?.map(mapResponseToQuestion) || [];
@@ -402,7 +404,7 @@ export const useTemplateWizard = (
     ) => {
       const newSection: QuestionnaireSection = {
         ...section,
-        id: `temp-${Date.now()}-${Math.random()}`,
+        id: crypto.randomUUID(),
         createdAt: new Date().toISOString(),
         questionnaireTemplateId: templateId || "",
         questions: [],
@@ -493,7 +495,7 @@ export const useTemplateWizard = (
     ) => {
       const newQuestion: TemplateQuestion = {
         ...question,
-        id: `temp-${Date.now()}-${Math.random()}`,
+        id: crypto.randomUUID(),
         createdAt: new Date().toISOString(),
         questionnaireTemplateId: templateId || "",
         conditions: [],
@@ -584,7 +586,7 @@ export const useTemplateWizard = (
     ) => {
       const newCondition: QuestionCondition = {
         ...condition,
-        id: `temp-${Date.now()}-${Math.random()}`,
+        id: crypto.randomUUID(),
         createdAt: new Date().toISOString(),
         questionnaireTemplateId: templateId || "",
       };
@@ -678,22 +680,14 @@ export const useTemplateWizard = (
 
           const saveRequest: SaveDraftRequest = {
             templateId: currentTemplateId,
-            sections: state.sections.map((section) => ({
-              id: section.id.startsWith("temp-") ? undefined : section.id, // Send undefined for temporary IDs
-              title: section.title,
-              description: section.description || "",
-              order: section.order,
-              translations: section.translations,
-              isDeleted: false,
-            })),
             questions: state.questions.map((question) => ({
-              id: question.id.startsWith("temp-") ? undefined : question.id, // Send undefined for temporary IDs
+              id: question.id, // Use real GUID
               text: question.title, // Backend expects 'text' not 'title'
               type: question.questionType, // Backend expects 'type' not 'questionType'
               isRequired: question.isRequired,
               order: question.order,
               helpText: question.description, // Backend expects 'helpText' not 'description'
-              sectionId: question.sectionId,
+              sectionId: question.sectionId, // Use real section ID
               translations: question.translations,
               configuration: question.configuration,
               allowDocumentUpload: false, // Default values for backend
@@ -724,7 +718,7 @@ export const useTemplateWizard = (
           expirationMonths: state.templateData.expirationMonths || 12,
           certificateType: state.templateData.certificateType,
           sections: state.sections.map((section) => ({
-            id: section.id.startsWith("temp-") ? undefined : section.id, // Send undefined for temporary IDs
+            id: section.id, // Use real GUID
             title: section.title,
             description: section.description || "",
             order: section.order,
@@ -732,13 +726,13 @@ export const useTemplateWizard = (
             isDeleted: false,
           })),
           questions: state.questions.map((question) => ({
-            id: question.id.startsWith("temp-") ? undefined : question.id, // Send undefined for temporary IDs
+            id: question.id, // Use real GUID
             text: question.title, // Backend expects 'text' not 'title'
             type: question.questionType, // Backend expects 'type' not 'questionType'
             isRequired: question.isRequired,
             order: question.order,
             helpText: question.description, // Backend expects 'helpText' not 'description'
-            sectionId: question.sectionId,
+            sectionId: question.sectionId, // Use real section ID
             translations: question.translations,
             configuration: question.configuration,
             allowDocumentUpload: false, // Default values for backend
@@ -782,6 +776,7 @@ export const useTemplateWizard = (
     templateId,
     state.templateData,
     state.sections,
+    state.questions,
     questionnaireTemplatesApi,
     onSave,
   ]);
@@ -848,22 +843,14 @@ export const useTemplateWizard = (
 
           const saveRequest: SaveDraftRequest = {
             templateId: currentTemplateId,
-            sections: state.sections.map((section) => ({
-              id: section.id.startsWith("temp-") ? undefined : section.id, // Send undefined for temporary IDs
-              title: section.title,
-              description: section.description || "",
-              order: section.order,
-              translations: section.translations,
-              isDeleted: false,
-            })),
             questions: state.questions.map((question) => ({
-              id: question.id.startsWith("temp-") ? undefined : question.id, // Send undefined for temporary IDs
+              id: question.id, // Use real GUID
               text: question.title, // Backend expects 'text' not 'title'
               type: question.questionType, // Backend expects 'type' not 'questionType'
               isRequired: question.isRequired,
               order: question.order,
               helpText: question.description, // Backend expects 'helpText' not 'description'
-              sectionId: question.sectionId,
+              sectionId: question.sectionId, // Use real section ID
               translations: question.translations,
               configuration: question.configuration,
               allowDocumentUpload: false, // Default values for backend
@@ -911,6 +898,7 @@ export const useTemplateWizard = (
     templateId,
     state.templateData,
     state.sections,
+    state.questions,
     questionnaireTemplatesApi,
   ]);
 

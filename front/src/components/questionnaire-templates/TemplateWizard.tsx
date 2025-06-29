@@ -15,7 +15,7 @@ import {
   Switch,
 } from "@mui/material";
 import { useTemplateWizard } from "../../hooks/useTemplateWizard";
-import { WizardStep } from "../../types/questionnaire-templates";
+import { QuestionType, WizardStep } from "../../types/questionnaire-templates";
 import { BasicInfoStep } from "./steps/BasicInfoStep";
 import { SectionsStep } from "./steps/SectionsStep";
 import { QuestionsStep } from "./steps/QuestionsStep";
@@ -28,7 +28,13 @@ interface TemplateWizardProps {
   onComplete?: (templateId: string) => void;
   onCancel?: () => void;
 }
-
+export const questionTypeLabels = {
+  [QuestionType.NonConformity]: "Non-Conformity",
+  [QuestionType.Text]: "Text",
+  [QuestionType.YesNo]: "Yes/No",
+  [QuestionType.MultipleChoice]: "Multiple Choice",
+  [QuestionType.SingleOption]: "Single Option",
+};
 const stepLabels = {
   [WizardStep.BasicInfo]: "Basic Information",
   [WizardStep.Sections]: "Sections",
