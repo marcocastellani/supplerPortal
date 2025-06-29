@@ -1,4 +1,4 @@
-import { setAxiosDefaultBaseUrl } from "@remira/ucpaccelerator_unified_utils";
+import { httpClient } from "@/services/httpClient";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { AuthProvider, AuthProviderProps } from "react-oidc-context";
@@ -24,7 +24,7 @@ const WidgetContainer = ({
   colSpan,
 }: WidgetContainerProps) => {
   useEffect(() => {
-    setAxiosDefaultBaseUrl("http://localhost:5257");
+    httpClient.setBaseUrl("http://localhost:5257");
   }, []);
 
   return (

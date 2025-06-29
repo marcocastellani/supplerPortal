@@ -1,15 +1,23 @@
+using System.Net.Mime;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Remira.UCP.SupplierPortal.API.Authorization;
 using Remira.UCP.SupplierPortal.API.Controllers.Base;
-using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.CreateTemplate;
-using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.SaveDraft;
+using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.AssignQuestionnaire;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.CreateSection;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.PublishTemplate;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetTemplate;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetDraft;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetTemplates;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Common;
+using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetDraft;
+using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetTemplate;
+using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetTemplates;
 using Remira.UCP.SupplierPortal.Domain.Enums;
 using Asp.Versioning;
+using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.CreateTemplate;
+using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.SaveDraft;
 
 namespace Remira.UCP.SupplierPortal.API.Controllers;
 
@@ -17,14 +25,18 @@ namespace Remira.UCP.SupplierPortal.API.Controllers;
 /// API Controller for managing questionnaire templates
 /// </summary>
 [ApiVersion("2025-06-01")]
+
 public class QuestionnaireTemplatesController : MediatrBaseController
 {
+
     /// <summary>
     /// Create a new questionnaire template with multiple target entity types
     /// </summary>
     /// <param name="command">Template creation data including target entity types array</param>
     /// <returns>Created template with sections and entity type associations</returns>
     [HttpPost]
+    [RequireRole("administrator", "sustainability_manager")]
+    [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(typeof(QuestionnaireTemplateResponse), 201)]
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
@@ -48,6 +60,7 @@ public class QuestionnaireTemplatesController : MediatrBaseController
     /// <param name="id">Template ID</param>
     /// <returns>Complete template with sections, questions, and conditions</returns>
     [HttpGet("{id:guid}")]
+    [RequireRole("administrator", "sustainability_manager")]
     [ProducesResponseType(typeof(QuestionnaireTemplateResponse), 200)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
@@ -75,6 +88,7 @@ public class QuestionnaireTemplatesController : MediatrBaseController
     /// <param name="id">Template ID</param>
     /// <returns>Draft template with all current data</returns>
     [HttpGet("{id:guid}/draft")]
+    [RequireRole("administrator", "sustainability_manager")]
     [ProducesResponseType(typeof(QuestionnaireTemplateResponse), 200)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
@@ -103,6 +117,8 @@ public class QuestionnaireTemplatesController : MediatrBaseController
     /// <param name="command">Draft save data</param>
     /// <returns>Success confirmation</returns>
     [HttpPut("{id:guid}/auto-save")]
+    [RequireRole("administrator", "sustainability_manager")]
+    [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(204)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
@@ -186,6 +202,7 @@ public class QuestionnaireTemplatesController : MediatrBaseController
     /// <param name="sortDirection">Sort direction (asc/desc, default: asc)</param>
     /// <returns>Paginated list of templates with metadata</returns>
     [HttpGet]
+    [RequireRole("administrator", "sustainability_manager")]
     [ProducesResponseType(typeof(PaginatedTemplatesResponse), 200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
@@ -235,6 +252,8 @@ public class QuestionnaireTemplatesController : MediatrBaseController
     /// <param name="command">Section creation data</param>
     /// <returns>Created section</returns>
     [HttpPost("{id:guid}/sections")]
+    [RequireRole("administrator", "sustainability_manager")]
+    [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(typeof(SectionResponse), 201)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
@@ -251,5 +270,22 @@ public class QuestionnaireTemplatesController : MediatrBaseController
         {
             return BadRequest(new { error = ex.Message });
         }
+    }
+
+    /// <summary>
+    /// Assign a questionnaire template to a supply network entity.
+    /// Accessible by: Administrator, Supply Chain Operator, Sustainability Manager
+    /// </summary>
+    /// <param name="command">Assignment data</param>
+    /// <returns>Created questionnaire ID</returns>
+    [HttpPost("assign")]
+    [RequireRole("administrator", "supply_chain_operator", "sustainability_manager")]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<Guid>> AssignQuestionnaire([FromBody] AssignQuestionnaireCommand command)
+    {
+        var questionnaireId = await Mediator.Send(command);
+        return Created($"/api/questionnaires/{questionnaireId}", questionnaireId);
     }
 }

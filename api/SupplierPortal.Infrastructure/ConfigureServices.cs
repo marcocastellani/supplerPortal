@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Remira.UCP.SupplierPortal.Application.Interfaces;
@@ -12,24 +14,35 @@ public static class ConfigureServices
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        // DbContext
-        var connectionString = configuration.GetSection("UcpSupplierPortal").GetConnectionString("SupplierPortalDb")!;
+        var jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = true,
+            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+        };
 
-        services.AddDbContext<ApplicationDbContext>(
-            options => options.UseSqlServer(
-               connectionString,
-                sqlServerOptionsAction: sqlOptions =>
+        services.AddSingleton(jsonOptions);
+        services.AddScoped<AuditableEntitySaveChangesInterceptor>();
+
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(
+                configuration.GetSection("UcpSupplierPortal").GetConnectionString("SupplierPortalDb"),
+                builder =>
                 {
-                    sqlOptions.EnableRetryOnFailure(
-                    maxRetryCount: 10,
-                    maxRetryDelay: TimeSpan.FromSeconds(30),
-                    errorNumbersToAdd: null);
+                    builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
+                    // Add database retry logic for transient connection issues
+                    builder.EnableRetryOnFailure(
+                        maxRetryCount: 10,
+                        maxRetryDelay: TimeSpan.FromSeconds(30),
+                        errorNumbersToAdd: null);
                 }));
 
-        services.AddScoped<AuditableEntitySaveChangesInterceptor>();
-        services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
-        // Others
-        services.AddTransient<IDateTime, DateTimeService>();
+        services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+        services.AddScoped<IDateTime, DateTimeService>();
+
+        // Register OpenFGA Authorization Service 
+        // Using IOpenFgaAuthorizationService to avoid naming conflicts with ASP.NET Core's IAuthorizationService
+        services.AddScoped<IOpenFgaAuthorizationService, OpenFgaAuthorizationService>();
 
         return services;
     }

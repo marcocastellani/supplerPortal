@@ -1,4 +1,4 @@
-import { setAxiosDefaultTokenHeader } from "@remira/ucpaccelerator_unified_utils";
+import { httpClient } from "@/services/httpClient";
 import { useEffect } from "react";
 import { useAuth } from "react-oidc-context";
 
@@ -31,7 +31,9 @@ export function useAuthentication() {
 
   useEffect(() => {
     if (auth.isAuthenticated && auth.user && auth.user.access_token) {
-      setAxiosDefaultTokenHeader(auth.user.access_token);
+      httpClient.setAuthToken(auth.user.access_token);
+    } else {
+      httpClient.setAuthToken(null);
     }
   }, [auth.isAuthenticated, auth.user, auth.user?.access_token]);
 

@@ -1,5 +1,6 @@
-import { create } from 'zustand';
-import { persist, devtools } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist, devtools } from "zustand/middleware";
+import { httpClient } from "@/services/httpClient";
 
 // Example: Counter Store with persistence and devtools
 interface CounterState {
@@ -21,11 +22,11 @@ export const useCounterStore = create<CounterState>()(
         setCount: (count) => set({ count }),
       }),
       {
-        name: 'counter-storage', // name of the storage (must be unique)
+        name: "counter-storage", // name of the storage (must be unique)
       }
     ),
     {
-      name: 'counter-store', // name in Redux DevTools
+      name: "counter-store", // name in Redux DevTools
     }
   )
 );
@@ -49,19 +50,18 @@ export const useUserStore = create<UserState>((set) => ({
   user: null,
   isLoading: false,
   error: null,
-  
+
   fetchUser: async (userId: string) => {
     set({ isLoading: true, error: null });
     try {
-      // Simulate API call
-      const response = await fetch(`/api/users/${userId}`);
-      const user = await response.json();
+      // Use authenticated HTTP client instead of fetch [REH]
+      const user = await httpClient.get<User>(`/api/users/${userId}`);
       set({ user, isLoading: false });
     } catch (error: any) {
-      set({ error: error.message || 'Failed to fetch user', isLoading: false });
+      set({ error: error.message || "Failed to fetch user", isLoading: false });
     }
   },
-  
+
   logout: () => set({ user: null }),
 }));
 
@@ -80,10 +80,10 @@ export const useUIStore = create<UIState>((set) => ({
   sidebarOpen: true,
   modalOpen: false,
   notifications: [],
-  
+
   toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
   setModalOpen: (open: boolean) => set({ modalOpen: open }),
-  addNotification: (message: string) => 
+  addNotification: (message: string) =>
     set((state) => ({ notifications: [...state.notifications, message] })),
   removeNotification: (index: number) =>
     set((state) => ({

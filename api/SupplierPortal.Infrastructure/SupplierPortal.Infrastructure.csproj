@@ -15,6 +15,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="9.0.6" />
+    <PackageReference Include="OpenFga.Sdk" Version="0.5.0" />
+    <PackageReference Include="Remira.UCP.Utilities" Version="0.1.65" />
+    <PackageReference Include="Remira.UCP.Utilities.Azure" Version="0.1.7" />
   </ItemGroup>
 
   <ItemGroup>

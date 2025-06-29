@@ -1,4 +1,4 @@
-import axios from "axios";
+import { httpClient } from "@/services/httpClient";
 import { log } from "../utils/logger";
 import {
   SupplyNetworkEntityDto,
@@ -41,11 +41,12 @@ export class SupplyNetworkEntitiesService {
       }
     });
 
-    const response = await axios.get("/api/supplynetworkentities", {
-      params: queryParams,
-    });
-
-    return response.data;
+    return await httpClient.get<GetSupplyNetworkEntitiesQueryResult>(
+      "/api/supplynetworkentities",
+      {
+        params: queryParams,
+      }
+    );
   }
 
   /**
@@ -57,11 +58,13 @@ export class SupplyNetworkEntitiesService {
     const params = new URLSearchParams();
     params.append("api-version", "2025-06-01");
 
-    const response = await axios.post("/api/supplynetworkentities", command, {
-      params,
-    });
-
-    return response.data;
+    return await httpClient.post<SupplyNetworkEntityDto>(
+      "/api/supplynetworkentities",
+      command,
+      {
+        params,
+      }
+    );
   }
 
   /**
@@ -81,13 +84,15 @@ export class SupplyNetworkEntitiesService {
     const url = `/api/supplynetworkentities/${encodeURIComponent(id)}`;
 
     try {
-      const response = await axios.get(url, { params });
-      log.apiResponse("GET", url, response.status, {
+      const data = await httpClient.get<SupplyNetworkEntityDto>(url, {
+        params,
+      });
+      log.apiResponse("GET", url, 200, {
         service: "SupplyNetworkEntitiesService",
         entityId: id,
-        entityType: response.data?.entityType,
+        entityType: data?.entityType,
       });
-      return response.data;
+      return data;
     } catch (error: any) {
       log.error(
         "Service request failed",
@@ -111,11 +116,12 @@ export class SupplyNetworkEntitiesService {
     const params = new URLSearchParams();
     params.append("api-version", "2025-06-01");
 
-    const response = await axios.get("/api/supplynetworkentities/enums", {
-      params,
-    });
-
-    return response.data;
+    return await httpClient.get<EnumValues>(
+      "/api/supplynetworkentities/enums",
+      {
+        params,
+      }
+    );
   }
 
   /**
@@ -127,7 +133,7 @@ export class SupplyNetworkEntitiesService {
     const params = new URLSearchParams();
     params.append("api-version", "2025-06-01");
 
-    const response = await axios.get(
+    return await httpClient.get<ValidateFieldResponse>(
       `/api/supplynetworkentities/validate/external-code/${encodeURIComponent(
         externalCode
       )}`,
@@ -135,8 +141,6 @@ export class SupplyNetworkEntitiesService {
         params,
       }
     );
-
-    return response.data;
   }
 
   /**
@@ -148,7 +152,7 @@ export class SupplyNetworkEntitiesService {
     const params = new URLSearchParams();
     params.append("api-version", "2025-06-01");
 
-    const response = await axios.get(
+    return await httpClient.get<ValidateFieldResponse>(
       `/api/supplynetworkentities/validate/vat-code/${encodeURIComponent(
         vatCode
       )}`,
@@ -156,8 +160,6 @@ export class SupplyNetworkEntitiesService {
         params,
       }
     );
-
-    return response.data;
   }
 
   /**
@@ -196,11 +198,12 @@ export class SupplyNetworkEntitiesService {
       queryParams.append("activeOnly", params.activeOnly.toString());
     }
 
-    const response = await axios.get("/api/supplynetworksearch", {
-      params: queryParams,
-    });
-
-    return response.data;
+    return await httpClient.get<SupplyNetworkEntitySearchResultDto[]>(
+      "/api/supplynetworksearch",
+      {
+        params: queryParams,
+      }
+    );
   }
 
   /**
@@ -212,14 +215,12 @@ export class SupplyNetworkEntitiesService {
     const params = new URLSearchParams();
     params.append("api-version", "2025-06-01");
 
-    const response = await axios.get(
+    return await httpClient.get<SupplyNetworkEntityDto[]>(
       `/api/supplynetworkentities/${parentId}/children`,
       {
         params,
       }
     );
-
-    return response.data;
   }
 
   /**
@@ -233,7 +234,7 @@ export class SupplyNetworkEntitiesService {
     const params = new URLSearchParams();
     params.append("api-version", "2025-06-01");
 
-    const response = await axios.patch(
+    return await httpClient.patch<SupplyNetworkEntityDto>(
       `/api/supplynetworkentities/${entityId}/field`,
       {
         fieldName,
@@ -241,7 +242,5 @@ export class SupplyNetworkEntitiesService {
       },
       { params }
     );
-
-    return response.data;
   }
 }
