@@ -8,9 +8,9 @@ export enum TemplateStatus {
 }
 
 export enum CertificateType {
-  SelfAssessment = 1,
-  InspectorRequired = 2,
-  Both = 3,
+  SelfAssessment = "SelfAssessment",
+  InspectorRequired = "InspectorRequired",
+  Both = "Both",
 }
 
 export enum QuestionType {
