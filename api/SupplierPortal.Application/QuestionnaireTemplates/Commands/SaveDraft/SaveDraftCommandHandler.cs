@@ -13,13 +13,16 @@ public class SaveDraftCommandHandler : IRequestHandler<SaveDraftCommand, Unit>
 {
     private readonly IApplicationDbContext _context;
     private readonly IDateTime _dateTime;
+    private readonly ICurrentUserService _currentUserService;
 
     public SaveDraftCommandHandler(
         IApplicationDbContext context,
-        IDateTime dateTime)
+        IDateTime dateTime,
+        ICurrentUserService currentUserService)
     {
         _context = context;
         _dateTime = dateTime;
+        _currentUserService = currentUserService;
     }
 
     public async Task<Unit> Handle(SaveDraftCommand request, CancellationToken cancellationToken)
@@ -71,7 +74,7 @@ public class SaveDraftCommandHandler : IRequestHandler<SaveDraftCommand, Unit>
         {
             // Update the last modified date if sections or questions were updated
             template.LastModified = _dateTime.Now;
-            template.LastModifiedBy = "system"; // Assuming system user for auto-save
+            template.LastModifiedBy = _currentUserService.UserId;
         }
         
 

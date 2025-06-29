@@ -52,12 +52,38 @@ export const useAuthorization = () => {
     loadAuthorization();
   }, []);
 
-  const canViewMenuItem = (menuItemId: string): boolean => {
-    // Convert path to menu item ID (e.g., "/dashboard" -> "dashboard")
-    const id = menuItemId.replace(/^\//, "").replace(/\//g, "-");
-    console.log(id);
-    console.log(state.accessibleMenuItems);
-    return state.accessibleMenuItems.includes(id);
+  // Mapping from frontend paths to backend menu item IDs
+  const pathToMenuItemMapping: Record<string, string> = {
+    "/dashboard": "dashboard",
+    "/supply-network": "supply-network",
+    "/supply-network/new": "new-entity",
+    "/questionnaires/templates": "questionnaire-templates",
+    "/questionnaires/templates/new": "template-creation",
+    "/questionnaires/assignments": "questionnaire-assignments",
+    "/kpi/dashboard": "kpi-dashboard",
+    "/kpi/thresholds": "kpi-thresholds",
+    "/audits": "audits",
+    "/documents": "documents",
+    "/settings": "settings",
+    "/settings/taxonomies": "settings",
+    "/settings/roles": "settings",
+  };
+
+  const canViewMenuItem = (menuItemPath: string): boolean => {
+    // Use explicit mapping instead of string conversion
+    const menuItemId = pathToMenuItemMapping[menuItemPath];
+
+    if (!menuItemId) {
+      console.warn(`No menu item mapping found for path: ${menuItemPath}`);
+      return false;
+    }
+
+    console.log(
+      `Checking access for path: ${menuItemPath} -> menuItemId: ${menuItemId}`
+    );
+    console.log("Available menu items:", state.accessibleMenuItems);
+
+    return state.accessibleMenuItems.includes(menuItemId);
   };
 
   const hasRole = (role: string): boolean => {
