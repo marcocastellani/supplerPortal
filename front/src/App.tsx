@@ -1,5 +1,5 @@
 import { Routes } from "@/routes/AppRoutes";
-import { setAxiosDefaultBaseUrl } from "@remira/ucpaccelerator_unified_utils";
+import { httpClient } from "@/services/httpClient";
 import {
   Container,
   CssBaseline,
@@ -11,7 +11,8 @@ import bgLight from "@remira/unifiedui/dist/assets/shared/REMIRA_bg_light.png";
 import { useAuthentication } from "./hooks/useAuthentication";
 
 function App() {
-  setAxiosDefaultBaseUrl("http://localhost:5257");
+  // Set base URL for all HTTP requests [SF]
+  httpClient.setBaseUrl("http://localhost:5257");
   const isAuthenticated = useAuthentication();
   const { mode: theme } = useThemeContext();
 

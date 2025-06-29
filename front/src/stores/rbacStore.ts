@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
+import { create } from "zustand";
+import { httpClient } from "@/services/httpClient";
+import { jwtDecode } from "jwt-decode";
 
 interface RbacState {
   permissions: string[];
@@ -14,18 +14,20 @@ interface RbacState {
 }
 
 const getPermissionsFromAPI = async (permissionKeys: string[]) => {
-  const currentTenant =
-    ((axios.defaults.headers.common["Authorization"] as string)
-      ?.replace("Bearer ", "")
-      .trim() &&
-      jwtDecode<{ current_tenant: string }>(
-        (axios.defaults.headers.common["Authorization"] as string)
-          ?.replace("Bearer ", "")
-          .trim() ?? ""
-      ).current_tenant) ??
-    "";
+  // Get current tenant from the authenticated token [SF]
+  const token = httpClient.getAuthToken();
+  if (!token) {
+    throw new Error("No authentication token available");
+  }
 
-  const response = await axios.post(
+  const currentTenant =
+    jwtDecode<{ current_tenant: string }>(token).current_tenant ?? "";
+
+  if (!currentTenant) {
+    throw new Error("No tenant information found in token");
+  }
+
+  const response = await httpClient.post(
     `/rbac/api/UserRole/relations/list?api-version=2024-10-24-preview`,
     permissionKeys,
     {
@@ -40,36 +42,36 @@ const getPermissionsFromAPI = async (permissionKeys: string[]) => {
   );
 
   if (!response) throw new Error("Failed to fetch permission");
-  return response.data;
+  return response;
 };
 
 export const useRbacStore = create<RbacState>((set, get) => ({
   permissions: [],
   checkedPermissions: [],
   deniedPermissions: [],
-  
-  addPermissions: (permissions) => 
+
+  addPermissions: (permissions) =>
     set((state) => ({
       permissions: Array.from(new Set([...state.permissions, ...permissions])),
     })),
-    
+
   markCheckedPermissions: (permissions) =>
     set((state) => ({
       checkedPermissions: Array.from(
         new Set([...state.checkedPermissions, ...permissions])
       ),
     })),
-    
+
   markDeniedPermissions: (permissions) =>
     set((state) => ({
       deniedPermissions: Array.from(
         new Set([...state.deniedPermissions, ...permissions])
       ),
     })),
-    
+
   checkPermission: async (permissionKeys) => {
     const { permissions, checkedPermissions } = get();
-    
+
     const missingPermissions = permissionKeys.filter(
       (key) => !permissions.includes(key) && !checkedPermissions.includes(key)
     );
@@ -102,11 +104,11 @@ export const useRbacStore = create<RbacState>((set, get) => ({
 
       return grantedPermissions;
     } catch (error) {
-      console.error('Failed to check permissions:', error);
+      console.error("Failed to check permissions:", error);
       throw error;
     }
   },
-  
+
   reset: () =>
     set({
       permissions: [],

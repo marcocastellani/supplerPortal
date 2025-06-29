@@ -1,4 +1,4 @@
-import axios from "axios";
+import { httpClient } from "@/services/httpClient";
 import { ucpVersions } from "@/utils/apiVersions";
 
 /**
@@ -13,10 +13,9 @@ class AuthorizationService {
    */
   async getUserRoles(): Promise<string[]> {
     try {
-      const response = await axios.get<string[]>(
+      return await httpClient.get<string[]>(
         `${this.baseUrl}/roles?api-version=${this.apiVersion}`
       );
-      return response.data;
     } catch (error) {
       console.error("Error fetching user roles:", error);
       return [];
@@ -28,10 +27,9 @@ class AuthorizationService {
    */
   async getAccessibleMenuItems(): Promise<string[]> {
     try {
-      const response = await axios.get<string[]>(
+      return await httpClient.get<string[]>(
         `${this.baseUrl}/menu-items?api-version=${this.apiVersion}`
       );
-      return response.data;
     } catch (error) {
       console.error("Error fetching accessible menu items:", error);
       return [];
@@ -43,10 +41,9 @@ class AuthorizationService {
    */
   async canViewMenuItem(menuItemId: string): Promise<boolean> {
     try {
-      const response = await axios.get<boolean>(
+      return await httpClient.get<boolean>(
         `${this.baseUrl}/menu-items/${menuItemId}/can-view?api-version=${this.apiVersion}`
       );
-      return response.data;
     } catch (error) {
       console.error(
         `Error checking menu item permission for ${menuItemId}:`,
@@ -61,10 +58,9 @@ class AuthorizationService {
    */
   async getAccessibleRegions(): Promise<string[]> {
     try {
-      const response = await axios.get<string[]>(
+      return await httpClient.get<string[]>(
         `${this.baseUrl}/regions?api-version=${this.apiVersion}`
       );
-      return response.data;
     } catch (error) {
       console.error("Error fetching accessible regions:", error);
       return [];
@@ -80,7 +76,7 @@ class AuthorizationService {
     objectId: string
   ): Promise<boolean> {
     try {
-      const response = await axios.post<boolean>(
+      return await httpClient.post<boolean>(
         `${this.baseUrl}/check-permission?api-version=${this.apiVersion}`,
         {
           relation,
@@ -88,7 +84,6 @@ class AuthorizationService {
           objectId,
         }
       );
-      return response.data;
     } catch (error) {
       console.error("Error checking permission:", error);
       return false;

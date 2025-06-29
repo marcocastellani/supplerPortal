@@ -10,7 +10,7 @@ namespace Remira.UCP.SupplierPortal.API.Controllers;
 /// <summary>
 /// Controller for authorization and permission checks
 /// </summary> 
-//[Authorize] 
+[Authorize] 
 [ApiVersion("2025-06-01")]
 
 public class AuthorizationController : MediatrBaseController
