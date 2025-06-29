@@ -27,16 +27,6 @@ namespace Remira.UCP.SupplierPortal.API.Controllers;
 [Route("api/[controller]")]
 public class QuestionnaireTemplatesController : MediatrBaseController
 {
-    private readonly ISender _mediator;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="QuestionnaireTemplatesController"/> class.
-    /// </summary>
-    /// <param name="mediator">The mediator instance for sending commands and queries.</param>
-    public QuestionnaireTemplatesController(ISender mediator)
-    {
-        _mediator = mediator;
-    }
 
     /// <summary>
     /// Create a new questionnaire template with multiple target entity types
@@ -54,7 +44,7 @@ public class QuestionnaireTemplatesController : MediatrBaseController
     {
         try
         {
-            var result = await _mediator.Send(command);
+            var result = await Mediator.Send(command);
             return CreatedAtAction(nameof(GetTemplate), new { id = result.Id }, result);
         }
         catch (Exception ex)
@@ -78,7 +68,7 @@ public class QuestionnaireTemplatesController : MediatrBaseController
         try
         {
             var query = new GetQuestionnaireTemplateQuery(id);
-            var result = await _mediator.Send(query);
+            var result = await Mediator.Send(query);
             return Ok(result);
         }
         catch (InvalidOperationException)
@@ -106,7 +96,7 @@ public class QuestionnaireTemplatesController : MediatrBaseController
         try
         {
             var query = new GetDraftQuestionnaireQuery(id);
-            var result = await _mediator.Send(query);
+            var result = await Mediator.Send(query);
             return Ok(result);
         }
         catch (InvalidOperationException)
@@ -137,7 +127,7 @@ public class QuestionnaireTemplatesController : MediatrBaseController
         try
         {
             command.TemplateId = id; // Ensure ID consistency
-            await _mediator.Send(command);
+            await Mediator.Send(command);
             return NoContent();
         }
         catch (InvalidOperationException)
@@ -194,7 +184,7 @@ public class QuestionnaireTemplatesController : MediatrBaseController
                 SortDirection = sortDirection
             };
 
-            var result = await _mediator.Send(query);
+            var result = await Mediator.Send(query);
             return Ok(result);
         }
         catch (ArgumentException ex)
@@ -225,7 +215,7 @@ public class QuestionnaireTemplatesController : MediatrBaseController
         try
         {
             command.TemplateId = id; // Ensure ID consistency
-            var result = await _mediator.Send(command);
+            var result = await Mediator.Send(command);
             return CreatedAtAction(nameof(GetTemplate), new { id = id }, result);
         }
         catch (Exception ex)
@@ -248,7 +238,7 @@ public class QuestionnaireTemplatesController : MediatrBaseController
     public async Task<IActionResult> PublishTemplate(Guid templateId)
     {
         var command = new PublishTemplateCommand { TemplateId = templateId };
-        await _mediator.Send(command);
+        await Mediator.Send(command);
         return NoContent();
     }
 
@@ -265,7 +255,7 @@ public class QuestionnaireTemplatesController : MediatrBaseController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Guid>> AssignQuestionnaire([FromBody] AssignQuestionnaireCommand command)
     {
-        var questionnaireId = await _mediator.Send(command);
+        var questionnaireId = await Mediator.Send(command);
         return Created($"/api/questionnaires/{questionnaireId}", questionnaireId);
     }
 }

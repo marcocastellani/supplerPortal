@@ -25,7 +25,7 @@ public class RequirePermissionAttribute : Attribute, IAsyncAuthorizationFilter
 
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
-        var authorizationService = context.HttpContext.RequestServices.GetService<IAuthorizationService>();
+        var authorizationService = context.HttpContext.RequestServices.GetService<IOpenFgaAuthorizationService>();
         var currentUserService = context.HttpContext.RequestServices.GetService<ICurrentUserService>();
 
         if (authorizationService == null || currentUserService == null)
@@ -34,7 +34,7 @@ public class RequirePermissionAttribute : Attribute, IAsyncAuthorizationFilter
             return;
         }
 
-        var userId = currentUserService.UserId ?? 
+        var userId = currentUserService.UserId ??
                     context.HttpContext.User.FindFirstValue(ClaimTypes.Email);
 
         if (string.IsNullOrEmpty(userId))
@@ -57,9 +57,9 @@ public class RequirePermissionAttribute : Attribute, IAsyncAuthorizationFilter
         }
 
         var hasPermission = await authorizationService.CheckPermissionAsync(
-            userId, 
-            _relation, 
-            _objectType, 
+            userId,
+            _relation,
+            _objectType,
             objectId);
 
         if (!hasPermission)
@@ -84,7 +84,7 @@ public class RequireRoleAttribute : Attribute, IAsyncAuthorizationFilter
 
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
-        var authorizationService = context.HttpContext.RequestServices.GetService<IAuthorizationService>();
+        var authorizationService = context.HttpContext.RequestServices.GetService<IOpenFgaAuthorizationService>();
         var currentUserService = context.HttpContext.RequestServices.GetService<ICurrentUserService>();
 
         if (authorizationService == null || currentUserService == null)
@@ -93,7 +93,7 @@ public class RequireRoleAttribute : Attribute, IAsyncAuthorizationFilter
             return;
         }
 
-        var userId = currentUserService.UserId ?? 
+        var userId = currentUserService.UserId ??
                     context.HttpContext.User.FindFirstValue(ClaimTypes.Email);
 
         if (string.IsNullOrEmpty(userId))
@@ -103,7 +103,7 @@ public class RequireRoleAttribute : Attribute, IAsyncAuthorizationFilter
         }
 
         var userRoles = await authorizationService.GetUserRolesAsync(userId, "remira");
-        
+
         if (!_roles.Any(role => userRoles.Contains(role)))
         {
             context.Result = new ForbidResult();

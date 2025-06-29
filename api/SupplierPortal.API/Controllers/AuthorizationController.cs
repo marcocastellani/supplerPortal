@@ -14,11 +14,11 @@ namespace Remira.UCP.SupplierPortal.API.Controllers;
 [Route("api/[controller]")]
 public class AuthorizationController : MediatrBaseController
 {
-    private readonly IAuthorizationService _authorizationService;
+    private readonly IOpenFgaAuthorizationService _authorizationService;
     private readonly ICurrentUserService _currentUserService;
 
     public AuthorizationController(
-        IAuthorizationService authorizationService,
+        IOpenFgaAuthorizationService authorizationService,
         ICurrentUserService currentUserService)
     {
         _authorizationService = authorizationService;
@@ -92,11 +92,11 @@ public class AuthorizationController : MediatrBaseController
             return Unauthorized();
 
         var hasPermission = await _authorizationService.CheckPermissionAsync(
-            userId, 
-            request.Relation, 
-            request.ObjectType, 
+            userId,
+            request.Relation,
+            request.ObjectType,
             request.ObjectId);
-            
+
         return Ok(hasPermission);
     }
 }

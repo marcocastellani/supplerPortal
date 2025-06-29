@@ -1,4 +1,5 @@
-import { Container, Grid, RoutingTabs, CircularProgress, Box } from "@remira/unifiedui";
+import { Container, Grid, RoutingTabs } from "@remira/unifiedui";
+import { Box, CircularProgress } from "@mui/material";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
@@ -119,7 +120,12 @@ export const Home = () => {
   if (authLoading) {
     return (
       <Container type="page" maxWidth={false}>
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="200px"
+        >
           <CircularProgress />
         </Box>
       </Container>

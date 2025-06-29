@@ -27,13 +27,21 @@ public static class ConfigureServices
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(
                 configuration.GetSection("UcpSupplierPortal").GetConnectionString("SupplierPortalDb"),
-                builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+                builder =>
+                {
+                    builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
+                    // Add database retry logic for transient connection issues
+                    builder.EnableRetryOnFailure(
+                        maxRetryCount: 10,
+                        maxRetryDelay: TimeSpan.FromSeconds(30),
+                        errorNumbersToAdd: null);
+                }));
 
         services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
         services.AddScoped<IDateTime, DateTimeService>();
-        
-        // Register OpenFGA Authorization Service
-        services.AddScoped<IAuthorizationService, OpenFgaAuthorizationService>();
+
+        // Register OpenFGA Authorization Service with renamed interface to avoid conflicts
+        services.AddScoped<IOpenFgaAuthorizationService, OpenFgaAuthorizationService>();
 
         return services;
     }

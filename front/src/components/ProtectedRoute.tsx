@@ -1,7 +1,7 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
-import { useAuthorization } from '@/hooks/useAuthorization';
-import { Box, CircularProgress } from '@remira/unifiedui';
+import React from "react";
+import { Navigate } from "react-router-dom";
+import { useAuthorization } from "@/hooks/useAuthorization";
+import { Box, CircularProgress } from "@mui/material";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -18,14 +18,19 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
   menuItemId,
   requiredRole,
-  fallbackPath = '/dashboard'
+  fallbackPath = "/dashboard",
 }) => {
   const { canViewMenuItem, hasRole, loading } = useAuthorization();
 
   // Show loading state while checking permissions
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="400px"
+      >
         <CircularProgress />
       </Box>
     );

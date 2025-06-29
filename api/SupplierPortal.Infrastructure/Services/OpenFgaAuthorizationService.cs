@@ -10,7 +10,7 @@ namespace Remira.UCP.SupplierPortal.Infrastructure.Services;
 /// <summary>
 /// Implementation of authorization service using OpenFGA
 /// </summary>
-public class OpenFgaAuthorizationService : IAuthorizationService
+public class OpenFgaAuthorizationService : IOpenFgaAuthorizationService
 {
     private readonly OpenFgaClient _fgaClient;
     private readonly ILogger<OpenFgaAuthorizationService> _logger;
@@ -24,16 +24,16 @@ public class OpenFgaAuthorizationService : IAuthorizationService
         _logger = logger;
         _storeId = configuration["OpenFga:StoreId"] ?? throw new InvalidOperationException("OpenFGA StoreId not configured");
         _organizationId = configuration["OpenFga:OrganizationId"] ?? "remira";
-        
+
         var apiUrl = configuration["OpenFga:ApiUrl"] ?? "http://localhost:8080";
-        
+
         var clientConfig = new ClientConfiguration
         {
             ApiUrl = apiUrl,
             StoreId = _storeId,
             AuthorizationModelId = configuration["OpenFga:ModelId"]
         };
-        
+
         _fgaClient = new OpenFgaClient(clientConfig);
     }
 
@@ -53,7 +53,7 @@ public class OpenFgaAuthorizationService : IAuthorizationService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error checking permission for user {UserId} on {ObjectType}:{ObjectId}", 
+            _logger.LogError(ex, "Error checking permission for user {UserId} on {ObjectType}:{ObjectId}",
                 userId, objectType, objectId);
             return false;
         }
@@ -63,7 +63,7 @@ public class OpenFgaAuthorizationService : IAuthorizationService
     {
         var roles = new List<string>();
         var roleRelations = new[] { "administrator", "supply_chain_operator", "sustainability_manager", "network_actor" };
-        
+
         foreach (var role in roleRelations)
         {
             var hasRole = await CheckPermissionAsync(userId, role, "organization", organizationId);
@@ -72,7 +72,7 @@ public class OpenFgaAuthorizationService : IAuthorizationService
                 roles.Add(role);
             }
         }
-        
+
         return roles;
     }
 
@@ -81,7 +81,7 @@ public class OpenFgaAuthorizationService : IAuthorizationService
         // First check direct permission
         var canView = await CheckPermissionAsync(userId, "can_view", "menu_item", menuItemId);
         if (canView) return true;
-        
+
         // Check through organization roles
         var roles = await GetUserRolesAsync(userId, _organizationId);
         foreach (var role in roles)
@@ -92,11 +92,11 @@ public class OpenFgaAuthorizationService : IAuthorizationService
                 Relation = "can_view",
                 Object = $"menu_item:{menuItemId}"
             };
-            
+
             var response = await _fgaClient.Check(body);
             if (response.Allowed ?? false) return true;
         }
-        
+
         return false;
     }
 
@@ -108,9 +108,9 @@ public class OpenFgaAuthorizationService : IAuthorizationService
             "template-creation", "questionnaire-assignments", "settings",
             "kpi-dashboard", "kpi-thresholds", "audits", "documents"
         };
-        
+
         var accessibleItems = new List<string>();
-        
+
         foreach (var item in menuItems)
         {
             if (await CanViewMenuItemAsync(userId, item))
@@ -118,7 +118,7 @@ public class OpenFgaAuthorizationService : IAuthorizationService
                 accessibleItems.Add(item);
             }
         }
-        
+
         return accessibleItems;
     }
 
@@ -136,7 +136,7 @@ public class OpenFgaAuthorizationService : IAuthorizationService
                 }
             }
         };
-        
+
         await _fgaClient.Write(body);
     }
 
@@ -154,7 +154,7 @@ public class OpenFgaAuthorizationService : IAuthorizationService
                 }
             }
         };
-        
+
         await _fgaClient.Write(body);
     }
 
@@ -172,7 +172,7 @@ public class OpenFgaAuthorizationService : IAuthorizationService
                 }
             }
         };
-        
+
         await _fgaClient.Write(body);
     }
 
@@ -187,7 +187,7 @@ public class OpenFgaAuthorizationService : IAuthorizationService
         // For now, returning a simple implementation
         var regions = new List<string> { "europe", "asia", "americas" };
         var accessibleRegions = new List<string>();
-        
+
         foreach (var region in regions)
         {
             if (await CanViewEntitiesInRegionAsync(userId, region))
@@ -195,7 +195,7 @@ public class OpenFgaAuthorizationService : IAuthorizationService
                 accessibleRegions.Add(region);
             }
         }
-        
+
         return accessibleRegions;
     }
 }
