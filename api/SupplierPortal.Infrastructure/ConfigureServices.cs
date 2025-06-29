@@ -40,7 +40,8 @@ public static class ConfigureServices
         services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
         services.AddScoped<IDateTime, DateTimeService>();
 
-        // Register OpenFGA Authorization Service with renamed interface to avoid conflicts
+        // Register OpenFGA Authorization Service 
+        // Using IOpenFgaAuthorizationService to avoid naming conflicts with ASP.NET Core's IAuthorizationService
         services.AddScoped<IOpenFgaAuthorizationService, OpenFgaAuthorizationService>();
 
         return services;

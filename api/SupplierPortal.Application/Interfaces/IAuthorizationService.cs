@@ -1,7 +1,17 @@
 namespace Remira.UCP.SupplierPortal.Application.Interfaces;
 
 /// <summary>
-/// Service for handling fine-grained authorization using OpenFGA
+/// Service for handling fine-grained authorization using OpenFGA.
+/// 
+/// IMPORTANT: This interface is named IOpenFgaAuthorizationService to avoid naming conflicts 
+/// with Microsoft.AspNetCore.Authorization.IAuthorizationService. 
+/// 
+/// Always use the full interface name IOpenFgaAuthorizationService when:
+/// - Registering in DI container
+/// - Injecting into constructors
+/// - Resolving from service provider
+/// 
+/// This ensures no ambiguity with ASP.NET Core's built-in authorization service.
 /// </summary>
 public interface IOpenFgaAuthorizationService
 {

@@ -19,8 +19,13 @@ public static class ConfigureServices
     /// <returns>The service collection for method chaining.</returns>
     public static IServiceCollection AddApiServices(this IServiceCollection services)
     {
+        // HTTP context accessor required for accessing current HTTP context
         services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+        // Current user service for extracting user information from HTTP context
+        // Registered as Singleton for performance (stateless service)
         services.AddSingleton<ICurrentUserService, CurrentUserService>();
+
         return services;
     }
 
