@@ -26,12 +26,12 @@ public class AssignQuestionnaireCommand : IRequest<AssignQuestionnaireResult>
     /// <summary>
     /// Due date for the assigned questionnaires
     /// </summary>
-    public DateTime DueDate { get; set; }
+    public DateTime? DueDate { get; set; }
 
     /// <summary>
-    /// Priority for the assigned questionnaires
+    /// Priority for the assigned questionnaires (Low, Medium, High)
     /// </summary>
-    public QuestionnairePriority Priority { get; set; } = QuestionnairePriority.Medium;
+    public string Priority { get; set; } = "Medium";
 
     /// <summary>
     /// Optional assigned user ID
@@ -42,6 +42,16 @@ public class AssignQuestionnaireCommand : IRequest<AssignQuestionnaireResult>
     /// Optional assigned agent ID
     /// </summary>
     public Guid? AssignedAgentId { get; set; }
+
+    /// <summary>
+    /// Optional notes or instructions for the assignment (max 1000 characters)
+    /// </summary>
+    public string? Notes { get; set; }
+
+    /// <summary>
+    /// Whether to send email notifications to assigned entities
+    /// </summary>
+    public bool SendNotifications { get; set; }
 }
 
 /// <summary>
@@ -49,6 +59,11 @@ public class AssignQuestionnaireCommand : IRequest<AssignQuestionnaireResult>
 /// </summary>
 public class AssignQuestionnaireResult
 {
+    /// <summary>
+    /// Total number of entities that were processed
+    /// </summary>
+    public int TotalEntities { get; set; }
+
     /// <summary>
     /// Number of questionnaires successfully assigned
     /// </summary>
@@ -68,6 +83,11 @@ public class AssignQuestionnaireResult
     /// List of entities that were skipped with reasons
     /// </summary>
     public List<SkippedEntity> SkippedEntities { get; set; } = new();
+
+    /// <summary>
+    /// List of successfully assigned entities with basic info
+    /// </summary>
+    public List<AssignedEntity> AssignedEntities { get; set; } = new();
 }
 
 /// <summary>
@@ -76,16 +96,19 @@ public class AssignQuestionnaireResult
 public class SkippedEntity
 {
     public Guid EntityId { get; set; }
+    public string EntityName { get; set; } = string.Empty;
     public EntityType EntityType { get; set; }
     public string Reason { get; set; } = string.Empty;
 }
 
 /// <summary>
-/// Priority levels for questionnaires
+/// Information about an entity that was successfully assigned
 /// </summary>
-public enum QuestionnairePriority
+public class AssignedEntity
 {
-    Low = 1,
-    Medium = 2,
-    High = 3
+    public Guid EntityId { get; set; }
+    public string EntityName { get; set; } = string.Empty;
+    public EntityType EntityType { get; set; }
+    public string Location { get; set; } = string.Empty;
+    public Guid QuestionnaireId { get; set; }
 }

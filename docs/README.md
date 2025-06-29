@@ -68,6 +68,7 @@ AI-related documentation, memories, and automation guides
 
 ### 🔥 **Currently Active**
 
+- [Questionnaire Template Assignment](./implementation/active-plans/us-b1-015-template-assignment.md) - **NEW** US-B1-015 wizard-based bulk assignment
 - [Questionnaire Template Builder](./implementation/active-plans/questionnaire-template-builder.md) - US-B1-017 implementation
 - [API Documentation](./development/api/api-documentation.md) - Backend integration guides
 
@@ -113,7 +114,8 @@ AI-related documentation, memories, and automation guides
 
 ### 🚧 **Current Focus**
 
-- Questionnaire template builder implementation
+- Questionnaire template assignment wizard (US-B1-015)
+- Questionnaire template builder implementation (US-B1-017)
 - Feature development and enhancement
 - Continuous improvement and maintenance
 
@@ -125,7 +127,7 @@ AI-related documentation, memories, and automation guides
 
 ---
 
-**Last Updated**: 2024-06-21  
+**Last Updated**: 2024-06-22  
 **Documentation Version**: 2.0 (Reorganized Structure)  
 **Project Status**: Active Development
 

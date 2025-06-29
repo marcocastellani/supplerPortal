@@ -20,7 +20,25 @@
   "common": {
     "loading": "Caricamento...",
     "refresh": "Aggiorna",
-    "retry": "Riprova"
+    "retry": "Riprova",
+    "clear": "Cancella",
+    "clearFilters": "Cancella Filtri",
+    "clearAllFilters": "Cancella Tutti i Filtri",
+    "view": "Visualizza",
+    "back": "Indietro",
+    "next": "Avanti",
+    "all": "Tutti",
+    "version": "Versione",
+    "priority": "Priorità",
+    "pagination": {
+      "firstPage": "Prima Pagina",
+      "previousPage": "Pagina Precedente",
+      "nextPage": "Pagina Successiva",
+      "lastPage": "Ultima Pagina",
+      "pageSize": "Elementi per pagina",
+      "goTo": "Vai a pagina",
+      "jumpToPage": "Vai a pagina"
+    }
   },
   "dashboardPage": {
     "questionnaires": {
@@ -176,6 +194,13 @@
       "active": "Attivo",
       "inactive": "Inattivo"
     },
+    "accreditationStatus": {
+      "approved": "Approvato",
+      "rejected": "Rifiutato",
+      "submitted": "Inviato",
+      "suspended": "Sospeso",
+      "draft": "Bozza"
+    },
     "pagination": {
       "showing": "Mostra da {{from}} a {{to}} di {{total}} risultati",
       "previous": "Precedente",
@@ -279,5 +304,108 @@
     "english": "Inglese",
     "german": "Tedesco",
     "italian": "Italiano"
+  },
+  "assignments": {
+    "wizard": {
+      "title": "Assegna Template Questionario",
+      "description": "Segui i passaggi per assegnare un template questionario alle entità della rete di fornitura",
+      "steps": {
+        "selectTemplate": "Seleziona Template",
+        "selectEntities": "Seleziona Entità",
+        "setDetails": "Dettagli Assegnazione",
+        "reviewConfirm": "Rivedi e Conferma"
+      },
+      "submitting": "Invio in corso...",
+      "confirm": "Conferma Assegnazione"
+    },
+    "templates": {
+      "selectTitle": "Seleziona Template",
+      "selectDescription": "Scegli un template questionario attivo da assegnare alle entità",
+      "searchPlaceholder": "Cerca template per titolo...",
+      "loadError": "Errore nel caricamento dei template. Riprova.",
+      "noSearchResults": "Nessun template corrisponde alla tua ricerca",
+      "noTemplates": "Nessun template attivo disponibile",
+      "selected": "Template Selezionato",
+      "questionCount": "{{count}} domanda",
+      "questionCount_plural": "{{count}} domande"
+    },
+    "entities": {
+      "selectTitle": "Seleziona Entità della Rete di Fornitura",
+      "selectDescription": "Scegli quali entità dovranno ricevere questo questionario",
+      "searchPlaceholder": "Cerca entità...",
+      "loadError": "Errore nel caricamento delle entità. Riprova.",
+      "largeSelectionWarning": "Hai selezionato {{count}} entità. Le assegnazioni grandi potrebbero richiedere più tempo.",
+      "showing": "Mostra {{count}} di {{total}} entità",
+      "selected": "{{count}} selezionate",
+      "filterByType": "Tipo Entità",
+      "filterByStatus": "Stato",
+      "filterByLocation": "Località",
+      "filterByTags": "Tag",
+      "noResults": "Nessuna entità trovata che corrisponde ai tuoi criteri",
+      "columns": {
+        "name": "Nome",
+        "type": "Tipo",
+        "location": "Località",
+        "status": "Stato",
+        "tags": "Tag"
+      }
+    },
+    "details": {
+      "title": "Dettagli Assegnazione",
+      "description": "Imposta la data di scadenza, la priorità e altri parametri di assegnazione",
+      "dueDate": "Data di Scadenza",
+      "dueDateHelper": "Quando le entità dovranno completare questo questionario?",
+      "dueDateError": "La data di scadenza deve essere futura",
+      "priority": "Priorità",
+      "priorityLow": "Priorità Bassa",
+      "priorityMedium": "Priorità Media",
+      "priorityHigh": "Priorità Alta",
+      "notes": "Note o Istruzioni",
+      "notesPlaceholder": "Aggiungi istruzioni speciali o contesto per questa assegnazione...",
+      "notesHelper": "Le note opzionali saranno incluse con il questionario",
+      "sendNotifications": "Invia notifiche email",
+      "sendNotificationsHelper": "Le entità riceveranno una notifica email per la nuova assegnazione del questionario",
+      "summary": "Riepilogo Assegnazione",
+      "selectedEntitiesCount": "{{count}} entità selezionate",
+      "dueIn": "Scadenza tra {{days}} giorni",
+      "notificationsWillBeSent": "Le notifiche email saranno inviate"
+    },
+    "review": {
+      "title": "Rivedi Assegnazione",
+      "description": "Controlla tutti i dettagli prima di confermare l'assegnazione",
+      "templateSection": "Informazioni Template",
+      "templateName": "Template",
+      "version": "Versione",
+      "targetEntityTypes": "Tipi di Entità di Destinazione",
+      "questions": "Domande",
+      "questionCount": "{{count}} domande",
+      "entitiesSection": "Entità Selezionate",
+      "entitiesSelected": "Entità selezionate per l'assegnazione",
+      "detailsSection": "Dettagli Assegnazione",
+      "dueDate": "Data di Scadenza",
+      "daysFromNow": "{{days}} giorni da oggi",
+      "priority": "Priorità",
+      "notes": "Note",
+      "notifications": "Notifiche Email",
+      "notificationsEnabled": "Saranno inviate a tutte le entità",
+      "notificationsDisabled": "Non saranno inviate",
+      "confirmationTitle": "Pronto per l'Assegnazione",
+      "confirmationMessage": "Stai per assegnare \"{{templateName}}\" a {{entityCount}} entità."
+    },
+    "results": {
+      "title": "Risultati Assegnazione",
+      "assignedCount": "{{count}} Assegnati",
+      "assignedSubtitle": "Questionari creati con successo",
+      "skippedCount": "{{count}} Saltati",
+      "skippedSubtitle": "Hanno già questionari attivi",
+      "successRate": "Tasso di Successo",
+      "assignedTab": "Assegnati ({{count}})",
+      "skippedTab": "Saltati ({{count}})",
+      "skipReason": "Motivo",
+      "downloadCSV": "Scarica CSV",
+      "downloadTooltip": "Scarica i risultati come file CSV",
+      "newAssignment": "Nuova Assegnazione",
+      "viewAssignments": "Visualizza Tutte le Assegnazioni"
+    }
   }
 }

@@ -25,6 +25,11 @@
     "clearFilters": "Clear Filters",
     "clearAllFilters": "Clear All Filters",
     "view": "View",
+    "back": "Back",
+    "next": "Next",
+    "all": "All",
+    "version": "Version",
+    "priority": "Priority",
     "pagination": {
       "firstPage": "First Page",
       "previousPage": "Previous Page",
@@ -345,5 +350,108 @@
     "english": "English",
     "german": "German",
     "italian": "Italian"
+  },
+  "assignments": {
+    "wizard": {
+      "title": "Assign Questionnaire Template",
+      "description": "Follow the steps to assign a questionnaire template to supply network entities",
+      "steps": {
+        "selectTemplate": "Select Template",
+        "selectEntities": "Select Entities",
+        "setDetails": "Assignment Details",
+        "reviewConfirm": "Review & Confirm"
+      },
+      "submitting": "Submitting...",
+      "confirm": "Confirm Assignment"
+    },
+    "templates": {
+      "selectTitle": "Select a Template",
+      "selectDescription": "Choose an active questionnaire template to assign to entities",
+      "searchPlaceholder": "Search templates by title...",
+      "loadError": "Failed to load templates. Please try again.",
+      "noSearchResults": "No templates match your search",
+      "noTemplates": "No active templates available",
+      "selected": "Selected Template",
+      "questionCount": "{{count}} questions",
+      "questionCount_plural": "{{count}} questions"
+    },
+    "entities": {
+      "selectTitle": "Select Supply Network Entities",
+      "selectDescription": "Choose which entities should receive this questionnaire",
+      "searchPlaceholder": "Search entities...",
+      "loadError": "Failed to load entities. Please try again.",
+      "largeSelectionWarning": "You have selected {{count}} entities. Large assignments may take longer to process.",
+      "showing": "Showing {{count}} of {{total}} entities",
+      "selected": "{{count}} selected",
+      "filterByType": "Entity Type",
+      "filterByStatus": "Status",
+      "filterByLocation": "Location",
+      "filterByTags": "Tags",
+      "noResults": "No entities found matching your criteria",
+      "columns": {
+        "name": "Name",
+        "type": "Type",
+        "location": "Location",
+        "status": "Status",
+        "tags": "Tags"
+      }
+    },
+    "details": {
+      "title": "Assignment Details",
+      "description": "Set the due date, priority, and other assignment parameters",
+      "dueDate": "Due Date",
+      "dueDateHelper": "When should entities complete this questionnaire?",
+      "dueDateError": "Due date must be in the future",
+      "priority": "Priority",
+      "priorityLow": "Low Priority",
+      "priorityMedium": "Medium Priority",
+      "priorityHigh": "High Priority",
+      "notes": "Notes or Instructions",
+      "notesPlaceholder": "Add any special instructions or context for this assignment...",
+      "notesHelper": "Optional notes will be included with the questionnaire",
+      "sendNotifications": "Send email notifications",
+      "sendNotificationsHelper": "Entities will receive an email notification about their new questionnaire assignment",
+      "summary": "Assignment Summary",
+      "selectedEntitiesCount": "{{count}} entities selected",
+      "dueIn": "Due in {{days}} days",
+      "notificationsWillBeSent": "Email notifications will be sent"
+    },
+    "review": {
+      "title": "Review Assignment",
+      "description": "Review all details before confirming the assignment",
+      "templateSection": "Template Information",
+      "templateName": "Template",
+      "version": "Version",
+      "targetEntityTypes": "Target Entity Types",
+      "questions": "Questions",
+      "questionCount": "{{count}} questions",
+      "entitiesSection": "Selected Entities",
+      "entitiesSelected": "entities selected for assignment",
+      "detailsSection": "Assignment Details",
+      "dueDate": "Due Date",
+      "daysFromNow": "{{days}} days from now",
+      "priority": "Priority",
+      "notes": "Notes",
+      "notifications": "Email Notifications",
+      "notificationsEnabled": "Will be sent to all entities",
+      "notificationsDisabled": "Will not be sent",
+      "confirmationTitle": "Ready to Assign",
+      "confirmationMessage": "You are about to assign \"{{templateName}}\" to {{entityCount}} entities."
+    },
+    "results": {
+      "title": "Assignment Results",
+      "assignedCount": "{{count}} Assigned",
+      "assignedSubtitle": "Successfully created questionnaires",
+      "skippedCount": "{{count}} Skipped",
+      "skippedSubtitle": "Already have active questionnaires",
+      "successRate": "Success Rate",
+      "assignedTab": "Assigned ({{count}})",
+      "skippedTab": "Skipped ({{count}})",
+      "skipReason": "Reason",
+      "downloadCSV": "Download CSV",
+      "downloadTooltip": "Download results as CSV file",
+      "newAssignment": "New Assignment",
+      "viewAssignments": "View All Assignments"
+    }
   }
 }

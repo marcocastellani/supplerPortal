@@ -8,7 +8,7 @@ This section organizes all project tasks, from active work to completed achievem
 
 Currently in-progress or planned tasks:
 
-_No active tasks at this time_
+- [`us-b1-015-assignment-tasks.md`](./active/us-b1-015-assignment-tasks.md) - 🚧 **Questionnaire Template Assignment** (US-B1-015) - Wizard-based bulk assignment to supply network entities
 
 ### ✅ **Completed Tasks**
 
@@ -76,4 +76,4 @@ Templates for creating new tasks and plans:
 
 ---
 
-**Last Updated**: 2024-06-21
+**Last Updated**: 2024-06-22
