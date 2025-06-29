@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { authorizationService } from '@/services/authorizationService';
+import { useState, useEffect } from "react";
+import { authorizationService } from "@/services/authorizationService";
 
 interface AuthorizationState {
   roles: string[];
@@ -16,31 +16,35 @@ export const useAuthorization = () => {
     roles: [],
     accessibleMenuItems: [],
     loading: true,
-    error: null
+    error: null,
   });
 
   useEffect(() => {
     const loadAuthorization = async () => {
       try {
-        setState((prev: AuthorizationState) => ({ ...prev, loading: true, error: null }));
-        
+        setState((prev: AuthorizationState) => ({
+          ...prev,
+          loading: true,
+          error: null,
+        }));
+
         const [roles, menuItems] = await Promise.all([
           authorizationService.getUserRoles(),
-          authorizationService.getAccessibleMenuItems()
+          authorizationService.getAccessibleMenuItems(),
         ]);
 
         setState({
           roles,
           accessibleMenuItems: menuItems,
           loading: false,
-          error: null
+          error: null,
         });
       } catch (error) {
-        console.error('Error loading authorization:', error);
+        console.error("Error loading authorization:", error);
         setState((prev: AuthorizationState) => ({
           ...prev,
           loading: false,
-          error: 'Failed to load authorization data'
+          error: "Failed to load authorization data",
         }));
       }
     };
@@ -50,7 +54,9 @@ export const useAuthorization = () => {
 
   const canViewMenuItem = (menuItemId: string): boolean => {
     // Convert path to menu item ID (e.g., "/dashboard" -> "dashboard")
-    const id = menuItemId.replace(/^\//, '').replace(/\//g, '-');
+    const id = menuItemId.replace(/^\//, "").replace(/\//g, "-");
+    console.log(id);
+    console.log(state.accessibleMenuItems);
     return state.accessibleMenuItems.includes(id);
   };
 
@@ -59,7 +65,7 @@ export const useAuthorization = () => {
   };
 
   const isAdministrator = (): boolean => {
-    return hasRole('administrator');
+    return hasRole("administrator");
   };
 
   const checkPermission = async (
@@ -67,7 +73,11 @@ export const useAuthorization = () => {
     objectType: string,
     objectId: string
   ): Promise<boolean> => {
-    return await authorizationService.checkPermission(relation, objectType, objectId);
+    return await authorizationService.checkPermission(
+      relation,
+      objectType,
+      objectId
+    );
   };
 
   return {
@@ -75,6 +85,6 @@ export const useAuthorization = () => {
     canViewMenuItem,
     hasRole,
     isAdministrator,
-    checkPermission
+    checkPermission,
   };
 };

@@ -48,28 +48,6 @@ export const Home = () => {
       }
     });
 
-    // Aggiungi i tabs degli esempi esistenti (sempre visibili per ora)
-    tabs.push(
-      {
-        title: t("tableExample"),
-        value: index++,
-        path: "/table-example",
-        call: () => navigate("/table-example"),
-      },
-      {
-        title: t("rbacExample"),
-        value: index++,
-        path: "/rbac-example",
-        call: () => navigate("/rbac-example"),
-      },
-      {
-        title: t("regionalSettingsExample"),
-        value: index++,
-        path: "/regional-settings-example",
-        call: () => navigate("/regional-settings-example"),
-      }
-    );
-
     return tabs;
   }, [t, navigate, canViewMenuItem]);
 
