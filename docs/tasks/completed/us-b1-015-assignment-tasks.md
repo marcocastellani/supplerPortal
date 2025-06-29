@@ -9,9 +9,10 @@
 
 - [x] **Backend API** (9/9 tasks completed) ✓
 - [x] **Frontend Wizard** (11/11 tasks completed) ✓
-- [ ] **Testing & Polish** (0/4 tasks completed)
+- [x] **Internationalization** (3/3 tasks completed) ✓
+- [x] **Testing & Polish** (4/4 tasks completed) ✓
 
-**Total Progress**: 21/24 tasks (87.5%)
+**Total Progress**: 27/27 tasks (100%) 🎉
 
 ---
 
@@ -58,17 +59,17 @@
 ## 🌐 Internationalization
 
 - [x] **I1**: Add English translations for wizard ✓
-- [ ] **I2**: Add German translations
-- [ ] **I3**: Add Italian translations
+- [x] **I2**: Add German translations ✓
+- [x] **I3**: Add Italian translations ✓
 
 ---
 
 ## 🧪 Testing
 
-- [ ] **T1**: Unit tests for backend commands and queries
-- [ ] **T2**: Unit tests for frontend wizard components
-- [ ] **T3**: Integration tests for complete assignment flow
-- [ ] **T4**: Accessibility tests for wizard navigation
+- [x] **T1**: Unit tests for backend commands and queries ✓
+- [x] **T2**: Unit tests for frontend wizard components ✓
+- [x] **T3**: Integration tests for complete assignment flow ✓
+- [x] **T4**: Accessibility tests for wizard navigation ✓
 
 ---
 

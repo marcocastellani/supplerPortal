@@ -20,6 +20,11 @@
     "clearFilters": "Filter Löschen",
     "clearAllFilters": "Alle Filter Löschen",
     "view": "Anzeigen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "all": "Alle",
+    "version": "Version",
+    "priority": "Priorität",
     "pagination": {
       "firstPage": "Erste Seite",
       "previousPage": "Vorherige Seite",
@@ -156,6 +161,13 @@
       "active": "Aktiv",
       "inactive": "Inaktiv"
     },
+    "accreditationStatus": {
+      "approved": "Genehmigt",
+      "rejected": "Abgelehnt",
+      "submitted": "Eingereicht",
+      "suspended": "Ausgesetzt",
+      "draft": "Entwurf"
+    },
     "pagination": {
       "showing": "Zeige {{from}} bis {{to}} von {{total}} Ergebnissen",
       "previous": "Zurück",
@@ -259,5 +271,108 @@
     "english": "Englisch",
     "german": "Deutsch",
     "italian": "Italienisch"
+  },
+  "assignments": {
+    "wizard": {
+      "title": "Fragebogen-Vorlage Zuweisen",
+      "description": "Folgen Sie den Schritten, um eine Fragebogen-Vorlage an Liefernetzwerk-Entitäten zuzuweisen",
+      "steps": {
+        "selectTemplate": "Vorlage Auswählen",
+        "selectEntities": "Entitäten Auswählen",
+        "setDetails": "Zuweisungsdetails",
+        "reviewConfirm": "Überprüfen & Bestätigen"
+      },
+      "submitting": "Wird übermittelt...",
+      "confirm": "Zuweisung Bestätigen"
+    },
+    "templates": {
+      "selectTitle": "Vorlage Auswählen",
+      "selectDescription": "Wählen Sie eine aktive Fragebogen-Vorlage zur Zuweisung an Entitäten",
+      "searchPlaceholder": "Vorlagen nach Titel suchen...",
+      "loadError": "Fehler beim Laden der Vorlagen. Bitte versuchen Sie es erneut.",
+      "noSearchResults": "Keine Vorlagen entsprechen Ihrer Suche",
+      "noTemplates": "Keine aktiven Vorlagen verfügbar",
+      "selected": "Ausgewählte Vorlage",
+      "questionCount": "{{count}} Frage",
+      "questionCount_plural": "{{count}} Fragen"
+    },
+    "entities": {
+      "selectTitle": "Liefernetzwerk-Entitäten Auswählen",
+      "selectDescription": "Wählen Sie aus, welche Entitäten diesen Fragebogen erhalten sollen",
+      "searchPlaceholder": "Entitäten suchen...",
+      "loadError": "Fehler beim Laden der Entitäten. Bitte versuchen Sie es erneut.",
+      "largeSelectionWarning": "Sie haben {{count}} Entitäten ausgewählt. Große Zuweisungen können länger dauern.",
+      "showing": "Zeige {{count}} von {{total}} Entitäten",
+      "selected": "{{count}} ausgewählt",
+      "filterByType": "Entitätstyp",
+      "filterByStatus": "Status",
+      "filterByLocation": "Standort",
+      "filterByTags": "Tags",
+      "noResults": "Keine Entitäten gefunden, die Ihren Kriterien entsprechen",
+      "columns": {
+        "name": "Name",
+        "type": "Typ",
+        "location": "Standort",
+        "status": "Status",
+        "tags": "Tags"
+      }
+    },
+    "details": {
+      "title": "Zuweisungsdetails",
+      "description": "Legen Sie das Fälligkeitsdatum, die Priorität und andere Zuweisungsparameter fest",
+      "dueDate": "Fälligkeitsdatum",
+      "dueDateHelper": "Wann sollen die Entitäten diesen Fragebogen ausfüllen?",
+      "dueDateError": "Fälligkeitsdatum muss in der Zukunft liegen",
+      "priority": "Priorität",
+      "priorityLow": "Niedrige Priorität",
+      "priorityMedium": "Mittlere Priorität",
+      "priorityHigh": "Hohe Priorität",
+      "notes": "Notizen oder Anweisungen",
+      "notesPlaceholder": "Fügen Sie spezielle Anweisungen oder Kontext für diese Zuweisung hinzu...",
+      "notesHelper": "Optionale Notizen werden mit dem Fragebogen beigefügt",
+      "sendNotifications": "E-Mail-Benachrichtigungen senden",
+      "sendNotificationsHelper": "Entitäten erhalten eine E-Mail-Benachrichtigung über ihre neue Fragebogen-Zuweisung",
+      "summary": "Zuweisungsübersicht",
+      "selectedEntitiesCount": "{{count}} Entitäten ausgewählt",
+      "dueIn": "Fällig in {{days}} Tagen",
+      "notificationsWillBeSent": "E-Mail-Benachrichtigungen werden gesendet"
+    },
+    "review": {
+      "title": "Zuweisung Überprüfen",
+      "description": "Überprüfen Sie alle Details vor der Bestätigung der Zuweisung",
+      "templateSection": "Vorlageninformationen",
+      "templateName": "Vorlage",
+      "version": "Version",
+      "targetEntityTypes": "Ziel-Entitätstypen",
+      "questions": "Fragen",
+      "questionCount": "{{count}} Fragen",
+      "entitiesSection": "Ausgewählte Entitäten",
+      "entitiesSelected": "Entitäten für Zuweisung ausgewählt",
+      "detailsSection": "Zuweisungsdetails",
+      "dueDate": "Fälligkeitsdatum",
+      "daysFromNow": "{{days}} Tage ab heute",
+      "priority": "Priorität",
+      "notes": "Notizen",
+      "notifications": "E-Mail-Benachrichtigungen",
+      "notificationsEnabled": "Werden an alle Entitäten gesendet",
+      "notificationsDisabled": "Werden nicht gesendet",
+      "confirmationTitle": "Bereit zur Zuweisung",
+      "confirmationMessage": "Sie sind dabei, \"{{templateName}}\" an {{entityCount}} Entitäten zuzuweisen."
+    },
+    "results": {
+      "title": "Zuweisungsergebnisse",
+      "assignedCount": "{{count}} Zugewiesen",
+      "assignedSubtitle": "Erfolgreich erstellte Fragebögen",
+      "skippedCount": "{{count}} Übersprungen",
+      "skippedSubtitle": "Haben bereits aktive Fragebögen",
+      "successRate": "Erfolgsrate",
+      "assignedTab": "Zugewiesen ({{count}})",
+      "skippedTab": "Übersprungen ({{count}})",
+      "skipReason": "Grund",
+      "downloadCSV": "CSV Herunterladen",
+      "downloadTooltip": "Ergebnisse als CSV-Datei herunterladen",
+      "newAssignment": "Neue Zuweisung",
+      "viewAssignments": "Alle Zuweisungen Anzeigen"
+    }
   }
 }
