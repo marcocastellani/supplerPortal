@@ -129,7 +129,7 @@ public class RequireRoleAttribute : Attribute, IAsyncAuthorizationFilter
                 return;
             }
 
-            var userRoles = await authorizationService.GetUserRolesAsync(userId, "remira");
+            var userRoles = await authorizationService.GetUserRolesAsync(userId);
 
             if (!_roles.Any(role => userRoles.Contains(role)))
             {

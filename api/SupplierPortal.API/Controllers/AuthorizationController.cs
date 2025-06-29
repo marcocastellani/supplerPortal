@@ -35,7 +35,7 @@ public class AuthorizationController : MediatrBaseController
         if (string.IsNullOrEmpty(userId))
             return Unauthorized();
 
-        var roles = await _authorizationService.GetUserRolesAsync(userId, "remira");
+        var roles = await _authorizationService.GetUserRolesAsync(userId);
         return Ok(roles);
     }
 

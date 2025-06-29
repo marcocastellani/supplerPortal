@@ -26,6 +26,11 @@ public interface IOpenFgaAuthorizationService
     Task<List<string>> GetUserRolesAsync(string userId, string organizationId);
 
     /// <summary>
+    /// Gets the user's roles within the configured organization
+    /// </summary>
+    Task<List<string>> GetUserRolesAsync(string userId);
+
+    /// <summary>
     /// Checks if a user can view a specific menu item
     /// </summary>
     Task<bool> CanViewMenuItemAsync(string userId, string menuItemId);

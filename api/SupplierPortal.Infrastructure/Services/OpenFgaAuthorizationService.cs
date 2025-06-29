@@ -76,6 +76,14 @@ public class OpenFgaAuthorizationService : IOpenFgaAuthorizationService
         return roles;
     }
 
+    /// <summary>
+    /// Gets the user's roles within the configured organization
+    /// </summary>
+    public async Task<List<string>> GetUserRolesAsync(string userId)
+    {
+        return await GetUserRolesAsync(userId, _organizationId);
+    }
+
     public async Task<bool> CanViewMenuItemAsync(string userId, string menuItemId)
     {
         // First check direct permission
