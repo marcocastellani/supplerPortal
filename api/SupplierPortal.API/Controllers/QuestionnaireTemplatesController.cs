@@ -6,9 +6,10 @@ using Remira.UCP.SupplierPortal.API.Authorization;
 using Remira.UCP.SupplierPortal.API.Controllers.Base;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.AssignQuestionnaire;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.CreateSection;
-using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.CreateTemplate;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.PublishTemplate;
-using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.SaveDraft;
+using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetTemplate;
+using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetDraft;
+using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetTemplates;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Common;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetDraft;
 using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Queries.GetTemplate;
@@ -22,9 +23,7 @@ namespace Remira.UCP.SupplierPortal.API.Controllers;
 /// API Controller for managing questionnaire templates
 /// </summary>
 [ApiVersion("2025-06-01")]
-[ApiController]
-[Authorize]
-[Route("api/[controller]")]
+
 public class QuestionnaireTemplatesController : MediatrBaseController
 {
 
@@ -137,6 +136,53 @@ public class QuestionnaireTemplatesController : MediatrBaseController
         catch (Exception ex)
         {
             return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Publish/activate a questionnaire template
+    /// </summary>
+    /// <param name="id">Template ID to publish</param>
+    /// <returns>Published template with updated status and version</returns>
+    [HttpPost("{id:guid}/publish")]
+    [ProducesResponseType(typeof(QuestionnaireTemplateResponse), 200)]
+    [ProducesResponseType(typeof(ValidationErrorResponse), 400)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
+    public async Task<ActionResult<QuestionnaireTemplateResponse>> PublishTemplate(Guid id)
+    {
+        try
+        {
+            var command = new PublishTemplateCommand(id);
+            var result = await Mediator.Send(command);
+            return Ok(result);
+        }
+        catch (InvalidOperationException ex)
+        {
+            // Check if this is a validation error (contains multiple validation messages)
+            if (ex.Message.Contains("Template validation failed:"))
+            {
+                var errorPart = ex.Message.Replace("Template validation failed: ", "");
+                var errors = errorPart.Split("; ").ToList();
+                var validationResponse = ValidationErrorResponse.Failed(errors, "Template cannot be published due to validation errors");
+                return BadRequest(validationResponse);
+            }
+
+            // Single error case (template not found, already active, etc.)
+            var singleErrorResponse = ValidationErrorResponse.Failed(ex.Message);
+            return BadRequest(singleErrorResponse);
+        }
+        catch (Exception ex)
+        {
+            var errorResponse = ValidationErrorResponse.Failed(
+                "An unexpected error occurred while publishing the template. Please try again later.",
+                "Internal Server Error"
+            );
+
+            // Log the actual exception (in a real app, use proper logging)
+            // _logger.LogError(ex, "Error publishing template {TemplateId}", id);
+
+            return StatusCode(500, errorResponse);
         }
     }
 

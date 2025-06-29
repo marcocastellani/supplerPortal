@@ -65,6 +65,19 @@ public class SaveDraftCommandHandler : IRequestHandler<SaveDraftCommand, Unit>
         {
             await UpdateQuestions(template.Id, request.Questions, cancellationToken);
         }
+        if(request.conditions != null)
+        {
+            // Assuming conditions are handled in a similar way, you can implement that logic here
+            // await UpdateConditions(template.Id, request.Conditions, cancellationToken);
+        }
+        
+        if (request.Sections != null || request.Questions != null)
+        {
+            // Update the last modified date if sections or questions were updated
+            template.LastModified = _dateTime.Now;
+            template.LastModifiedBy = "system"; // Assuming system user for auto-save
+        }
+        
 
         await _context.SaveChangesAsync(cancellationToken);
 
@@ -101,23 +114,23 @@ public class SaveDraftCommandHandler : IRequestHandler<SaveDraftCommand, Unit>
                         ? JsonSerializer.Serialize(sectionDto.Translations)
                         : null;
                 }
-            }
-            else
-            {
-                // Create new section
-                var newSection = new QuestionnaireSection
+                else
                 {
-                    Id = Guid.NewGuid(),
-                    Title = sectionDto.Title,
-                    Description = sectionDto.Description,
-                    Order = sectionDto.Order,
-                    QuestionnaireTemplateId = templateId,
-                    TranslationsJson = sectionDto.Translations != null
-                        ? JsonSerializer.Serialize(sectionDto.Translations)
-                        : null
-                };
+                    // Create new section
+                    var newSection = new QuestionnaireSection
+                    {
+                        Id = sectionDto.Id.Value,
+                        Title = sectionDto.Title,
+                        Description = sectionDto.Description,
+                        Order = sectionDto.Order,
+                        QuestionnaireTemplateId = templateId,
+                        TranslationsJson = sectionDto.Translations != null
+                            ? JsonSerializer.Serialize(sectionDto.Translations)
+                            : null
+                    };
+                    _context.QuestionnaireSections.Add(newSection);
 
-                _context.QuestionnaireSections.Add(newSection);
+                }
             }
         }
     }
@@ -128,18 +141,16 @@ public class SaveDraftCommandHandler : IRequestHandler<SaveDraftCommand, Unit>
             .Where(q => q.QuestionnaireTemplateId == templateId)
             .ToListAsync(cancellationToken);
 
+        var toDelete = existingQuestions
+            .Where(q => !questionDtos.Any(dto => dto.Id.HasValue && dto.Id.Value == q.Id))
+            .ToList();
+        
+        // Remove questions that are not in the update list
+        _context.TemplateQuestions.RemoveRange(toDelete);
+        
         foreach (var questionDto in questionDtos)
         {
-            if (questionDto.IsDeleted && questionDto.Id.HasValue)
-            {
-                // Delete question
-                var questionToDelete = existingQuestions.FirstOrDefault(q => q.Id == questionDto.Id.Value);
-                if (questionToDelete != null)
-                {
-                    _context.TemplateQuestions.Remove(questionToDelete);
-                }
-            }
-            else if (questionDto.Id.HasValue)
+            if (questionDto.Id.HasValue)
             {
                 // Update existing question
                 var existingQuestion = existingQuestions.FirstOrDefault(q => q.Id == questionDto.Id.Value);
@@ -161,32 +172,33 @@ public class SaveDraftCommandHandler : IRequestHandler<SaveDraftCommand, Unit>
                         ? JsonSerializer.Serialize(questionDto.Translations)
                         : null;
                 }
-            }
-            else
-            {
-                // Create new question
-                var newQuestion = new TemplateQuestion
+                else
                 {
-                    Id = Guid.NewGuid(),
-                    Text = questionDto.Text,
-                    Type = questionDto.Type,
-                    IsRequired = questionDto.IsRequired,
-                    Order = questionDto.Order,
-                    HelpText = questionDto.HelpText,
-                    AllowDocumentUpload = questionDto.AllowDocumentUpload,
-                    MaxDocuments = questionDto.MaxDocuments,
-                    RequireDocuments = questionDto.RequireDocuments,
-                    QuestionnaireTemplateId = templateId,
-                    SectionId = questionDto.SectionId,
-                    ConfigurationJson = questionDto.Configuration != null
-                        ? JsonSerializer.Serialize(questionDto.Configuration)
-                        : null,
-                    TranslationsJson = questionDto.Translations != null
-                        ? JsonSerializer.Serialize(questionDto.Translations)
-                        : null
-                };
+                    // Create new question
+                    var newQuestion = new TemplateQuestion
+                    {
+                        Id = questionDto.Id.Value,
+                        Text = questionDto.Text,
+                        Type = questionDto.Type,
+                        IsRequired = questionDto.IsRequired,
+                        Order = questionDto.Order,
+                        HelpText = questionDto.HelpText,
+                        AllowDocumentUpload = questionDto.AllowDocumentUpload,
+                        MaxDocuments = questionDto.MaxDocuments,
+                        RequireDocuments = questionDto.RequireDocuments,
+                        QuestionnaireTemplateId = templateId,
+                        SectionId = questionDto.SectionId,
+                        ConfigurationJson = questionDto.Configuration != null
+                            ? JsonSerializer.Serialize(questionDto.Configuration)
+                            : null,
+                        TranslationsJson = questionDto.Translations != null
+                            ? JsonSerializer.Serialize(questionDto.Translations)
+                            : null
+                    };
 
-                _context.TemplateQuestions.Add(newQuestion);
+
+                    _context.TemplateQuestions.Add(newQuestion);
+                }
             }
         }
     }

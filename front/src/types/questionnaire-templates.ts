@@ -8,21 +8,18 @@ export enum TemplateStatus {
 }
 
 export enum CertificateType {
-  SelfAssessment = 1,
-  InspectorRequired = 2,
-  Both = 3,
+  SelfAssessment = "SelfAssessment",
+  InspectorRequired = "InspectorRequired",
+  Both = "Both",
 }
 
 export enum QuestionType {
-  Text = 1,
-  Number = 2,
-  Boolean = 3,
-  SingleChoice = 4,
-  MultiChoice = 5,
-  Date = 6,
-  FileUpload = 7,
+  NonConformity = "NonConformity",
+  YesNo = "YesNo",
+  MultipleChoice = "MultipleChoice",
+  SingleOption = "SingleOption",
+  Text = "Text",
 }
-
 // Base interfaces
 export interface BaseEntity {
   id: string;
@@ -144,22 +141,27 @@ export interface SaveDraftRequest {
 
 export interface UpdateSectionRequest {
   id?: string;
-  title?: string;
+  title: string; // Required in backend
   description?: string;
-  order?: number;
+  order: number; // Required in backend
   translations?: TranslationData;
+  isDeleted?: boolean; // Added to match backend
 }
 
 export interface UpdateQuestionRequest {
   id?: string;
-  title?: string;
-  description?: string;
-  questionType?: QuestionType;
-  isRequired?: boolean;
-  order?: number;
+  text: string; // Backend expects 'text' not 'title' and it's required
+  type: QuestionType; // Backend expects 'type' not 'questionType' and it's required
+  isRequired: boolean; // Required in backend
+  order: number; // Required in backend
+  helpText?: string; // Backend expects 'helpText' not 'description'
+  allowDocumentUpload?: boolean; // Added to match backend
+  maxDocuments?: number; // Added to match backend
+  requireDocuments?: boolean; // Added to match backend
+  configuration?: QuestionConfiguration;
   sectionId?: string;
   translations?: TranslationData;
-  configuration?: QuestionConfiguration;
+  isDeleted?: boolean; // Added to match backend
 }
 
 // Response DTOs
@@ -195,9 +197,9 @@ export interface SectionResponse {
 
 export interface QuestionResponse {
   id: string;
-  title: string;
-  description?: string;
-  questionType: QuestionType;
+  text: string;
+  helpText?: string;
+  type: QuestionType;
   isRequired: boolean;
   order: number;
   sectionId: string;
@@ -205,6 +207,9 @@ export interface QuestionResponse {
   translations?: TranslationData;
   configuration?: QuestionConfiguration;
   conditions: QuestionConditionResponse[];
+  allowDocumentUpload: boolean;
+  maxDocuments: number;
+  requireDocuments: boolean;
 }
 
 export interface QuestionConditionResponse {

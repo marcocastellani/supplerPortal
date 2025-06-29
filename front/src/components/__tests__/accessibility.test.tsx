@@ -9,7 +9,7 @@ import { ErrorBoundary } from "../ErrorBoundary/ErrorBoundary";
 import { ErrorNotification } from "../ErrorNotification/ErrorNotification";
 import EntityTable from "../NetworkEntities/EntityTable";
 import { QuestionnaireCard } from "../Dashboard/QuestionnaireCard";
-import { StatusChip } from "../Dashboard/StatusChip";
+import { QuestionnaireStatus, StatusChip } from "../Dashboard/StatusChip";
 import { ErrorMessage } from "../Forms/ErrorMessage";
 import { FormWizard } from "../SupplyNetworkEntities/FormWizard";
 import { EntityTypeChip } from "../EntityChips/EntityTypeChip";
@@ -81,10 +81,18 @@ describe("Accessibility Tests - WCAG 2.1 AA Compliance [REH]", () => {
     });
 
     it("StatusChip with different statuses should be accessible", async () => {
-      const statuses = ["Pending", "InProgress", "Completed", "Overdue"];
+      const statuses = [
+        "Draft",
+        "Published",
+        "InProgress",
+        "Completed",
+        "Overdue",
+      ];
 
       for (const status of statuses) {
-        const { container } = render(<StatusChip status={status} />);
+        const { container } = render(
+          <StatusChip status={status as QuestionnaireStatus} />
+        );
         const results = await axe(container);
         expect(results).toHaveNoViolations();
       }

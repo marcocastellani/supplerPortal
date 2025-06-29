@@ -1,7 +1,7 @@
 import React from "react";
 import { Chip, ChipProps, useTheme } from "@mui/material";
 
-type QuestionnaireStatus =
+export type QuestionnaireStatus =
   | "Draft"
   | "Published"
   | "InProgress"

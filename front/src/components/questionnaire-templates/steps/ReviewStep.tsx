@@ -23,9 +23,9 @@ import {
   QuestionnaireSection,
   TemplateQuestion,
   QuestionCondition,
-  QuestionType,
   CertificateType,
 } from "../../../types/questionnaire-templates";
+import { questionTypeLabels } from "../TemplateWizard";
 
 interface ReviewStepProps {
   templateData: Partial<QuestionnaireTemplate>;
@@ -34,16 +34,6 @@ interface ReviewStepProps {
   conditions: QuestionCondition[];
   errors: string[];
 }
-
-const questionTypeLabels = {
-  [QuestionType.Text]: "Text",
-  [QuestionType.Number]: "Number",
-  [QuestionType.Boolean]: "Yes/No",
-  [QuestionType.SingleChoice]: "Single Choice",
-  [QuestionType.MultiChoice]: "Multiple Choice",
-  [QuestionType.Date]: "Date",
-  [QuestionType.FileUpload]: "File Upload",
-};
 
 const certificateTypeLabels = {
   [CertificateType.SelfAssessment]: "Self Assessment",

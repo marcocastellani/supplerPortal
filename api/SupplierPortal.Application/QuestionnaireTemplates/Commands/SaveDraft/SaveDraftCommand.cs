@@ -27,7 +27,7 @@ public class SaveDraftCommand : IRequest<Unit>
 /// </summary>
 public class UpdateSectionDto
 {
-    public Guid? Id { get; set; } // Null for new sections
+    public Guid? Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
     public int Order { get; set; }
@@ -52,5 +52,5 @@ public class UpdateQuestionDto
     public object? Configuration { get; set; }
     public Guid? SectionId { get; set; }
     public Dictionary<string, object>? Translations { get; set; }
-    public bool IsDeleted { get; set; } = false;
+ 
 }

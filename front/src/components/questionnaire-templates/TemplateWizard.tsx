@@ -15,19 +15,26 @@ import {
   Switch,
 } from "@mui/material";
 import { useTemplateWizard } from "../../hooks/useTemplateWizard";
-import { WizardStep } from "../../types/questionnaire-templates";
+import { QuestionType, WizardStep } from "../../types/questionnaire-templates";
 import { BasicInfoStep } from "./steps/BasicInfoStep";
 import { SectionsStep } from "./steps/SectionsStep";
 import { QuestionsStep } from "./steps/QuestionsStep";
 import { ConditionsStep } from "./steps/ConditionsStep";
 import { ReviewStep } from "./steps/ReviewStep";
+import { ValidationErrorPanel, ValidationError } from "./ValidationErrorPanel";
 
 interface TemplateWizardProps {
   templateId?: string;
   onComplete?: (templateId: string) => void;
   onCancel?: () => void;
 }
-
+export const questionTypeLabels = {
+  [QuestionType.NonConformity]: "Non-Conformity",
+  [QuestionType.Text]: "Text",
+  [QuestionType.YesNo]: "Yes/No",
+  [QuestionType.MultipleChoice]: "Multiple Choice",
+  [QuestionType.SingleOption]: "Single Option",
+};
 const stepLabels = {
   [WizardStep.BasicInfo]: "Basic Information",
   [WizardStep.Sections]: "Sections",
@@ -47,6 +54,8 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
     "success"
   );
   const [autoSaveEnabled, setAutoSaveEnabled] = useState(false);
+  const [validationError, setValidationError] =
+    useState<ValidationError | null>(null);
 
   const {
     state,
@@ -96,6 +105,9 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
   };
 
   const handlePublish = async () => {
+    // Clear previous validation errors
+    setValidationError(null);
+
     try {
       await publishTemplate();
       onComplete?.(currentTemplateId!);
@@ -103,24 +115,62 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
     } catch (error: any) {
-      let errorMessage = "Failed to publish template";
+      // Handle validation errors (400 status)
+      // The API client transforms the response, so check both formats
+      const isValidationError =
+        (error?.statusCode === 400 && error?.details) || // Direct error format
+        error?.response?.status === 400; // Axios format
 
-      // Handle specific error types
-      if (error?.response?.status === 404) {
-        errorMessage =
-          "Publish endpoint not available yet. This feature is currently under development.";
-      } else if (error?.response?.status === 400) {
-        errorMessage =
-          error?.response?.data?.error ||
-          "Template validation failed. Please check all required fields.";
+      if (isValidationError) {
+        // Handle direct error format (our API client)
+        if (error?.statusCode === 400 && error?.details) {
+          console.log("✅ Using validation error panel (direct format)");
+          setValidationError({
+            isValid: false,
+            errors: Array.isArray(error.details)
+              ? error.details
+              : [error.details],
+            message: error.message || "Template validation failed",
+          });
+          return; // Don't show snackbar for validation errors, use the panel instead
+        }
+
+        // Handle axios format (fallback)
+        const errorData = error.response?.data;
+        if (
+          errorData &&
+          typeof errorData === "object" &&
+          "isValid" in errorData
+        ) {
+          console.log("✅ Using validation error panel (axios format)");
+          setValidationError({
+            isValid: errorData.isValid || false,
+            errors: errorData.errors || ["Unknown validation error"],
+            message: errorData.message || "Template validation failed",
+          });
+          return;
+        }
+
+        // Fallback for other 400 errors
+        setSnackbarMessage(
+          error?.message ||
+            errorData?.error ||
+            "Template validation failed. Please check all required fields."
+        );
+      } else if (error?.response?.status === 404) {
+        setSnackbarMessage(
+          "Publish endpoint not available yet. This feature is currently under development."
+        );
       } else if (error?.response?.status === 500) {
-        errorMessage =
-          "Server error occurred while publishing. Please try again later.";
+        setSnackbarMessage(
+          "Server error occurred while publishing. Please try again later."
+        );
       } else if (error instanceof Error) {
-        errorMessage = error.message;
+        setSnackbarMessage(error.message);
+      } else {
+        setSnackbarMessage("Failed to publish template");
       }
 
-      setSnackbarMessage(errorMessage);
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }
@@ -331,6 +381,12 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({
 
           {/* Step Content */}
           <Box sx={{ minHeight: 400, mb: 4 }}>{renderCurrentStep()}</Box>
+
+          {/* Validation Error Panel */}
+          <ValidationErrorPanel
+            validationError={validationError}
+            onClose={() => setValidationError(null)}
+          />
 
           {/* Navigation */}
           <Box
