@@ -20,41 +20,36 @@ public class GetActiveTemplatesQueryHandler : IRequestHandler<GetActiveTemplates
     public async Task<List<ActiveTemplateResponse>> Handle(GetActiveTemplatesQuery request, CancellationToken cancellationToken)
     {
         var query = _context.QuestionnaireTemplates
-            .Include(t => t.TargetEntityTypes)
             .Include(t => t.Sections)
                 .ThenInclude(s => s.Questions)
             .Where(t => t.Status == TemplateStatus.Active)
             .AsQueryable();
 
-        // Apply search filter if provided
-        if (!string.IsNullOrWhiteSpace(request.SearchTerm))
-        {
-            var searchTerm = request.SearchTerm.ToLower();
-            query = query.Where(t => t.Title.ToLower().Contains(searchTerm) ||
-                                    t.Description.ToLower().Contains(searchTerm));
-        }
-
         // Get all active templates
         var activeTemplates = await query.ToListAsync(cancellationToken);
 
-        // Group by base template (assuming templates with same title are versions of each other)
-        // In a real implementation, you might have a BaseTemplateId or similar field
-        var groupedTemplates = activeTemplates
-            .GroupBy(t => t.Title.Split(" - v")[0]) // Assuming version is appended as " - v1.0"
-            .Select(g => g.OrderByDescending(t => t.Version).First()) // Get latest version
+        // Group by BaseTemplateId to get template families
+        // Templates without BaseTemplateId are considered their own base
+        var templateGroups = activeTemplates
+            .GroupBy(t => t.BaseTemplateId ?? t.Id)
+            .ToList();
+
+        // Get the latest version from each group
+        var latestTemplates = templateGroups
+            .Select(group => group.OrderByDescending(t => t.Version).ThenByDescending(t => t.Created).First())
             .ToList();
 
         // Map to response
-        var response = groupedTemplates.Select(t => new ActiveTemplateResponse
+        var response = latestTemplates.Select(t => new ActiveTemplateResponse
         {
             Id = t.Id,
             Title = t.Title,
-            Description = t.Description,
-            Version = t.Version,
-            TargetEntityTypes = t.TargetEntityTypes.Select(te => te.EntityType.ToString()).ToList(),
-            PrimaryLanguage = t.PrimaryLanguage,
-            SupportedLanguages = GetSupportedLanguages(t),
-            QuestionCount = t.Sections.Sum(s => s.Questions.Count),
+            Description = t.Description ?? string.Empty,
+            Version = t.Version.ToString("F1"),
+            TargetEntityTypes = t.EntityTypes.Select(et => et.ToString()).ToList(),
+            PrimaryLanguage = string.Empty, // TODO: Add to entity if needed
+            SupportedLanguages = new List<string>(), // TODO: Add language support
+            QuestionCount = t.Sections?.Sum(s => s.Questions?.Count ?? 0) ?? 0,
             Created = t.Created,
             LastModified = t.LastModified
         })
@@ -62,36 +57,5 @@ public class GetActiveTemplatesQueryHandler : IRequestHandler<GetActiveTemplates
         .ToList();
 
         return response;
-    }
-
-    private List<string> GetSupportedLanguages(Domain.Entities.QuestionnaireTemplate template)
-    {
-        // Get unique languages from all translations
-        var languages = new HashSet<string> { template.PrimaryLanguage };
-
-        // Add languages from sections and questions
-        foreach (var section in template.Sections)
-        {
-            if (section.Translations != null)
-            {
-                foreach (var lang in section.Translations.Keys)
-                {
-                    languages.Add(lang);
-                }
-            }
-
-            foreach (var question in section.Questions)
-            {
-                if (question.Translations != null)
-                {
-                    foreach (var lang in question.Translations.Keys)
-                    {
-                        languages.Add(lang);
-                    }
-                }
-            }
-        }
-
-        return languages.OrderBy(l => l).ToList();
     }
 }

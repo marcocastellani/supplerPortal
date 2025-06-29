@@ -112,7 +112,7 @@ export const TemplateSelectionStep: React.FC<TemplateSelectionStepProps> = ({
                 {template.targetEntityTypes.map((type) => (
                   <Chip
                     key={type}
-                    label={t(`entityTypes.${type}`)}
+                    label={t(`entityTypes.${type.toLowerCase()}`)}
                     size="small"
                     color="primary"
                     variant="outlined"

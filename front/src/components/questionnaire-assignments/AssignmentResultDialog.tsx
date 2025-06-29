@@ -180,7 +180,7 @@ export const AssignmentResultDialog: React.FC<AssignmentResultDialogProps> = ({
                   secondary={
                     <Stack direction="row" spacing={1} alignItems="center">
                       <Chip
-                        label={t(`entityTypes.${entity.entityType}`)}
+                        label={t(`entityTypes.${entity.entityType.toLowerCase()}`)}
                         size="small"
                         color="primary"
                         variant="outlined"
@@ -214,8 +214,9 @@ export const AssignmentResultDialog: React.FC<AssignmentResultDialogProps> = ({
                       <Stack spacing={0.5}>
                         <Stack direction="row" spacing={1} alignItems="center">
                           <Chip
-                            label={t(`entityTypes.${entity.entityType}`)}
+                            label={t(`entityTypes.${entity.entityType.toLowerCase()}`)}
                             size="small"
+                            color="warning"
                             variant="outlined"
                           />
                         </Stack>

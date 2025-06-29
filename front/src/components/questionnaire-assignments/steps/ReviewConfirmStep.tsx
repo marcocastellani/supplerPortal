@@ -95,10 +95,10 @@ export const ReviewConfirmStep: React.FC<ReviewConfirmStepProps> = ({
                     {state.selectedTemplate?.targetEntityTypes.map((type) => (
                       <Chip
                         key={type}
-                        label={t(`entityTypes.${type}`)}
+                        label={t(`entityTypes.${type.toLowerCase()}`)}
                         size="small"
                         color="primary"
-                        variant="outlined"
+                        sx={{ mr: 0.5 }}
                       />
                     ))}
                   </Stack>

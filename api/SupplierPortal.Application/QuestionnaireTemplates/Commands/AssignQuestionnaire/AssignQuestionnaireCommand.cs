@@ -26,12 +26,12 @@ public class AssignQuestionnaireCommand : IRequest<AssignQuestionnaireResult>
     /// <summary>
     /// Due date for the assigned questionnaires
     /// </summary>
-    public DateTime DueDate { get; set; }
+    public DateTime? DueDate { get; set; }
 
     /// <summary>
-    /// Priority for the assigned questionnaires
+    /// Priority for the assigned questionnaires (Low, Medium, High)
     /// </summary>
-    public QuestionnairePriority Priority { get; set; } = QuestionnairePriority.Medium;
+    public string Priority { get; set; } = "Medium";
 
     /// <summary>
     /// Optional assigned user ID
@@ -59,6 +59,11 @@ public class AssignQuestionnaireCommand : IRequest<AssignQuestionnaireResult>
 /// </summary>
 public class AssignQuestionnaireResult
 {
+    /// <summary>
+    /// Total number of entities that were processed
+    /// </summary>
+    public int TotalEntities { get; set; }
+
     /// <summary>
     /// Number of questionnaires successfully assigned
     /// </summary>
@@ -106,14 +111,4 @@ public class AssignedEntity
     public EntityType EntityType { get; set; }
     public string Location { get; set; } = string.Empty;
     public Guid QuestionnaireId { get; set; }
-}
-
-/// <summary>
-/// Priority levels for questionnaires
-/// </summary>
-public enum QuestionnairePriority
-{
-    Low = 1,
-    Medium = 2,
-    High = 3
 }

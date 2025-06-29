@@ -214,7 +214,7 @@ export const EntitySelectionStep: React.FC<EntitySelectionStepProps> = ({
                 </MenuItem>
                 {applicableEntityTypes.map((type) => (
                   <MenuItem key={type} value={type}>
-                    {t(`entityTypes.${type}`)}
+                    {t(`entityTypes.${type.toLowerCase()}`)}
                   </MenuItem>
                 ))}
               </Select>
@@ -356,7 +356,7 @@ export const EntitySelectionStep: React.FC<EntitySelectionStepProps> = ({
                   </TableCell>
                   <TableCell>
                     <Chip
-                      label={t(`entityTypes.${entity.entityType}`)}
+                      label={t(`entityTypes.${entity.entityType.toLowerCase()}`)}
                       size="small"
                       color="primary"
                       variant="outlined"

@@ -1,4 +1,5 @@
 using FluentValidation;
+using Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Common;
 using Remira.UCP.SupplierPortal.Domain.Enums;
 
 namespace Remira.UCP.SupplierPortal.Application.QuestionnaireTemplates.Commands.AssignQuestionnaire;
@@ -13,21 +14,26 @@ public class AssignQuestionnaireCommandValidator : AbstractValidator<AssignQuest
         RuleFor(v => v.TemplateId)
             .NotEmpty().WithMessage("Template ID is required.");
 
+        RuleFor(v => v.EntityIds)
+            .NotEmpty().WithMessage("At least one entity must be selected.")
+            .Must(ids => ids == null || ids.All(id => id != Guid.Empty))
+            .WithMessage("All entity IDs must be valid (non-empty) GUIDs.")
+            .When(v => v.EntityIds != null);
+
         RuleFor(v => v.DueDate)
-            .GreaterThan(DateTime.UtcNow).WithMessage("Due date must be in the future.");
+            .NotEmpty().WithMessage("Due date is required.")
+            .GreaterThan(DateTime.UtcNow).WithMessage("Due date must be in the future.")
+            .When(v => v.DueDate.HasValue);
 
         RuleFor(v => v.Priority)
-            .IsInEnum().WithMessage("Priority must be a valid value.");
+            .NotEmpty().WithMessage("Priority is required.")
+            .Must(QuestionnairePriorities.IsValid)
+            .WithMessage($"Priority must be {string.Join(", ", QuestionnairePriorities.GetAll().SkipLast(1))}, or {QuestionnairePriorities.GetAll().Last()}.");
 
         RuleFor(v => v.EntityTypeFilter)
             .Must(types => types == null || types.All(t => Enum.IsDefined(typeof(EntityType), t)))
             .WithMessage("All entity types must be valid values.")
             .When(v => v.EntityTypeFilter != null);
-
-        RuleFor(v => v.EntityIds)
-            .Must(ids => ids == null || ids.All(id => id != Guid.Empty))
-            .WithMessage("All entity IDs must be valid (non-empty) GUIDs.")
-            .When(v => v.EntityIds != null);
 
         RuleFor(v => v.AssignedUserId)
             .NotEqual(Guid.Empty).WithMessage("Assigned User ID must be a valid GUID.")
